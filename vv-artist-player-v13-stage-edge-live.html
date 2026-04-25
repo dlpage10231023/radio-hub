@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voices & Vibes — Stage Edge</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#00a8a8;--teal-2:#00d0d0;--coral:#e8624a;--coral-2:#ff8a73;
+  --bg:#070909;--bg-2:#101515;--card:#121717;--card-2:#171d1d;
+  --line:rgba(0,208,208,0.18);--muted:#8db9b9;--text:#f6f6f6;--warn:#ffc857;
+}
+html,body{min-height:100%;background:radial-gradient(circle at top,#132020 0%,#070909 45%,#040404 100%);color:var(--text);font-family:'Montserrat',sans-serif}
+body{padding:24px 14px 40px;display:flex;flex-direction:column;align-items:center}
+.site-header{text-align:center;max-width:860px;margin-bottom:20px}
+.site-logo{display:block;font-family:'Dancing Script',cursive;font-size:2.35rem;font-weight:700;background:linear-gradient(135deg,var(--teal-2),var(--coral));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.site-tagline{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.site-copy{margin-top:12px;font-size:12px;line-height:1.75;color:rgba(141,185,185,.88)}
+.app-shell{width:100%;max-width:980px;background:linear-gradient(180deg,rgba(20,26,26,.98),rgba(12,14,14,.98));border:1px solid var(--line);box-shadow:0 24px 80px rgba(0,0,0,.34),0 0 55px rgba(0,168,168,.08);overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:340px 1fr;gap:0;border-bottom:1px solid rgba(255,255,255,.05)}
+.art-panel{background:linear-gradient(155deg,#0b1212,#1a1111 70%,#0d0d0d);padding:18px;border-right:1px solid rgba(255,255,255,.05)}
+.art-zone{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;overflow:hidden;background:radial-gradient(circle at top,rgba(0,208,208,.18),transparent 36%),linear-gradient(135deg,#0b1313,#170e0e);cursor:pointer}
+.art-zone::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.48),transparent 40%);pointer-events:none}
+.art-zone::before{content:'';position:absolute;inset:-20%;pointer-events:none;opacity:0;background:linear-gradient(110deg,transparent 18%,rgba(255,255,255,.08) 45%,rgba(255,255,255,.02) 51%,transparent 58%)}
+.art-zone.glide::before{opacity:1;animation:shine 7s linear infinite}
+.album-img{width:100%;height:100%;object-fit:contain;object-position:center;padding:12px;display:none;filter:drop-shadow(0 20px 34px rgba(0,0,0,.36));will-change:transform}
+.album-img.loaded{display:block;animation:artDrift 8s ease-in-out infinite alternate}
+.placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);text-align:center;padding:18px}
+.placeholder.hidden{display:none}
+.placeholder .emoji{font-size:3.8rem;opacity:.48}
+.placeholder p{font-size:11px;letter-spacing:.18em;text-transform:uppercase;line-height:1.7}
+.glass-btn,.ghost-btn,.action-btn,.kit-btn,.small-btn,.upload-btn{font-family:inherit;border:none;cursor:pointer;transition:.2s ease all}
+.glass-btn{padding:10px 16px;background:rgba(0,168,168,.14);border:1px solid rgba(0,208,208,.34);color:var(--teal-2);font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+.glass-btn:hover{background:rgba(0,168,168,.24)}
+.badge-stack{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:8px;z-index:2}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:800;background:rgba(232,98,74,.84)}
+.badge.teal{background:rgba(0,168,168,.26);border:1px solid rgba(0,208,208,.24)}
+.art-watermark{position:absolute;right:14px;bottom:10px;font-family:'Dancing Script',cursive;font-size:1rem;color:rgba(255,255,255,.42);z-index:3}
+.live-visuals{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .28s ease;mix-blend-mode:screen}
+.art-zone.visuals-on .live-visuals{opacity:1}
+.visual-glow{
+  position:absolute;inset:auto auto 8% 50%;transform:translateX(-50%);width:min(74%,540px);height:18%;z-index:2;pointer-events:none;
+  background:radial-gradient(circle at 30% 50%, rgba(0,208,208,.24), transparent 40%), radial-gradient(circle at 70% 50%, rgba(232,98,74,.18), transparent 42%);
+  filter:blur(28px);opacity:0;transition:opacity .28s ease;
+}
+.art-zone.visuals-on .visual-glow{opacity:1}
+.panel-copy{margin-top:16px;font-size:11px;line-height:1.75;color:rgba(141,185,185,.86)}
+.info-panel{padding:18px 18px 16px}
+.track-line{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-2);font-weight:800}
+.track-title{margin-top:10px;font-size:1.35rem;font-weight:800;line-height:1.25}
+.track-artist{margin-top:4px;font-size:13px;color:var(--muted)}
+.track-meta{margin-top:4px;font-size:11px;color:rgba(141,185,185,.6);font-style:italic}
+.info-copy{margin-top:12px;font-size:12px;line-height:1.7;color:rgba(141,185,185,.88)}
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.stat-card{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);padding:12px 12px 10px;min-height:72px}
+.stat-label{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.stat-value{margin-top:8px;font-size:1rem;font-weight:800}
+.stat-sub{margin-top:5px;font-size:10px;line-height:1.5;color:rgba(141,185,185,.68)}
+.control-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.action-btn{padding:11px 14px;background:var(--teal);color:#041010;font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.action-btn:hover{background:var(--teal-2)}
+.ghost-btn{padding:11px 14px;background:transparent;border:1px solid rgba(0,208,208,.24);color:var(--teal-2);font-weight:800;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.ghost-btn:hover{background:rgba(0,168,168,.1)}
+.small-btn{padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:#fff;font-weight:700;font-size:11px}
+.small-btn.active{background:rgba(0,168,168,.18);border-color:rgba(0,208,208,.36);color:var(--teal-2)}
+.upload-row,.meta-row,.tool-row,.loop-preset-grid,.kits-grid{display:grid;gap:12px}
+.upload-row{grid-template-columns:repeat(3,1fr);padding:16px 18px;border-top:1px solid rgba(255,255,255,.05)}
+.upload-btn{padding:16px;background:rgba(0,168,168,.05);border:1px dashed rgba(0,208,208,.22);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+.upload-btn:hover{background:rgba(0,168,168,.12);border-color:rgba(0,208,208,.38)}
+.upload-btn .icon{font-size:1.35rem}
+.upload-btn .label{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--teal-2)}
+.upload-btn .sub{font-size:10px;color:var(--muted)}
+.wave-section{padding:18px;border-top:1px solid rgba(255,255,255,.05)}
+.section-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.section-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal-2);font-weight:800}
+.section-title{margin-top:4px;font-size:1.05rem;font-weight:800}
+.section-copy{margin-top:6px;font-size:11px;line-height:1.7;color:rgba(141,185,185,.84);max-width:700px}
+.wave-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#waveform-shell{position:relative;background:linear-gradient(180deg,#0c1111,#101717);border:1px solid rgba(0,208,208,.16);padding:14px 14px 10px;overflow:hidden}
+#waveform{position:relative;min-height:150px}
+#waveform canvas{border-radius:6px}
+#timeline{margin-top:8px;font-size:11px;color:var(--muted)}
+.beat-overlay{position:absolute;inset:14px 14px 34px 14px;pointer-events:none;overflow:hidden}
+.beat-line{position:absolute;top:0;bottom:0;width:1px;background:rgba(0,208,208,.32)}
+.beat-line.bar{width:2px;background:rgba(232,98,74,.58)}
+.beat-line.anchor{width:3px;background:var(--warn);box-shadow:0 0 12px rgba(255,200,87,.36)}
+.loop-panel{padding:18px;border-top:1px solid rgba(255,255,255,.05)}
+.loop-preset-grid{grid-template-columns:repeat(5,1fr)}
+.loop-card{padding:12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);cursor:pointer}
+.loop-card:hover{border-color:rgba(0,208,208,.38);transform:translateY(-1px)}
+.loop-card strong{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.loop-card span{display:block;margin-top:6px;font-size:10px;line-height:1.5;color:var(--muted)}
+.meta-row{grid-template-columns:repeat(4,1fr);padding:18px;border-top:1px solid rgba(255,255,255,.05)}
+.field label{display:block;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal-2);font-weight:800;margin-bottom:6px}
+.field input,.field select{width:100%;padding:10px 11px;background:rgba(0,168,168,.05);border:1px solid rgba(0,208,208,.18);color:#fff;font-family:inherit;font-size:12px;outline:none}
+.field input:focus,.field select:focus{border-color:rgba(0,208,208,.42)}
+.tool-row{grid-template-columns:1.2fr .8fr;padding:18px;border-top:1px solid rgba(255,255,255,.05)}
+.kits-grid{grid-template-columns:repeat(4,1fr)}
+.kit-btn{padding:12px;border:1px solid rgba(0,208,208,.16);background:rgba(255,255,255,.02);text-align:left}
+.kit-btn:hover,.kit-btn.active{border-color:rgba(0,208,208,.42);background:linear-gradient(180deg,rgba(0,208,208,.12),rgba(232,98,74,.08))}
+.kit-btn strong{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.kit-btn span{display:block;margin-top:7px;font-size:10px;line-height:1.5;color:var(--muted)}
+.helper-card{padding:14px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02)}
+.helper-card h4{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal-2);margin-bottom:8px}
+.helper-card p,.helper-card li{font-size:11px;line-height:1.75;color:rgba(141,185,185,.86)}
+.helper-card ul{padding-left:18px}
+.footer-note{max-width:980px;margin-top:14px;font-size:11px;line-height:1.75;color:rgba(141,185,185,.84);text-align:center}
+.toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%) translateY(18px);padding:11px 14px;background:rgba(13,16,16,.95);border:1px solid rgba(0,208,208,.24);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:0;pointer-events:none;transition:.25s all;z-index:30}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hidden{display:none !important}
+body.stage-mode{padding:10px 12px 18px}
+body.stage-mode .site-header{margin-bottom:10px;transition:opacity .25s ease,max-height .25s ease,margin .25s ease;max-height:120px;overflow:hidden}
+body.stage-mode .app-shell{position:relative;overflow:visible;max-width:1280px;width:min(1280px,calc(100vw - 24px));min-height:calc(100vh - 34px);display:flex;flex-direction:column}
+body.stage-mode .hero-grid{grid-template-columns:minmax(400px,46%) minmax(0,54%);min-height:58vh}
+body.stage-mode .art-panel{padding:22px}
+body.stage-mode .art-zone{min-height:clamp(420px,62vh,760px)}
+body.stage-mode .info-panel{padding:24px 24px 20px;display:flex;flex-direction:column;justify-content:center}
+body.stage-mode .track-title{font-size:clamp(1.6rem,3vw,2.5rem)}
+body.stage-mode .track-artist{font-size:15px}
+body.stage-mode .track-meta{font-size:12px}
+body.stage-mode .status-grid{gap:12px}
+body.stage-mode .wave-section{padding:20px 22px 18px}
+body.stage-mode .wave-section #waveform{min-height:220px}
+body.stage-mode:not(.studio-open) .site-header{opacity:0;max-height:0;margin:0}
+body.stage-mode:not(.studio-open) .footer-note{display:none}
+body.stage-mode:not(.studio-open) .info-copy{max-width:820px}
+body.stage-mode:not(.studio-open) .status-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+body.stage-mode:not(.studio-open) .stat-card{min-height:84px}
+body.stage-mode:not(.studio-open) .wave-section .section-copy{display:none}
+body.stage-mode:not(.studio-open) .wave-section .section-label{margin-bottom:2px}
+body.stage-mode:not(.studio-open) .wave-toolbar{gap:10px}
+body.stage-mode:not(.studio-open) .hero-grid{border-bottom:0}
+.studio-tab{
+  position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:55;
+  padding:14px 10px;border-radius:14px 0 0 14px;border:1px solid rgba(0,208,208,.26);border-right:none;
+  background:linear-gradient(180deg,rgba(0,168,168,.92),rgba(15,26,26,.98));color:#fff;
+  font-size:10px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;writing-mode:vertical-rl;text-orientation:mixed;
+  box-shadow:0 16px 30px rgba(0,0,0,.28);cursor:pointer;transition:right .28s ease,background .22s ease,box-shadow .22s ease;
+}
+.studio-tab:hover{background:linear-gradient(180deg,rgba(0,208,208,.95),rgba(17,30,30,.98));box-shadow:0 18px 36px rgba(0,0,0,.34)}
+.studio-jacket{
+  position:fixed;top:0;right:0;z-index:50;width:min(430px,92vw);height:100vh;overflow-y:auto;
+  background:linear-gradient(180deg,rgba(10,14,14,.98),rgba(16,20,20,.985));border-left:1px solid rgba(0,208,208,.18);
+  box-shadow:-24px 0 70px rgba(0,0,0,.38);transform:translateX(calc(100% - 54px));transition:transform .3s ease;
+  backdrop-filter:blur(16px)
+}
+body.stage-mode.studio-open .studio-jacket{transform:translateX(0)}
+body.stage-mode.studio-open .studio-tab{right:min(430px,92vw)}
+.studio-head{
+  position:sticky;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(10,14,14,.98),rgba(10,14,14,.9));
+}
+.studio-kicker{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal-2);font-weight:800}
+.studio-title{margin-top:6px;font-size:1rem;font-weight:800}
+.studio-copy{margin-top:6px;font-size:11px;line-height:1.65;color:rgba(141,185,185,.82);max-width:260px}
+.studio-close{padding:10px 12px;border:1px solid rgba(0,208,208,.22);background:rgba(255,255,255,.03);color:#fff;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.studio-close:hover{background:rgba(0,168,168,.1)}
+body.stage-mode .studio-jacket .upload-row,
+body.stage-mode .studio-jacket .meta-row,
+body.stage-mode .studio-jacket .tool-row,
+body.stage-mode .studio-jacket .loop-panel{grid-template-columns:1fr;padding:16px 18px}
+body.stage-mode .studio-jacket .loop-preset-grid,
+body.stage-mode .studio-jacket .kits-grid{grid-template-columns:1fr 1fr}
+body.stage-mode .studio-jacket .helper-card{margin-top:12px}
+body.stage-mode:not(.studio-open) .control-row > :not(#playBtn){display:none}
+body.stage-mode:not(.studio-open) .control-row{justify-content:flex-start}
+body.stage-mode:not(.studio-open) .control-row #playBtn{min-width:140px}
+body.stage-mode:not(.studio-open) .section-copy{max-width:760px}
+body.stage-mode:not(.studio-open) .wave-toolbar .small-btn:not(#barLoopBtn):not(#twoBarLoopBtn){display:none}
+
+.focus-controls{
+  position:absolute;left:18px;right:18px;bottom:18px;z-index:4;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px;pointer-events:none;
+}
+.focus-meta{
+  display:flex;flex-direction:column;gap:4px;max-width:min(70%,560px);
+  padding:12px 14px;background:linear-gradient(180deg,rgba(5,9,9,.48),rgba(5,9,9,.78));
+  border:1px solid rgba(255,255,255,.06);backdrop-filter:blur(10px)
+}
+.focus-kicker{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--teal-2);font-weight:800}
+.focus-title{font-size:clamp(1.15rem,2.2vw,1.8rem);font-weight:800;line-height:1.2}
+.focus-sub{font-size:12px;color:rgba(141,185,185,.9)}
+.focus-actions{display:flex;align-items:center;gap:10px;pointer-events:auto}
+.focus-play-btn,.focus-mini-btn{
+  border:none;cursor:pointer;font-family:inherit;transition:.2s ease all;
+}
+.focus-play-btn{
+  padding:14px 22px;background:rgba(0,208,208,.92);color:#071010;font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;
+  box-shadow:0 16px 32px rgba(0,0,0,.28)
+}
+.focus-play-btn:hover{background:#3fe4e4;transform:translateY(-1px)}
+.focus-mini-btn{
+  padding:12px 16px;background:rgba(8,12,12,.78);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase
+}
+.focus-mini-btn:hover{background:rgba(0,168,168,.18)}
+.view-tab{
+  position:fixed;left:18px;top:50%;transform:translateY(-50%);z-index:56;
+  padding:14px 10px;border-radius:0 14px 14px 0;border:1px solid rgba(255,255,255,.18);border-left:none;
+  background:linear-gradient(180deg,rgba(11,14,14,.94),rgba(25,32,32,.98));color:#fff;
+  font-size:10px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;writing-mode:vertical-rl;text-orientation:mixed;
+  box-shadow:0 16px 30px rgba(0,0,0,.28);cursor:pointer;transition:left .28s ease,background .22s ease,box-shadow .22s ease;
+}
+.view-tab:hover{background:linear-gradient(180deg,rgba(28,36,36,.96),rgba(16,20,20,.99));box-shadow:0 18px 36px rgba(0,0,0,.34)}
+
+body.stage-mode.clean-view{padding:0;background:#020303}
+body.stage-mode.clean-view .site-header,
+body.stage-mode.clean-view .info-panel,
+body.stage-mode.clean-view .panel-copy,
+body.stage-mode.clean-view .footer-note{display:none}
+body.stage-mode.clean-view .app-shell{
+  width:100vw;max-width:none;min-height:100vh;border:none;box-shadow:none;background:#030505
+}
+body.stage-mode.clean-view .hero-grid{grid-template-columns:1fr;min-height:auto;border-bottom:none}
+body.stage-mode.clean-view .art-panel{padding:0;border:none;background:#030505}
+body.stage-mode.clean-view .art-zone{
+  min-height:clamp(560px,78vh,1020px);aspect-ratio:auto;background:radial-gradient(circle at top,rgba(0,208,208,.12),transparent 28%),linear-gradient(160deg,#030505,#090b0b 62%,#050606)
+}
+body.stage-mode.clean-view .album-img{padding:0;object-fit:contain}
+body.stage-mode.clean-view .badge-stack{top:18px;left:18px}
+body.stage-mode.clean-view .art-watermark{right:18px;bottom:18px;font-size:1.15rem}
+body.stage-mode.clean-view .wave-section{padding:0 0 8px;border-top:none;background:#030505}
+body.stage-mode.clean-view .section-top,
+body.stage-mode.clean-view .wave-toolbar,
+body.stage-mode.clean-view .section-copy,
+body.stage-mode.clean-view .section-title,
+body.stage-mode.clean-view .section-label{display:none}
+body.stage-mode.clean-view #waveform-shell{border:none;background:#040707;padding:0 0 10px}
+body.stage-mode.clean-view #waveform{min-height:180px}
+body.stage-mode.clean-view #timeline{padding:0 18px 6px}
+body.stage-mode.clean-view .beat-overlay{inset:0 0 36px 0}
+body.stage-mode.clean-view .studio-tab{right:16px}
+body.stage-mode.clean-view.studio-open .studio-tab{right:min(430px,92vw)}
+body.stage-mode.clean-view .view-tab{left:18px}
+body.stage-mode.clean-view:not(.studio-open) .studio-jacket{transform:translateX(calc(100% - 54px))}
+body.stage-mode.clean-view:not(.studio-open) .focus-controls{opacity:1}
+body.stage-mode:not(.clean-view) .focus-controls{display:none}
+
+@keyframes artDrift{0%{transform:translate3d(-1.3%,1%,0) scale(1.02)}50%{transform:translate3d(1.2%,-.7%,0) scale(1.045)}100%{transform:translate3d(.8%,1.2%,0) scale(1.03)}}
+@keyframes shine{0%{transform:translateX(-55%) skewX(-12deg)}100%{transform:translateX(55%) skewX(-12deg)}}
+@media (max-width:920px){
+  .hero-grid,.tool-row{grid-template-columns:1fr}
+  .art-panel{border-right:none;border-bottom:1px solid rgba(255,255,255,.05)}
+  .status-grid,.meta-row,.kits-grid,.upload-row,.loop-preset-grid{grid-template-columns:1fr 1fr}
+  body.stage-mode .hero-grid{min-height:auto}
+  body.stage-mode .art-zone{min-height:420px}
+}
+@media (max-width:640px){
+  body{padding:14px 10px 32px}
+  .site-logo{font-size:2rem}
+  .status-grid,.meta-row,.kits-grid,.upload-row,.loop-preset-grid{grid-template-columns:1fr}
+  .beat-overlay{inset:14px 14px 34px 14px}
+  body.stage-mode{padding:6px 6px 20px}
+  body.stage-mode .app-shell{width:min(100vw - 12px,1280px);min-height:calc(100vh - 12px)}
+  body.stage-mode .art-zone{min-height:360px}
+}
+@media (max-width:760px){
+  .studio-tab{top:auto;bottom:16px;right:50%;transform:translateX(50%);writing-mode:horizontal-tb;border-right:1px solid rgba(0,208,208,.26);border-radius:14px;padding:10px 14px}
+  .studio-jacket{top:auto;bottom:0;width:100%;height:min(78vh,760px);transform:translateY(calc(100% - 58px));border-left:none;border-top:1px solid rgba(0,208,208,.18)}
+  body.stage-mode.studio-open .studio-jacket{transform:translateY(0)}
+  body.stage-mode.studio-open .studio-tab{right:50%}
+  .studio-copy{max-width:none}
+}
+</style>
+</head>
+<body class="stage-mode">
+  <div class="site-header">
+    <span class="site-logo">Voices &amp; Vibes Radio</span>
+    <div class="site-tagline">Stage Edge · Minimal Focus + Studio Jacket</div>
+    <p class="site-copy">A cleaner edge-to-edge stage view: hide the interface clutter, keep the art and waveform, and open the Studio jacket only when you need tools.</p>
+  </div>
+
+  <div class="app-shell">
+    <div class="hero-grid">
+      <div class="art-panel">
+        <div class="art-zone" id="artZone">
+          <img id="albumImg" class="album-img" alt="Album Art">
+          <canvas id="liveVisuals" class="live-visuals"></canvas>
+          <div class="visual-glow" id="visualGlow"></div>
+          <div class="badge-stack">
+            <div class="badge">🎚 Beat Catcher</div>
+            <div class="badge teal" id="loopBadge">🔁 Loop Off</div>
+          </div>
+          <div class="placeholder" id="artPlaceholder">
+            <div class="emoji">🎵</div>
+            <p>Upload cover art or drop an image here</p>
+            <button class="glass-btn" type="button" onclick="document.getElementById('imgInput').click()">Choose Image</button>
+          </div>
+          <div class="art-watermark">Voices &amp; Vibes</div>
+          <div class="focus-controls">
+            <div class="focus-meta">
+              <div class="focus-kicker">Stage Edge</div>
+              <div class="focus-title" id="focusTitle">Upload a track to begin</div>
+              <div class="focus-sub" id="focusSub">Artist Name · Album · Year</div>
+            </div>
+            <div class="focus-actions">
+              <button class="focus-play-btn" id="focusPlayBtn" type="button">Play</button>
+              <button class="focus-mini-btn" id="focusDetailsBtn" type="button">Details</button>
+            </div>
+          </div>
+        </div>
+        <div class="panel-copy" id="analysisStory">Analyze a track to detect BPM, generate beat markers, and create snap-to-beat loop regions across the waveform.</div>
+      </div>
+
+      <div class="info-panel">
+        <div class="track-line" id="stationLabel">🎙️ Voices &amp; Vibes Radio · Beat Catcher Smart</div>
+        <div class="track-title" id="dispTitle">Upload a track to begin</div>
+        <div class="track-artist" id="dispArtist">Artist Name</div>
+        <div class="track-meta" id="dispAlbum">Album · Year</div>
+        <div class="info-copy" id="smartSummary">This build focuses on waveform visualization and snap-to-beat looping. Auto analysis is approximate, but you can refine loop regions manually and they will lock to the nearest detected beats.</div>
+
+        <div class="status-grid">
+          <div class="stat-card">
+            <div class="stat-label">Detected BPM</div>
+            <div class="stat-value" id="bpmValue">--</div>
+            <div class="stat-sub">Estimated from onset peaks and beat intervals.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Beat Markers</div>
+            <div class="stat-value" id="beatCount">0</div>
+            <div class="stat-sub">Markers across the track for snap targets.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Active Loop</div>
+            <div class="stat-value" id="loopValue">None</div>
+            <div class="stat-sub">Shows start and end of the current loop region.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Loop Mode</div>
+            <div class="stat-value" id="loopMode">Snap Off</div>
+            <div class="stat-sub">Turn snap on to lock regions to beat boundaries.</div>
+          </div>
+        </div>
+
+        <div class="control-row">
+          <button class="action-btn" type="button" id="playBtn">Play</button>
+          <button class="ghost-btn" type="button" id="analyzeBtn">Analyze Track</button>
+          <button class="small-btn active" type="button" id="snapBtn">Snap To Beat</button>
+          <button class="small-btn" type="button" id="loopBtn">Loop Region</button>
+          <button class="small-btn" type="button" id="clearLoopBtn">Clear Loop</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="view-tab" id="viewTab" type="button" aria-pressed="true">Details</button>
+    <button class="studio-tab" id="studioTab" type="button" aria-controls="studioJacket" aria-expanded="false">Studio</button>
+    <div class="studio-jacket" id="studioJacket">
+      <div class="studio-head">
+        <div>
+          <div class="studio-kicker">Stage Mode</div>
+          <div class="studio-title">Studio Jacket</div>
+          <div class="studio-copy">This jacket stays hidden by default so the player can fill the screen. Open it only when you want tools, uploads, looping, or metadata controls.</div>
+        </div>
+        <button class="studio-close" id="studioClose" type="button">Close</button>
+      </div>
+
+    <div class="upload-row">
+      <button class="upload-btn" type="button" onclick="document.getElementById('audioInput').click()">
+        <div class="icon">🎵</div>
+        <div class="label">Upload Track</div>
+        <div class="sub">Single song for waveform + beat analysis</div>
+      </button>
+      <button class="upload-btn" type="button" onclick="document.getElementById('imgInput').click()">
+        <div class="icon">🖼️</div>
+        <div class="label">Upload Art</div>
+        <div class="sub">Keeps the animated art presentation</div>
+      </button>
+      <button class="upload-btn" type="button" onclick="focusWaveform()">
+        <div class="icon">🎯</div>
+        <div class="label">Jump To Waveform</div>
+        <div class="sub">Go straight to beat selection controls</div>
+      </button>
+    </div>
+
+    <div class="wave-section" id="waveSection">
+      <div class="section-top">
+        <div>
+          <div class="section-label">Waveform visualization</div>
+          <div class="section-title">Timeline + waveform + beat marker overlay</div>
+          <div class="section-copy">Click in the waveform to move the playhead. Drag a region to create a loop, and with snap enabled its boundaries will lock to nearby detected beats.</div>
+        </div>
+        <div class="wave-toolbar">
+          <button class="small-btn" type="button" id="zoomOutBtn">− Zoom</button>
+          <button class="small-btn" type="button" id="zoomInBtn">+ Zoom</button>
+          <button class="small-btn" type="button" id="barLoopBtn">Loop 1 Bar</button>
+          <button class="small-btn" type="button" id="twoBarLoopBtn">Loop 2 Bars</button>
+        </div>
+      </div>
+      <div id="waveform-shell">
+        <div id="waveform"></div>
+        <div id="beatOverlay" class="beat-overlay"></div>
+        <div id="timeline"></div>
+      </div>
+    </div>
+
+    <div class="loop-panel">
+      <div class="section-label">Snap loop presets</div>
+      <div class="section-title">Loop around the nearest detected beat</div>
+      <div class="section-copy">Use the current playhead position as the anchor, then create a one-beat, two-beat, one-bar, or two-bar loop snapped to the detected beat grid.</div>
+      <div class="loop-preset-grid">
+        <button class="loop-card" type="button" data-beats="1"><strong>1 Beat</strong><span>Quick drum pocket loop</span></button>
+        <button class="loop-card" type="button" data-beats="2"><strong>2 Beats</strong><span>Short rhythmic cell</span></button>
+        <button class="loop-card" type="button" data-beats="4"><strong>1 Bar</strong><span>Standard four-count loop</span></button>
+        <button class="loop-card" type="button" data-beats="8"><strong>2 Bars</strong><span>Wider phrase capture</span></button>
+        <button class="loop-card" type="button" data-beats="16"><strong>4 Bars</strong><span>Phrase-length groove isolate</span></button>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      <div class="field">
+        <label>Track Title</label>
+        <input type="text" id="metaTitle" placeholder="Song name">
+      </div>
+      <div class="field">
+        <label>Artist</label>
+        <input type="text" id="metaArtist" placeholder="Artist name">
+      </div>
+      <div class="field">
+        <label>Album</label>
+        <input type="text" id="metaAlbum" placeholder="Album title">
+      </div>
+      <div class="field">
+        <label>Year</label>
+        <input type="text" id="metaYear" placeholder="2026">
+      </div>
+    </div>
+
+    <div class="tool-row">
+      <div>
+        <div class="section-label">Sound direction labels</div>
+        <div class="section-title">Context kits for fast creative framing</div>
+        <div class="section-copy">These labels do not change the uploaded song audio. They help you annotate the loop feel while you isolate a pocket or groove.</div>
+        <div class="kits-grid">
+          <button class="kit-btn active" type="button" data-kit="none"><strong>No Kit</strong><span>Neutral analysis mode.</span></button>
+          <button class="kit-btn" type="button" data-kit="afrobeats"><strong>Afrobeats</strong><span>Groove-forward syncopation.</span></button>
+          <button class="kit-btn" type="button" data-kit="trap"><strong>Trap</strong><span>808 energy and hat detail.</span></button>
+          <button class="kit-btn" type="button" data-kit="hiphop"><strong>Hip-Hop</strong><span>Pocket, swing, and knock.</span></button>
+        </div>
+      </div>
+      <div class="helper-card">
+        <h4>How to use it</h4>
+        <ul>
+          <li>Upload a song and click <strong>Analyze Track</strong>.</li>
+          <li>Wait for BPM and beat markers to appear.</li>
+          <li>Click the waveform or drag a region.</li>
+          <li>Use a loop preset or resize the region.</li>
+          <li>Keep <strong>Snap To Beat</strong> on for beat-locked loops.</li>
+        </ul>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <p class="footer-note">Keyboard shortcuts: <strong>Space</strong> play/pause, <strong>L</strong> loop region, <strong>S</strong> snap on/off, <strong>[</strong> and <strong>]</strong> jump to previous/next beat, <strong>T</strong> open/close Studio. Loop replay now uses a dedicated monitor for tighter repeats, and live visuals pulse in your teal and coral brand colors.</p>
+
+  <div class="toast" id="toast"></div>
+  <input type="file" id="audioInput" accept="audio/*" class="hidden">
+  <input type="file" id="imgInput" accept="image/*" class="hidden">
+
+  <script type="module">
+    import WaveSurfer from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/wavesurfer.esm.js';
+    import RegionsPlugin from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/plugins/regions.esm.js';
+    import TimelinePlugin from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/plugins/timeline.esm.js';
+
+    let wavesurfer;
+    let regionsPlugin;
+    let audioFile = null;
+    let currentAudioUrl = null;
+    let currentImgUrl = null;
+    let audioBuffer = null;
+    let beatTimes = [];
+    let detectedBpm = null;
+    let snapEnabled = true;
+    let loopEnabled = false;
+    let activeRegion = null;
+    let regionSnapLock = false;
+    let zoomLevel = 80;
+    let selectedKit = 'none';
+    let mediaElement = null;
+    let audioCtx = null;
+    let analyser = null;
+    let sourceNode = null;
+    let visualFrame = null;
+    let loopFrame = null;
+    let visualData = null;
+    let visualDataTime = null;
+    const studioStorageKey = 'vv_stage_mode_studio_open';
+    const rememberStudioState = false;
+    const rememberCleanState = false;
+
+    const els = {
+      playBtn: document.getElementById('playBtn'),
+      focusPlayBtn: document.getElementById('focusPlayBtn'),
+      focusDetailsBtn: document.getElementById('focusDetailsBtn'),
+      viewTab: document.getElementById('viewTab'),
+      analyzeBtn: document.getElementById('analyzeBtn'),
+      snapBtn: document.getElementById('snapBtn'),
+      loopBtn: document.getElementById('loopBtn'),
+      clearLoopBtn: document.getElementById('clearLoopBtn'),
+      zoomInBtn: document.getElementById('zoomInBtn'),
+      zoomOutBtn: document.getElementById('zoomOutBtn'),
+      barLoopBtn: document.getElementById('barLoopBtn'),
+      twoBarLoopBtn: document.getElementById('twoBarLoopBtn'),
+      bpmValue: document.getElementById('bpmValue'),
+      beatCount: document.getElementById('beatCount'),
+      loopValue: document.getElementById('loopValue'),
+      loopMode: document.getElementById('loopMode'),
+      beatOverlay: document.getElementById('beatOverlay'),
+      albumImg: document.getElementById('albumImg'),
+      artPlaceholder: document.getElementById('artPlaceholder'),
+      artZone: document.getElementById('artZone'),
+      loopBadge: document.getElementById('loopBadge'),
+      dispTitle: document.getElementById('dispTitle'),
+      dispArtist: document.getElementById('dispArtist'),
+      dispAlbum: document.getElementById('dispAlbum'),
+      focusTitle: document.getElementById('focusTitle'),
+      focusSub: document.getElementById('focusSub'),
+      smartSummary: document.getElementById('smartSummary'),
+      analysisStory: document.getElementById('analysisStory'),
+      liveVisuals: document.getElementById('liveVisuals'),
+      studioTab: document.getElementById('studioTab'),
+      studioClose: document.getElementById('studioClose'),
+      studioJacket: document.getElementById('studioJacket'),
+      metaTitle: document.getElementById('metaTitle'),
+      metaArtist: document.getElementById('metaArtist'),
+      metaAlbum: document.getElementById('metaAlbum'),
+      metaYear: document.getElementById('metaYear')
+    };
+
+    function initWaveSurfer(){
+      regionsPlugin = RegionsPlugin.create();
+      const timeline = TimelinePlugin.create({ container: '#timeline', timeInterval: 1, primaryLabelInterval: 5 });
+      wavesurfer = WaveSurfer.create({
+        container: '#waveform',
+        waveColor: 'rgba(141,185,185,0.50)',
+        progressColor: '#00d0d0',
+        cursorColor: '#ffc857',
+        cursorWidth: 2,
+        barWidth: 2,
+        barGap: 1,
+        barRadius: 2,
+        height: 150,
+        minPxPerSec: zoomLevel,
+        autoScroll: true,
+        hideScrollbar: false,
+        normalize: true,
+        plugins: [regionsPlugin, timeline]
+      });
+
+      mediaElement = wavesurfer.getMediaElement();
+
+      wavesurfer.on('play', async ()=> {
+        updatePlayButtons(true);
+        await ensureAudioAnalysis();
+        startLiveVisuals();
+        startLoopMonitor();
+      });
+      wavesurfer.on('pause', ()=> {
+        updatePlayButtons(false);
+        stopLiveVisuals();
+        stopLoopMonitor();
+      });
+      wavesurfer.on('finish', ()=> {
+        updatePlayButtons(false);
+        stopLiveVisuals();
+        stopLoopMonitor();
+      });
+      wavesurfer.on('decode', ()=> renderBeatMarkers());
+      wavesurfer.on('interaction', ()=> updateLoopReadout());
+      wavesurfer.on('click', ()=> updateLoopReadout());
+
+      regionsPlugin.enableDragSelection({ color: 'rgba(0,208,208,0.14)' });
+
+      regionsPlugin.on('region-created', (region)=>{
+        if (activeRegion && region.id !== activeRegion.id) activeRegion.remove();
+        activeRegion = region;
+        snapRegion(region, true);
+        attachRegionHandlers(region);
+        updateLoopReadout();
+        showToast('Loop region ready');
+      });
+    }
+
+    function attachRegionHandlers(region){
+      region.on('update-end', ()=>{
+        snapRegion(region, false);
+        activeRegion = region;
+        updateLoopReadout();
+      });
+      region.on('remove', ()=>{
+        if (activeRegion && activeRegion.id === region.id) activeRegion = null;
+        updateLoopReadout();
+      });
+      region.on('click', (e)=>{ e.stopPropagation(); activeRegion = region; updateLoopReadout(); });
+    }
+
+    function formatTime(seconds){
+      if (!isFinite(seconds)) return '0:00';
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return mins + ':' + String(secs).padStart(2,'0');
+    }
+
+    function updateMeta(){
+      const title = els.metaTitle.value || 'Upload a track to begin';
+      const artist = els.metaArtist.value || 'Artist Name';
+      const album = els.metaAlbum.value || 'Album';
+      const year = els.metaYear.value || 'Year';
+      els.dispTitle.textContent = title;
+      els.dispArtist.textContent = artist;
+      const albumLine = album + (year ? ' · ' + year : '');
+      els.dispAlbum.textContent = albumLine;
+      els.focusTitle.textContent = title;
+      els.focusSub.textContent = artist + ' · ' + albumLine;
+    }
+
+    function updatePlayButtons(isPlaying){
+      const label = isPlaying ? 'Pause' : 'Play';
+      els.playBtn.textContent = label;
+      els.focusPlayBtn.textContent = label;
+    }
+
+    async function ensureAudioAnalysis(){
+      if (!wavesurfer) return;
+      mediaElement = mediaElement || wavesurfer.getMediaElement();
+      if (!mediaElement) return;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') await audioCtx.resume();
+      if (!sourceNode) {
+        sourceNode = audioCtx.createMediaElementSource(mediaElement);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        analyser.smoothingTimeConstant = 0.85;
+        sourceNode.connect(analyser);
+        analyser.connect(audioCtx.destination);
+        visualData = new Uint8Array(analyser.frequencyBinCount);
+        visualDataTime = new Uint8Array(analyser.fftSize);
+      }
+    }
+
+    function startLiveVisuals(){
+      if (!analyser || visualFrame) return;
+      els.artZone.classList.add('visuals-on');
+      const canvas = els.liveVisuals;
+      const ctx = canvas.getContext('2d');
+
+      const draw = () => {
+        visualFrame = requestAnimationFrame(draw);
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        if (canvas.width !== Math.round(rect.width * devicePixelRatio) || canvas.height !== Math.round(rect.height * devicePixelRatio)) {
+          canvas.width = Math.round(rect.width * devicePixelRatio);
+          canvas.height = Math.round(rect.height * devicePixelRatio);
+        }
+        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        analyser.getByteFrequencyData(visualData);
+        analyser.getByteTimeDomainData(visualDataTime);
+
+        const w = rect.width;
+        const h = rect.height;
+        const centerY = h * 0.78;
+        const bars = 48;
+        const step = Math.max(1, Math.floor(visualData.length / bars));
+        const barW = w / bars;
+
+        const glowGrad = ctx.createRadialGradient(w * 0.5, h * 0.72, 10, w * 0.5, h * 0.72, w * 0.38);
+        glowGrad.addColorStop(0, 'rgba(0,208,208,0.18)');
+        glowGrad.addColorStop(0.55, 'rgba(232,98,74,0.10)');
+        glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = glowGrad;
+        ctx.fillRect(0, 0, w, h);
+
+        for (let i = 0; i < bars; i++) {
+          const v = visualData[i * step] / 255;
+          const barH = Math.max(3, v * h * 0.34);
+          const x = i * barW;
+          const grad = ctx.createLinearGradient(0, centerY - barH, 0, centerY + 2);
+          grad.addColorStop(0, i % 2 === 0 ? 'rgba(0,208,208,0.95)' : 'rgba(232,98,74,0.92)');
+          grad.addColorStop(1, 'rgba(255,255,255,0.10)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(x + 1, centerY - barH, Math.max(barW - 3, 2), barH);
+        }
+
+        ctx.beginPath();
+        ctx.lineWidth = 2.2;
+        for (let i = 0; i < visualDataTime.length; i++) {
+          const x = (i / (visualDataTime.length - 1)) * w;
+          const y = h * 0.48 + ((visualDataTime[i] - 128) / 128) * h * 0.12;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = 'rgba(0,208,208,0.65)';
+        ctx.shadowColor = 'rgba(0,208,208,0.35)';
+        ctx.shadowBlur = 14;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.lineWidth = 1.4;
+        for (let i = 0; i < visualDataTime.length; i++) {
+          const x = (i / (visualDataTime.length - 1)) * w;
+          const y = h * 0.56 + ((visualDataTime[i] - 128) / 128) * h * 0.08;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = 'rgba(232,98,74,0.52)';
+        ctx.shadowColor = 'rgba(232,98,74,0.28)';
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      };
+
+      draw();
+    }
+
+    function stopLiveVisuals(){
+      if (visualFrame) cancelAnimationFrame(visualFrame);
+      visualFrame = null;
+      const canvas = els.liveVisuals;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      els.artZone.classList.remove('visuals-on');
+    }
+
+    function startLoopMonitor(){
+      if (loopFrame) cancelAnimationFrame(loopFrame);
+      const tick = () => {
+        loopFrame = requestAnimationFrame(tick);
+        if (!loopEnabled || !activeRegion || !mediaElement || mediaElement.paused) return;
+        const threshold = Math.max(0.03, estimateBeatSpacing() * 0.12);
+        if (mediaElement.currentTime >= activeRegion.end - threshold) {
+          mediaElement.currentTime = activeRegion.start;
+          if (wavesurfer && typeof wavesurfer.setTime === 'function') wavesurfer.setTime(activeRegion.start);
+          if (typeof mediaElement.play === 'function') mediaElement.play();
+        }
+      };
+      tick();
+    }
+
+    function stopLoopMonitor(){
+      if (loopFrame) cancelAnimationFrame(loopFrame);
+      loopFrame = null;
+    }
+
+    async function handleAudioUpload(file){
+      if (!file) return;
+      audioFile = file;
+      if (currentAudioUrl) URL.revokeObjectURL(currentAudioUrl);
+      currentAudioUrl = URL.createObjectURL(file);
+      wavesurfer.load(currentAudioUrl);
+      stopLoopMonitor();
+      stopLiveVisuals();
+      beatTimes = [];
+      detectedBpm = null;
+      audioBuffer = null;
+      clearLoop();
+      els.bpmValue.textContent = '--';
+      els.beatCount.textContent = '0';
+      els.analysisStory.textContent = 'Track loaded. Click Analyze Track to detect BPM and generate beat markers.';
+      els.smartSummary.textContent = 'Ready for analysis. After beat detection, create a loop region that snaps to the nearest beats.';
+      renderBeatMarkers();
+      populateMetadataFromFileName(file.name);
+      showToast('Track loaded');
+    }
+
+    function populateMetadataFromFileName(name){
+      const cleaned = name.replace(/\.[^/.]+$/, '');
+      if (!els.metaTitle.value) els.metaTitle.value = cleaned;
+      updateMeta();
+    }
+
+    async function analyzeTrack(){
+      if (!audioFile) {
+        document.getElementById('audioInput').click();
+        return;
+      }
+      els.analyzeBtn.textContent = 'Analyzing…';
+      els.analyzeBtn.disabled = true;
+      try {
+        const arrayBuffer = await audioFile.arrayBuffer();
+        const context = new (window.AudioContext || window.webkitAudioContext)();
+        audioBuffer = await context.decodeAudioData(arrayBuffer.slice(0));
+        await context.close();
+        const result = detectBeatGrid(audioBuffer);
+        beatTimes = result.beats;
+        detectedBpm = result.bpm;
+        els.bpmValue.textContent = detectedBpm ? String(detectedBpm) : '--';
+        els.beatCount.textContent = String(beatTimes.length);
+        els.analysisStory.textContent = detectedBpm
+          ? `Beat analysis found an estimated tempo of ${detectedBpm} BPM with ${beatTimes.length} snap markers across the waveform.`
+          : 'Analysis could not lock a confident BPM. You can still use manual regions and waveform looping.';
+        els.smartSummary.textContent = detectedBpm
+          ? 'Detected beat markers are now available. Drag a region or use a loop preset and it will snap to the nearest beat boundaries.'
+          : 'No confident BPM was found. Try a different track or create a manual loop region without snap.';
+        renderBeatMarkers();
+        showToast(detectedBpm ? 'Beat grid detected' : 'Analysis finished with low confidence');
+      } catch (err) {
+        console.error(err);
+        showToast('Analysis failed');
+      } finally {
+        els.analyzeBtn.textContent = 'Analyze Track';
+        els.analyzeBtn.disabled = false;
+      }
+    }
+
+    function detectBeatGrid(buffer){
+      const left = buffer.getChannelData(0);
+      const right = buffer.numberOfChannels > 1 ? buffer.getChannelData(1) : null;
+      const length = buffer.length;
+      const sampleRate = buffer.sampleRate;
+      const mono = new Float32Array(length);
+      for (let i = 0; i < length; i++) mono[i] = right ? (left[i] + right[i]) * 0.5 : left[i];
+
+      const frameSize = 1024;
+      const hopSize = 512;
+      const energies = [];
+      let prev = 0;
+      for (let i = 0; i + frameSize < mono.length; i += hopSize) {
+        let energy = 0;
+        for (let j = 0; j < frameSize; j++) {
+          const s = mono[i + j];
+          energy += s * s;
+        }
+        energy = Math.sqrt(energy / frameSize);
+        const flux = Math.max(0, energy - prev);
+        energies.push({ time: i / sampleRate, energy, flux });
+        prev = energy * 0.88 + prev * 0.12;
+      }
+
+      const fluxVals = energies.map(e => e.flux);
+      const avgFlux = fluxVals.reduce((a,b)=>a+b,0) / Math.max(1, fluxVals.length);
+      const peaks = [];
+      for (let i = 2; i < energies.length - 2; i++) {
+        const cur = energies[i];
+        if (cur.flux > avgFlux * 1.35 && cur.flux >= energies[i-1].flux && cur.flux > energies[i+1].flux) {
+          if (!peaks.length || cur.time - peaks[peaks.length - 1].time > 0.14) peaks.push(cur);
+        }
+      }
+
+      const peakTimes = peaks.map(p => p.time);
+      const histogram = new Map();
+      for (let i = 0; i < peakTimes.length; i++) {
+        for (let j = i + 1; j < Math.min(i + 10, peakTimes.length); j++) {
+          const interval = peakTimes[j] - peakTimes[i];
+          if (interval < 0.2 || interval > 2.5) continue;
+          let bpm = 60 / interval;
+          while (bpm < 70) bpm *= 2;
+          while (bpm > 180) bpm /= 2;
+          const rounded = Math.round(bpm);
+          const score = 1 / (j - i);
+          histogram.set(rounded, (histogram.get(rounded) || 0) + score);
+        }
+      }
+
+      let bestBpm = null;
+      let bestScore = -1;
+      histogram.forEach((score, bpm) => {
+        if (score > bestScore) { bestScore = score; bestBpm = bpm; }
+      });
+      if (!bestBpm) return { bpm: null, beats: [] };
+
+      const beatPeriod = 60 / bestBpm;
+      let anchor = peakTimes.find(t => t > 0.2) || 0;
+      if (peakTimes.length) {
+        let bestAnchor = anchor;
+        let bestAnchorScore = -1;
+        for (const t of peakTimes.slice(0, 24)) {
+          let score = 0;
+          for (let n = 1; n <= 8; n++) {
+            const target = t + n * beatPeriod;
+            const near = nearestPeak(target, peakTimes, 0.09);
+            if (near !== null) score += 1;
+          }
+          if (score > bestAnchorScore) { bestAnchorScore = score; bestAnchor = t; }
+        }
+        anchor = bestAnchor;
+      }
+
+      const beats = [];
+      for (let t = anchor; t <= buffer.duration + beatPeriod; t += beatPeriod) {
+        const near = nearestPeak(t, peakTimes, 0.08);
+        beats.push(clamp(near !== null ? near : t, 0, buffer.duration));
+      }
+      for (let t = anchor - beatPeriod; t >= 0; t -= beatPeriod) {
+        const near = nearestPeak(t, peakTimes, 0.08);
+        beats.push(clamp(near !== null ? near : t, 0, buffer.duration));
+      }
+
+      const normalized = Array.from(new Set(beats.map(t => Number(t.toFixed(3))))).sort((a,b)=>a-b);
+      return { bpm: bestBpm, beats: normalized };
+    }
+
+    function nearestPeak(target, peaks, tolerance){
+      let best = null;
+      let bestDiff = Infinity;
+      for (let i = 0; i < peaks.length; i++) {
+        const diff = Math.abs(peaks[i] - target);
+        if (diff < bestDiff) { bestDiff = diff; best = peaks[i]; }
+      }
+      return bestDiff <= tolerance ? best : null;
+    }
+
+    function clamp(val, min, max){ return Math.max(min, Math.min(max, val)); }
+
+    function renderBeatMarkers(){
+      const overlay = els.beatOverlay;
+      overlay.innerHTML = '';
+      const duration = wavesurfer && wavesurfer.getDuration ? wavesurfer.getDuration() : 0;
+      if (!duration || !beatTimes.length) return;
+      beatTimes.forEach((time, index) => {
+        const line = document.createElement('div');
+        line.className = 'beat-line' + (index % 4 === 0 ? ' bar' : '');
+        line.style.left = (time / duration * 100) + '%';
+        if (activeRegion && Math.abs(time - activeRegion.start) < 0.02) line.classList.add('anchor');
+        overlay.appendChild(line);
+      });
+    }
+
+    function togglePlay(){
+      if (!currentAudioUrl) {
+        document.getElementById('audioInput').click();
+        return;
+      }
+      wavesurfer.playPause();
+    }
+
+    function toggleSnap(){
+      snapEnabled = !snapEnabled;
+      els.snapBtn.classList.toggle('active', snapEnabled);
+      els.loopMode.textContent = snapEnabled ? 'Snap On' : 'Snap Off';
+      showToast(snapEnabled ? 'Snap to beat on' : 'Snap to beat off');
+      if (activeRegion && snapEnabled) snapRegion(activeRegion, true);
+    }
+
+    function toggleLoop(){
+      loopEnabled = !loopEnabled;
+      if (loopEnabled && !activeRegion) {
+        loopEnabled = false;
+        showToast('Create a region first');
+        return;
+      }
+      els.loopBtn.classList.toggle('active', loopEnabled);
+      els.loopBadge.textContent = loopEnabled ? '🔁 Loop On' : '🔁 Loop Off';
+      if (loopEnabled && wavesurfer && wavesurfer.isPlaying && wavesurfer.isPlaying()) startLoopMonitor();
+      if (!loopEnabled) stopLoopMonitor();
+      showToast(loopEnabled ? 'Loop enabled' : 'Loop disabled');
+    }
+
+    function clearLoop(){
+      if (activeRegion) activeRegion.remove();
+      activeRegion = null;
+      loopEnabled = false;
+      stopLoopMonitor();
+      els.loopBtn.classList.remove('active');
+      els.loopBadge.textContent = '🔁 Loop Off';
+      updateLoopReadout();
+      renderBeatMarkers();
+    }
+
+    function updateLoopReadout(){
+      if (activeRegion) {
+        els.loopValue.textContent = `${formatTime(activeRegion.start)} → ${formatTime(activeRegion.end)}`;
+      } else {
+        els.loopValue.textContent = 'None';
+      }
+      if (loopEnabled && wavesurfer && wavesurfer.isPlaying && wavesurfer.isPlaying()) startLoopMonitor();
+      renderBeatMarkers();
+    }
+
+    function snapTimeToBeat(time){
+      if (!snapEnabled || !beatTimes.length) return time;
+      let best = beatTimes[0];
+      let bestDiff = Math.abs(best - time);
+      for (const beat of beatTimes) {
+        const diff = Math.abs(beat - time);
+        if (diff < bestDiff) { bestDiff = diff; best = beat; }
+      }
+      return best;
+    }
+
+    function snapRegion(region, forceMinBeat){
+      if (!region || regionSnapLock || !snapEnabled || !beatTimes.length) return;
+      regionSnapLock = true;
+      let start = snapTimeToBeat(region.start);
+      let end = snapTimeToBeat(region.end);
+      const beatSpacing = estimateBeatSpacing();
+      if (forceMinBeat && end <= start) end = clamp(start + beatSpacing, start + 0.05, wavesurfer.getDuration());
+      if (end <= start + 0.04) end = clamp(start + beatSpacing, start + 0.05, wavesurfer.getDuration());
+      region.setOptions({ start, end });
+      setTimeout(()=>{ regionSnapLock = false; }, 0);
+    }
+
+    function estimateBeatSpacing(){
+      if (beatTimes.length < 2) return detectedBpm ? 60 / detectedBpm : 0.5;
+      const diffs = [];
+      for (let i = 1; i < Math.min(beatTimes.length, 16); i++) diffs.push(beatTimes[i] - beatTimes[i-1]);
+      const avg = diffs.reduce((a,b)=>a+b,0) / diffs.length;
+      return avg || 0.5;
+    }
+
+    function nearestBeatIndex(time){
+      if (!beatTimes.length) return -1;
+      let bestIdx = 0;
+      let bestDiff = Math.abs(beatTimes[0] - time);
+      for (let i = 1; i < beatTimes.length; i++) {
+        const diff = Math.abs(beatTimes[i] - time);
+        if (diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+      }
+      return bestIdx;
+    }
+
+    function createLoopFromAnchor(beatLength){
+      if (!wavesurfer || !currentAudioUrl) return;
+      if (!beatTimes.length) {
+        showToast('Analyze the track first');
+        return;
+      }
+      const now = wavesurfer.getCurrentTime();
+      const idx = nearestBeatIndex(now);
+      const start = beatTimes[Math.max(0, idx)];
+      const endIdx = Math.min(beatTimes.length - 1, idx + beatLength);
+      let end = beatTimes[endIdx];
+      if (end <= start) end = clamp(start + estimateBeatSpacing() * beatLength, start + 0.05, wavesurfer.getDuration());
+      if (activeRegion) activeRegion.remove();
+      activeRegion = regionsPlugin.addRegion({ start, end, color: 'rgba(0,208,208,0.16)', drag: true, resize: true });
+      loopEnabled = true;
+      els.loopBtn.classList.add('active');
+      els.loopBadge.textContent = '🔁 Loop On';
+      updateLoopReadout();
+      showToast(`Looped ${beatLength} beat${beatLength > 1 ? 's' : ''}`);
+    }
+
+    function createBarLoop(barCount){
+      createLoopFromAnchor(barCount * 4);
+    }
+
+    function focusWaveform(){
+      document.getElementById('waveSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function jumpToAdjacentBeat(direction){
+      if (!beatTimes.length) return;
+      const now = wavesurfer.getCurrentTime();
+      const idx = nearestBeatIndex(now);
+      const targetIdx = clamp(idx + direction, 0, beatTimes.length - 1);
+      wavesurfer.setTime(beatTimes[targetIdx]);
+      updateLoopReadout();
+    }
+
+    function selectKit(key){
+      selectedKit = key;
+      document.querySelectorAll('.kit-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.kit === key));
+      const labels = {
+        none: 'Neutral analysis mode keeps the focus on waveform timing and loop precision.',
+        afrobeats: 'Afrobeats framing highlights syncopated groove pockets and dance-forward rhythmic motion.',
+        trap: 'Trap framing helps you isolate 808-driven rhythmic pockets, rolls, and dark-space transitions.',
+        hiphop: 'Hip-Hop framing helps you focus on knock, swing, and bar-based loop feel.'
+      };
+      els.smartSummary.textContent = (labels[key] || labels.none) + ' Live visuals now pulse in your teal and coral brand colors while the track plays.';
+    }
+
+    function setStudioOpen(open){
+      document.body.classList.toggle('studio-open', open);
+      els.studioTab.textContent = open ? 'Hide Studio' : 'Studio';
+      els.studioTab.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (rememberStudioState) localStorage.setItem(studioStorageKey, open ? '1' : '0');
+    }
+
+    function toggleStudio(){
+      setStudioOpen(!document.body.classList.contains('studio-open'));
+    }
+
+    function restoreStudioState(){
+      if (!rememberStudioState) {
+        setStudioOpen(false);
+        return;
+      }
+      const saved = localStorage.getItem(studioStorageKey);
+      setStudioOpen(saved === '1');
+    }
+
+    function setCleanView(open){
+      document.body.classList.toggle('clean-view', open);
+      els.viewTab.textContent = open ? 'Details' : 'Stage';
+      els.viewTab.setAttribute('aria-pressed', open ? 'true' : 'false');
+      els.focusDetailsBtn.textContent = open ? 'Details' : 'Stage';
+      if (!open && document.body.classList.contains('studio-open')) setStudioOpen(false);
+      if (rememberCleanState) localStorage.setItem('vv_stage_edge_clean', open ? '1' : '0');
+    }
+
+    function toggleCleanView(){
+      setCleanView(!document.body.classList.contains('clean-view'));
+    }
+
+    function restoreCleanView(){
+      if (!rememberCleanState) {
+        setCleanView(true);
+        return;
+      }
+      const saved = localStorage.getItem('vv_stage_edge_clean');
+      setCleanView(saved !== '0');
+    }
+
+    function showToast(message){
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(()=>toast.classList.remove('show'), 1900);
+    }
+
+    function handleImageUpload(file){
+      if (!file) return;
+      if (currentImgUrl) URL.revokeObjectURL(currentImgUrl);
+      currentImgUrl = URL.createObjectURL(file);
+      els.albumImg.src = currentImgUrl;
+      els.albumImg.classList.add('loaded');
+      els.artPlaceholder.classList.add('hidden');
+      els.artZone.classList.add('glide');
+      showToast('Artwork updated');
+    }
+
+    document.getElementById('audioInput').addEventListener('change', (e)=> handleAudioUpload(e.target.files[0]));
+    document.getElementById('imgInput').addEventListener('change', (e)=> handleImageUpload(e.target.files[0]));
+    els.studioTab.addEventListener('click', toggleStudio);
+    els.studioClose.addEventListener('click', ()=> setStudioOpen(false));
+    els.viewTab.addEventListener('click', toggleCleanView);
+    els.focusDetailsBtn.addEventListener('click', toggleCleanView);
+    els.playBtn.addEventListener('click', togglePlay);
+    els.focusPlayBtn.addEventListener('click', togglePlay);
+    els.analyzeBtn.addEventListener('click', analyzeTrack);
+    els.snapBtn.addEventListener('click', toggleSnap);
+    els.loopBtn.addEventListener('click', toggleLoop);
+    els.clearLoopBtn.addEventListener('click', clearLoop);
+    els.zoomInBtn.addEventListener('click', ()=>{ zoomLevel = Math.min(260, zoomLevel + 30); wavesurfer.zoom(zoomLevel); renderBeatMarkers(); });
+    els.zoomOutBtn.addEventListener('click', ()=>{ zoomLevel = Math.max(20, zoomLevel - 30); wavesurfer.zoom(zoomLevel); renderBeatMarkers(); });
+    els.barLoopBtn.addEventListener('click', ()=> createBarLoop(1));
+    els.twoBarLoopBtn.addEventListener('click', ()=> createBarLoop(2));
+    document.querySelectorAll('.loop-card').forEach(btn => btn.addEventListener('click', ()=> createLoopFromAnchor(Number(btn.dataset.beats))));
+    document.querySelectorAll('.kit-btn').forEach(btn => btn.addEventListener('click', ()=> selectKit(btn.dataset.kit)));
+    [els.metaTitle, els.metaArtist, els.metaAlbum, els.metaYear].forEach(input => input.addEventListener('input', updateMeta));
+
+    document.addEventListener('keydown', (e)=>{
+      const tag = document.activeElement && document.activeElement.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+      else if (e.key.toLowerCase() === 'l') toggleLoop();
+      else if (e.key.toLowerCase() === 's') toggleSnap();
+      else if (e.key === '[') jumpToAdjacentBeat(-1);
+      else if (e.key === ']') jumpToAdjacentBeat(1);
+      else if (e.key.toLowerCase() === 't') toggleStudio();
+      else if (e.key.toLowerCase() === 'd') toggleCleanView();
+      else if (e.key === 'Escape' && document.body.classList.contains('studio-open')) setStudioOpen(false);
+    });
+
+    document.getElementById('waveform').addEventListener('dragover', (e)=> e.preventDefault());
+    document.getElementById('waveform').addEventListener('drop', (e)=>{
+      e.preventDefault();
+      const file = Array.from(e.dataTransfer.files || []).find(f => f.type.startsWith('audio/'));
+      if (file) handleAudioUpload(file);
+    });
+    document.getElementById('artZone').addEventListener('dragover', (e)=> e.preventDefault());
+    document.getElementById('artZone').addEventListener('drop', (e)=>{
+      e.preventDefault();
+      const file = Array.from(e.dataTransfer.files || []).find(f => f.type.startsWith('image/'));
+      if (file) handleImageUpload(file);
+    });
+
+    initWaveSurfer();
+    updateMeta();
+    updatePlayButtons(false);
+    els.loopMode.textContent = snapEnabled ? 'Snap On' : 'Snap Off';
+    selectKit('none');
+    restoreStudioState();
+    restoreCleanView();
+  </script>
+</body>
+</html>

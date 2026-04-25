@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voices & Vibes — Artist Player</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;700;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0a0a0a;min-height:100vh;font-family:'Montserrat',sans-serif;color:#fff}
+
+:root{
+  --teal:#009B9B;--teal-dark:#007A7A;--teal-light:#00C4C4;
+  --coral:#E8624A;--coral-light:#F07A62;
+  --black:#0a0a0a;--dark:#111;--card:#1a1a1a;
+  --muted:#8ab8b8;
+}
+
+body{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:2rem 1rem 3rem}
+
+/* ── HEADER ── */
+.site-header{
+  text-align:center;margin-bottom:2.5rem;
+}
+.site-logo{
+  font-family:'Dancing Script',cursive;font-size:2rem;font-weight:700;
+  background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;margin-bottom:0.2rem;
+}
+.site-tagline{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted)}
+
+/* ── MAIN CARD ── */
+.player-card{
+  width:100%;max-width:520px;
+  background:var(--card);
+  border:1px solid rgba(0,155,155,0.2);
+  overflow:hidden;position:relative;
+}
+
+/* ── ALBUM ART ZONE ── */
+.art-zone{
+  width:100%;aspect-ratio:1/1;max-height:340px;
+  position:relative;overflow:hidden;
+  background:#0d0d0d;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+}
+.art-zone img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 0.6s ease, filter 0.4s ease;
+  display:none;
+}
+.art-zone img.loaded{display:block}
+.art-zone.playing img{transform:scale(1.04);filter:brightness(0.85)}
+
+/* Art placeholder */
+.art-placeholder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1rem;position:absolute;inset:0;
+  background:linear-gradient(135deg,#0d1a1a,#1a0d0d);
+  transition:opacity 0.3s;
+}
+.art-placeholder.hidden{opacity:0;pointer-events:none}
+.art-placeholder .mic{font-size:4rem;opacity:0.4}
+.art-placeholder p{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);text-align:center;padding:0 2rem}
+.art-upload-btn{
+  background:rgba(0,155,155,0.15);border:1px solid rgba(0,155,155,0.4);
+  color:var(--teal);font-size:11px;font-weight:700;
+  letter-spacing:0.15em;text-transform:uppercase;
+  padding:8px 20px;cursor:pointer;font-family:'Montserrat',sans-serif;
+  transition:all 0.2s;
+}
+.art-upload-btn:hover{background:rgba(0,155,155,0.3)}
+
+/* Spinning vinyl overlay when playing */
+.vinyl-ring{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;opacity:0;transition:opacity 0.4s;
+}
+.art-zone.playing .vinyl-ring{opacity:1}
+.vinyl-circle{
+  width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,0,0,0.85) 30%,rgba(0,155,155,0.3) 31%,rgba(0,0,0,0.6) 60%,rgba(232,98,74,0.2) 61%,rgba(0,0,0,0.7) 100%);
+  border:2px solid rgba(0,155,155,0.3);
+  animation:spin 4s linear infinite;
+}
+.vinyl-center{
+  position:absolute;width:14px;height:14px;border-radius:50%;
+  background:var(--teal);box-shadow:0 0 12px rgba(0,155,155,0.6);
+}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* CANVAS VISUALIZER overlaid on art */
+#art-canvas{
+  position:absolute;bottom:0;left:0;right:0;height:80px;
+  opacity:0;transition:opacity 0.4s;pointer-events:none;
+}
+.art-zone.playing #art-canvas{opacity:1}
+
+/* Live badge on art */
+.art-live-badge{
+  position:absolute;top:1rem;left:1rem;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(232,98,74,0.85);color:#fff;
+  font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
+  padding:5px 12px;opacity:0;transition:opacity 0.3s;
+}
+.art-zone.playing .art-live-badge{opacity:1}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.1}}
+
+/* V&V watermark on art */
+.art-watermark{
+  position:absolute;bottom:0.75rem;right:1rem;
+  font-family:'Dancing Script',cursive;font-size:1rem;font-weight:700;
+  color:rgba(255,255,255,0.35);pointer-events:none;
+  opacity:0;transition:opacity 0.3s;
+}
+.art-zone.playing .art-watermark{opacity:1}
+
+/* ── TRACK INFO ── */
+.track-info{
+  padding:1.5rem 1.75rem 1.25rem;
+  border-bottom:1px solid rgba(0,155,155,0.08);
+}
+.track-station{
+  font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.4rem;font-weight:700;
+}
+.track-title{
+  font-size:1.15rem;font-weight:700;color:#fff;
+  margin-bottom:0.2rem;white-space:nowrap;overflow:hidden;
+}
+.track-title-scroll{display:inline-block}
+.track-title-scroll.scrolling{animation:tscroll 14s linear infinite}
+@keyframes tscroll{0%,15%{transform:translateX(0)}85%,100%{transform:translateX(-40%)}}
+.track-artist{font-size:13px;color:var(--muted);margin-bottom:0.1rem}
+.track-album{font-size:11px;color:rgba(138,184,184,0.5);font-style:italic}
+
+/* ── PROGRESS ── */
+.progress-section{padding:1rem 1.75rem 0.75rem}
+.progress-bar{
+  width:100%;height:4px;background:rgba(255,255,255,0.08);
+  cursor:pointer;border-radius:2px;position:relative;margin-bottom:0.5rem;
+}
+.progress-bar:hover .progress-fill{filter:brightness(1.2)}
+.progress-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(to right,var(--teal),var(--coral));
+  width:0%;transition:width 0.25s linear;pointer-events:none;
+}
+.progress-times{
+  display:flex;justify-content:space-between;
+  font-size:10px;color:var(--muted);letter-spacing:0.06em;
+}
+
+/* ── CONTROLS ── */
+.controls-section{
+  padding:0.75rem 1.75rem 1rem;
+  display:flex;align-items:center;justify-content:center;gap:1.25rem;
+}
+.ctrl-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);transition:color 0.2s,transform 0.15s;
+  font-size:1.1rem;padding:6px;
+}
+.ctrl-btn:hover{color:#fff;transform:scale(1.15)}
+.ctrl-btn.active{color:var(--teal)}
+.play-btn{
+  width:58px;height:58px;border-radius:50%;
+  background:var(--teal);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;color:var(--black);
+  box-shadow:0 0 28px rgba(0,155,155,0.4);
+  transition:background 0.2s,transform 0.15s;
+}
+.play-btn:hover{background:var(--teal-light);transform:scale(1.06)}
+.play-btn.playing{background:var(--coral);box-shadow:0 0 28px rgba(232,98,74,0.4)}
+.play-btn.playing:hover{background:var(--coral-light)}
+
+/* ── VOLUME ── */
+.vol-section{
+  padding:0 1.75rem 1.25rem;
+  display:flex;align-items:center;gap:0.75rem;
+}
+.vol-icon{font-size:14px;color:var(--muted);cursor:pointer}
+input[type=range]{
+  flex:1;height:3px;-webkit-appearance:none;appearance:none;
+  background:rgba(255,255,255,0.1);border-radius:2px;cursor:pointer;outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:13px;height:13px;border-radius:50%;
+  background:var(--teal);cursor:pointer;box-shadow:0 0 6px rgba(0,155,155,0.5);
+}
+input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;border:none;background:var(--teal)}
+.vol-pct{font-size:11px;color:var(--muted);min-width:32px;text-align:right}
+
+/* ── UPLOAD ZONE ── */
+.upload-section{
+  border-top:1px solid rgba(0,155,155,0.08);
+  padding:1.25rem 1.75rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;
+}
+.upload-btn{
+  display:flex;flex-direction:column;align-items:center;gap:0.4rem;
+  background:rgba(0,155,155,0.05);border:1px dashed rgba(0,155,155,0.25);
+  padding:1rem;cursor:pointer;transition:all 0.2s;text-align:center;
+}
+.upload-btn:hover{background:rgba(0,155,155,0.12);border-color:rgba(0,155,155,0.5)}
+.upload-btn.coral{background:rgba(232,98,74,0.05);border-color:rgba(232,98,74,0.25)}
+.upload-btn.coral:hover{background:rgba(232,98,74,0.12);border-color:rgba(232,98,74,0.5)}
+.upload-icon{font-size:1.4rem}
+.upload-label{font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--teal)}
+.upload-btn.coral .upload-label{color:var(--coral)}
+.upload-sub{font-size:10px;color:var(--muted)}
+
+/* ── TRACK META EDITOR ── */
+.meta-section{
+  border-top:1px solid rgba(0,155,155,0.08);
+  padding:1.25rem 1.75rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;
+}
+.meta-field label{
+  display:block;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.35rem;font-weight:700;
+}
+.meta-field input{
+  width:100%;background:rgba(0,155,155,0.05);
+  border:1px solid rgba(0,155,155,0.2);color:#fff;
+  font-family:'Montserrat',sans-serif;font-size:12px;
+  padding:8px 10px;outline:none;transition:border-color 0.2s;
+}
+.meta-field input:focus{border-color:var(--teal)}
+.meta-field input::placeholder{color:rgba(138,184,184,0.35)}
+
+/* ── FOOTER LINKS ── */
+.player-footer{
+  width:100%;max-width:520px;
+  display:flex;gap:0.75rem;margin-top:0.75rem;
+}
+.footer-link{
+  flex:1;text-align:center;padding:11px;
+  font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  text-decoration:none;transition:all 0.2s;
+}
+.footer-link.teal{background:var(--teal);color:var(--black)}
+.footer-link.teal:hover{background:var(--teal-light)}
+.footer-link.ghost{border:1px solid rgba(0,155,155,0.3);color:var(--teal)}
+.footer-link.ghost:hover{background:rgba(0,155,155,0.1)}
+
+/* ── FEATURE PILLS ── */
+.feature-pills{
+  display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;
+  margin-top:1.25rem;max-width:520px;
+}
+.pill{
+  font-size:9px;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;
+  padding:4px 12px;border:1px solid rgba(0,155,155,0.25);color:var(--muted);
+}
+
+/* DRAG OVER */
+.player-card.drag-over{border-color:var(--teal);box-shadow:0 0 30px rgba(0,155,155,0.2)}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <span class="site-logo">Voices & Vibes Radio</span>
+  <div class="site-tagline">Artist Spotlight Player</div>
+</div>
+
+<!-- PLAYER CARD -->
+<div class="player-card" id="playerCard">
+
+  <!-- ALBUM ART -->
+  <div class="art-zone" id="artZone">
+    <img id="albumImg" alt="Album Art">
+    <canvas id="art-canvas"></canvas>
+
+    <div class="art-placeholder" id="artPlaceholder">
+      <div class="mic">🎙️</div>
+      <p>Upload album art or drag & drop an image here</p>
+      <button class="art-upload-btn" onclick="document.getElementById('imgInput').click()">Choose Image</button>
+    </div>
+
+    <div class="vinyl-ring">
+      <div class="vinyl-circle"></div>
+      <div class="vinyl-center"></div>
+    </div>
+
+    <div class="art-live-badge"><span class="live-dot"></span> Now Playing</div>
+    <div class="art-watermark">Voices & Vibes Radio</div>
+  </div>
+
+  <!-- TRACK INFO -->
+  <div class="track-info">
+    <div class="track-station">🎙️ Voices & Vibes Radio · Artist Spotlight</div>
+    <div class="track-title"><span class="track-title-scroll" id="dispTitle">Upload a track to begin</span></div>
+    <div class="track-artist" id="dispArtist">Artist Name</div>
+    <div class="track-album" id="dispAlbum">Album · Year</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <div class="progress-bar" id="progressBar" onclick="seekTo(event)">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-times">
+      <span id="timeElapsed">0:00</span>
+      <span id="timeDuration">0:00</span>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls-section">
+    <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="Shuffle">🔀</button>
+    <button class="ctrl-btn" onclick="skipBack()" title="Back 10s">⏪</button>
+    <button class="play-btn" id="playBtn" onclick="togglePlay()">▶</button>
+    <button class="ctrl-btn" onclick="skipFwd()" title="Forward 10s">⏩</button>
+    <button class="ctrl-btn" id="loopBtn" onclick="toggleLoop()" title="Loop">🔁</button>
+  </div>
+
+  <!-- VOLUME -->
+  <div class="vol-section">
+    <span class="vol-icon" onclick="toggleMute()">🔈</span>
+    <input type="range" id="volSlider" min="0" max="100" value="80" oninput="setVolume(this.value)">
+    <span class="vol-pct" id="volPct">80%</span>
+  </div>
+
+  <!-- UPLOAD ZONE -->
+  <div class="upload-section">
+    <div class="upload-btn" onclick="document.getElementById('audioInput').click()">
+      <div class="upload-icon">🎵</div>
+      <div class="upload-label">Upload Track</div>
+      <div class="upload-sub">MP3, WAV, OGG</div>
+    </div>
+    <div class="upload-btn coral" onclick="document.getElementById('imgInput').click()">
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-label">Album Art</div>
+      <div class="upload-sub">JPG, PNG, WebP</div>
+    </div>
+  </div>
+
+  <!-- TRACK META -->
+  <div class="meta-section">
+    <div class="meta-field">
+      <label>Track Title</label>
+      <input type="text" id="metaTitle" placeholder="Song name" oninput="updateMeta()">
+    </div>
+    <div class="meta-field">
+      <label>Artist</label>
+      <input type="text" id="metaArtist" placeholder="Artist name" oninput="updateMeta()">
+    </div>
+    <div class="meta-field">
+      <label>Album</label>
+      <input type="text" id="metaAlbum" placeholder="Album title" oninput="updateMeta()">
+    </div>
+    <div class="meta-field">
+      <label>Year</label>
+      <input type="text" id="metaYear" placeholder="2024" oninput="updateMeta()">
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER LINKS -->
+<div class="player-footer">
+  <a href="https://hello.citrus3.com:2020/public/voicesandvibes" target="_blank" class="footer-link teal">🎙️ Full Live Stream</a>
+  <a href="https://voicesandvibesradio.com" target="_blank" class="footer-link ghost">Visit Site</a>
+</div>
+
+<div class="feature-pills">
+  <span class="pill">Real Audio Visualizer</span>
+  <span class="pill">Album Art</span>
+  <span class="pill">MP3 · WAV · OGG</span>
+  <span class="pill">voicesandvibesradio.com</span>
+</div>
+
+<!-- HIDDEN INPUTS -->
+<input type="file" id="audioInput" accept="audio/*" style="display:none" onchange="loadAudio(this)">
+<input type="file" id="imgInput" accept="image/*" style="display:none" onchange="loadImage(this)">
+
+<script>
+// ── AUDIO ENGINE ──
+let audio = new Audio();
+let audioCtx = null, analyser = null, source = null;
+let isPlaying = false, isLooping = false, isShuffled = false, isMuted = false;
+let animFrameId = null;
+let currentVolume = 0.80;
+
+audio.volume = currentVolume;
+audio.addEventListener('timeupdate', updateProgress);
+audio.addEventListener('ended', onEnded);
+audio.addEventListener('loadedmetadata', onMetaLoaded);
+
+function initAnalyser() {
+  if (audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  analyser = audioCtx.createAnalyser();
+  analyser.fftSize = 128;
+  analyser.smoothingTimeConstant = 0.82;
+  source = audioCtx.createMediaElementSource(audio);
+  source.connect(analyser);
+  analyser.connect(audioCtx.destination);
+}
+
+function loadAudio(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  audio.src = url;
+  audio.load();
+
+  // Try to auto-fill title from filename
+  const name = file.name.replace(/\.[^/.]+$/, '');
+  if (!document.getElementById('metaTitle').value) {
+    document.getElementById('metaTitle').value = name;
+    updateMeta();
+  }
+}
+
+function loadImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = document.getElementById('albumImg');
+  img.src = url;
+  img.classList.add('loaded');
+  document.getElementById('artPlaceholder').classList.add('hidden');
+}
+
+function onMetaLoaded() {
+  document.getElementById('timeDuration').textContent = formatTime(audio.duration);
+}
+
+function onEnded() {
+  if (isLooping) { audio.currentTime = 0; audio.play(); }
+  else { stopPlay(); }
+}
+
+async function togglePlay() {
+  if (!audio.src) { document.getElementById('audioInput').click(); return; }
+  initAnalyser();
+  if (audioCtx.state === 'suspended') await audioCtx.resume();
+
+  if (isPlaying) { stopPlay(); }
+  else {
+    audio.play();
+    isPlaying = true;
+    document.getElementById('playBtn').textContent = '⏸';
+    document.getElementById('playBtn').classList.add('playing');
+    document.getElementById('artZone').classList.add('playing');
+    drawVisualizer();
+  }
+}
+
+function stopPlay() {
+  audio.pause();
+  isPlaying = false;
+  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('playBtn').classList.remove('playing');
+  document.getElementById('artZone').classList.remove('playing');
+  cancelAnimationFrame(animFrameId);
+  clearCanvas();
+}
+
+function skipBack() { audio.currentTime = Math.max(0, audio.currentTime - 10); }
+function skipFwd()  { audio.currentTime = Math.min(audio.duration || 0, audio.currentTime + 10); }
+
+function toggleLoop() {
+  isLooping = !isLooping;
+  audio.loop = isLooping;
+  document.getElementById('loopBtn').classList.toggle('active', isLooping);
+}
+function toggleShuffle() {
+  isShuffled = !isShuffled;
+  document.getElementById('shuffleBtn').classList.toggle('active', isShuffled);
+}
+function toggleMute() {
+  isMuted = !isMuted;
+  audio.muted = isMuted;
+  document.getElementById('volIcon').textContent = isMuted ? '🔇' : '🔈';
+}
+
+function setVolume(val) {
+  currentVolume = val / 100;
+  audio.volume = currentVolume;
+  document.getElementById('volPct').textContent = val + '%';
+}
+
+function seekTo(e) {
+  if (!audio.duration) return;
+  const bar = e.currentTarget;
+  const rect = bar.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  audio.currentTime = pct * audio.duration;
+}
+
+function updateProgress() {
+  if (!audio.duration) return;
+  const pct = (audio.currentTime / audio.duration) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('timeElapsed').textContent = formatTime(audio.currentTime);
+}
+
+function formatTime(s) {
+  if (isNaN(s)) return '0:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ':' + String(sec).padStart(2, '0');
+}
+
+// ── CANVAS VISUALIZER on album art ──
+function drawVisualizer() {
+  if (!analyser) return;
+  const canvas = document.getElementById('art-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  const bufLen = analyser.frequencyBinCount;
+  const dataArr = new Uint8Array(bufLen);
+
+  function draw() {
+    animFrameId = requestAnimationFrame(draw);
+    analyser.getByteFrequencyData(dataArr);
+    canvas.width = canvas.offsetWidth;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Gradient fade from bottom
+    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    grad.addColorStop(0, 'rgba(0,155,155,0.9)');
+    grad.addColorStop(1, 'rgba(232,98,74,0.6)');
+
+    // Draw a floor gradient
+    const floor = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    floor.addColorStop(0, 'rgba(0,0,0,0)');
+    floor.addColorStop(1, 'rgba(0,0,0,0.6)');
+    ctx.fillStyle = floor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const barW = (canvas.width / bufLen) * 2.2;
+    let x = 0;
+    for (let i = 0; i < bufLen; i++) {
+      const barH = (dataArr[i] / 255) * canvas.height * 0.95;
+      // Alternate teal/coral
+      const c = i % 2 === 0 ? 'rgba(0,155,155,0.85)' : 'rgba(232,98,74,0.7)';
+      ctx.fillStyle = c;
+      ctx.fillRect(x, canvas.height - barH, barW - 1, barH);
+      x += barW + 1;
+    }
+  }
+  draw();
+}
+
+function clearCanvas() {
+  const canvas = document.getElementById('art-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// ── META ──
+function updateMeta() {
+  const title  = document.getElementById('metaTitle').value  || 'Upload a track to begin';
+  const artist = document.getElementById('metaArtist').value || 'Artist Name';
+  const album  = document.getElementById('metaAlbum').value  || 'Album';
+  const year   = document.getElementById('metaYear').value   || 'Year';
+
+  const el = document.getElementById('dispTitle');
+  el.textContent = title;
+  el.classList.toggle('scrolling', title.length > 28);
+
+  document.getElementById('dispArtist').textContent = artist;
+  document.getElementById('dispAlbum').textContent = album + (year ? ' · ' + year : '');
+}
+
+// ── DRAG & DROP audio OR image onto card ──
+const card = document.getElementById('playerCard');
+card.addEventListener('dragover', e => { e.preventDefault(); card.classList.add('drag-over'); });
+card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+card.addEventListener('drop', e => {
+  e.preventDefault();
+  card.classList.remove('drag-over');
+  const files = e.dataTransfer.files;
+  for (const f of files) {
+    if (f.type.startsWith('audio/')) {
+      const fakeInput = { files: [f] };
+      loadAudio(fakeInput);
+    } else if (f.type.startsWith('image/')) {
+      const fakeInput = { files: [f] };
+      loadImage(fakeInput);
+    }
+  }
+});
+
+// ── ART zone click to change image ──
+document.getElementById('artZone').addEventListener('click', e => {
+  if (e.target.classList.contains('art-upload-btn') || e.target.closest('.art-upload-btn')) return;
+  if (document.getElementById('albumImg').classList.contains('loaded')) {
+    document.getElementById('imgInput').click();
+  }
+});
+</script>
+</body>
+</html>

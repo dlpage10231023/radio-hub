@@ -1,0 +1,300 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.studio{background:#0a0a0a;padding:14px;font-family:'Montserrat',sans-serif;border-radius:8px}
+.hdr{background:#111;border:1px solid rgba(0,155,155,0.2);padding:8px 12px;
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.hdr-logo{font-size:13px;font-weight:700;color:#009B9B}
+.hdr-right{display:flex;gap:6px;align-items:center}
+.hdr-badge{font-size:7px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px}
+.hdr-badge.teal{background:rgba(0,155,155,0.15);border:1px solid #009B9B;color:#009B9B}
+.hdr-badge.coral{background:rgba(232,98,74,0.15);border:1px solid #E8624A;color:#E8624A}
+.tabs{display:flex;gap:2px;margin-bottom:8px}
+.tab{flex:1;padding:6px;text-align:center;font-size:8px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+  background:#1a1a1a;border:1px solid rgba(0,155,155,0.15);color:#5a9090}
+.tab.active{background:#009B9B;color:#000;border-color:#009B9B}
+.tab.coral.active{background:#E8624A;color:#000;border-color:#E8624A}
+.body{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.panel{background:#1a1a1a;border:1px solid rgba(0,155,155,0.2);padding:10px}
+.panel.full{grid-column:1/-1}
+.panel.coral{border-color:rgba(232,98,74,0.25)}
+.ptitle{font-size:8px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
+  color:#009B9B;margin-bottom:8px;padding-bottom:4px;
+  border-bottom:1px solid rgba(0,155,155,0.1);display:flex;align-items:center;gap:4px}
+.ptitle::before{content:'';width:4px;height:4px;border-radius:50%;background:#009B9B;flex-shrink:0}
+.ptitle.coral{color:#E8624A}
+.ptitle.coral::before{background:#E8624A}
+
+/* KIT TABS */
+.kit-row{display:flex;gap:3px;margin-bottom:8px}
+.kit-btn{flex:1;padding:4px;text-align:center;font-size:7px;font-weight:700;
+  letter-spacing:0.08em;text-transform:uppercase;
+  background:#0f1a1a;border:1px solid rgba(0,155,155,0.15);color:#5a9090;border-radius:2px}
+.kit-btn.active{background:rgba(0,155,155,0.2);border-color:#009B9B;color:#009B9B}
+
+/* SEQUENCER GRID */
+.seq{display:grid;grid-template-columns:40px repeat(16,1fr);gap:2px;margin-bottom:6px}
+.seq-lbl{font-size:6px;color:#5a9090;display:flex;align-items:center;text-transform:uppercase;letter-spacing:0.08em}
+.step{height:16px;background:#0f1818;border:1px solid rgba(0,155,155,0.1);border-radius:1px}
+.step.on{background:#009B9B;border-color:#00C4C4}
+.step.on.c{background:#E8624A;border-color:#F07A62}
+.step.on.a{background:#D4A830;border-color:#F0C840}
+.step.play{outline:2px solid rgba(255,255,255,0.4);outline-offset:-1px}
+
+/* VOICE RECORDER */
+.rec-mode-row{display:flex;gap:4px;margin-bottom:8px}
+.rec-mode{flex:1;padding:6px;text-align:center;border-radius:2px;cursor:pointer}
+.rec-mode.teal{background:rgba(0,155,155,0.1);border:1px solid rgba(0,155,155,0.3)}
+.rec-mode.coral{background:rgba(232,98,74,0.1);border:1px solid rgba(232,98,74,0.3)}
+.rec-mode-title{font-size:8px;font-weight:700;color:#fff;letter-spacing:0.08em;text-transform:uppercase}
+.rec-mode-sub{font-size:7px;color:#5a9090;margin-top:2px}
+.meter{height:8px;background:#0f1818;border:1px solid rgba(0,155,155,0.15);
+  border-radius:1px;margin-bottom:6px;position:relative;overflow:hidden}
+.meter-fill{height:100%;width:45%;background:linear-gradient(to right,#009B9B,#00C4C4 60%,#ffdd44 80%,#E8624A)}
+.waveform{height:32px;background:#0f1818;border:1px solid rgba(0,155,155,0.1);
+  display:flex;align-items:center;gap:1px;padding:4px;margin-bottom:6px}
+.wave-bar{flex:1;background:#009B9B;opacity:0.7;border-radius:1px}
+
+/* CLIPS */
+.clip{background:#0f1818;border:1px solid rgba(0,155,155,0.12);
+  padding:6px;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.clip-art{width:28px;height:28px;background:rgba(0,155,155,0.15);
+  border-radius:2px;display:flex;align-items:center;justify-content:center;
+  font-size:10px;flex-shrink:0}
+.clip-info{flex:1}
+.clip-name{font-size:8px;font-weight:700;color:#fff}
+.clip-meta{font-size:7px;color:#5a9090;margin-top:1px}
+.clip-wave{height:14px;display:flex;align-items:center;gap:1px;margin-top:3px}
+.cw{width:3px;background:#009B9B;opacity:0.6;border-radius:1px}
+.clip-btns{display:flex;gap:3px}
+.cb{width:18px;height:18px;border-radius:2px;background:rgba(0,155,155,0.1);
+  border:1px solid rgba(0,155,155,0.25);display:flex;align-items:center;justify-content:center;font-size:8px}
+
+/* EXPORT */
+.export-row{display:flex;gap:4px;margin-top:6px}
+.exp-btn{flex:1;padding:6px;text-align:center;font-size:7px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;border-radius:2px;cursor:pointer}
+.exp-btn.teal{background:#009B9B;color:#000;border:none}
+.exp-btn.ghost{background:transparent;border:1px solid rgba(0,155,155,0.3);color:#009B9B}
+.exp-btn.coral{background:#E8624A;color:#000;border:none}
+
+/* PIANO */
+.keys{display:flex;gap:1px;height:40px;background:#0f1818;padding:4px;
+  border:1px solid rgba(0,155,155,0.1);margin-bottom:6px}
+.wk{flex:1;background:linear-gradient(to bottom,#d0e8e8,#a8d0d0);border-radius:0 0 2px 2px}
+.bk{width:10px;height:26px;background:#0a1414;border-radius:0 0 2px 2px;margin:0 -5px;z-index:2;position:relative}
+
+/* EFFECTS */
+.fx-row{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}
+.knob-wrap{text-align:center}
+.knob{width:26px;height:26px;border-radius:50%;margin:0 auto 2px;
+  background:conic-gradient(#009B9B 180deg,#1e2a2a 180deg);
+  border:1px solid rgba(0,155,155,0.3)}
+.knob.coral{background:conic-gradient(#E8624A 160deg,#1e2a2a 160deg);border-color:rgba(232,98,74,0.3)}
+.knob.amber{background:conic-gradient(#D4A830 200deg,#1e2a2a 200deg)}
+.k-lbl{font-size:6px;color:#5a9090;text-transform:uppercase;letter-spacing:0.08em}
+.k-val{font-size:7px;color:#009B9B;font-weight:700}
+
+/* VU */
+.vu-row{display:flex;gap:2px;height:40px;align-items:flex-end}
+.vu{flex:1;background:#0f1818;border:1px solid rgba(0,155,155,0.1);position:relative;overflow:hidden}
+.vu-f{position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,#009B9B,#00C4C4 60%,#ffdd44 80%,#E8624A)}
+
+/* STATUS BAR */
+.status{background:#060606;border-top:1px solid rgba(0,155,155,0.15);
+  padding:4px 12px;display:flex;gap:12px;margin-top:8px}
+.si{font-size:7px;letter-spacing:0.1em;text-transform:uppercase;color:#5a9090}
+.si span{color:#009B9B;font-weight:700}
+</style>
+
+<div class="studio">
+
+  <div class="hdr">
+    <div class="hdr-logo">Voices & Vibes Studio Pro</div>
+    <div class="hdr-right">
+      <div class="hdr-badge teal">092 BPM</div>
+      <div class="hdr-badge coral">● REC READY</div>
+      <div style="font-size:7px;color:#5a9090;letter-spacing:0.08em">voicesandvibesradio.com</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active">Beat Studio</div>
+    <div class="tab coral active" style="background:#E8624A;color:#000;border-color:#E8624A">Voice Mixer</div>
+    <div class="tab">Piano Roll</div>
+    <div class="tab">Effects</div>
+    <div class="tab">Clips</div>
+    <div class="tab">Export</div>
+  </div>
+
+  <div class="body">
+
+    <!-- LEFT: BEAT SEQUENCER -->
+    <div class="panel">
+      <div class="ptitle">Beat Sequencer</div>
+      <div class="kit-row">
+        <div class="kit-btn active">Afrobeats</div>
+        <div class="kit-btn">Trap</div>
+        <div class="kit-btn">Hip-Hop</div>
+        <div class="kit-btn">Latin</div>
+      </div>
+      <div class="seq">
+        <div class="seq-lbl">Kick</div>
+        <div class="step on"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+        <div class="step"></div><div class="step"></div><div class="step on"></div><div class="step"></div>
+        <div class="step on"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+        <div class="step on play"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+
+        <div class="seq-lbl">Snare</div>
+        <div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+        <div class="step on c"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+        <div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+        <div class="step on c"></div><div class="step"></div><div class="step"></div><div class="step on c"></div>
+
+        <div class="seq-lbl">HiHat</div>
+        <div class="step on a"></div><div class="step"></div><div class="step on a"></div><div class="step on a"></div>
+        <div class="step"></div><div class="step on a"></div><div class="step on a"></div><div class="step"></div>
+        <div class="step on a"></div><div class="step"></div><div class="step on a"></div><div class="step on a"></div>
+        <div class="step"></div><div class="step on a"></div><div class="step on a"></div><div class="step"></div>
+
+        <div class="seq-lbl">Clave</div>
+        <div class="step on"></div><div class="step"></div><div class="step"></div><div class="step on"></div>
+        <div class="step"></div><div class="step"></div><div class="step on"></div><div class="step"></div>
+        <div class="step"></div><div class="step on"></div><div class="step"></div><div class="step"></div>
+        <div class="step on"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+
+        <div class="seq-lbl">Bass</div>
+        <div class="step on"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+        <div class="step"></div><div class="step"></div><div class="step"></div><div class="step on"></div>
+        <div class="step on"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+        <div class="step"></div><div class="step"></div><div class="step"></div><div class="step"></div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <div class="exp-btn teal" style="flex:2">▶ Play Beat</div>
+        <div class="exp-btn ghost">⚄ Random</div>
+        <div class="exp-btn ghost">✕ Clear</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: VOICE RECORDER -->
+    <div class="panel coral">
+      <div class="ptitle coral">Voice Mixer</div>
+      <div class="rec-mode-row">
+        <div class="rec-mode teal">
+          <div class="rec-mode-title">Voice Only</div>
+          <div class="rec-mode-sub">Vocals only</div>
+        </div>
+        <div class="rec-mode coral">
+          <div class="rec-mode-title">Live Mix</div>
+          <div class="rec-mode-sub">Voice + Beat</div>
+        </div>
+      </div>
+      <div style="font-size:7px;color:#5a9090;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px">Audio Level</div>
+      <div class="meter"><div class="meter-fill"></div></div>
+      <div style="font-size:7px;color:#5a9090;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px">Waveform</div>
+      <div class="waveform">
+        <div class="wave-bar" style="height:40%"></div><div class="wave-bar" style="height:70%"></div>
+        <div class="wave-bar" style="height:55%"></div><div class="wave-bar" style="height:90%"></div>
+        <div class="wave-bar" style="height:45%"></div><div class="wave-bar" style="height:80%"></div>
+        <div class="wave-bar" style="height:60%"></div><div class="wave-bar" style="height:35%"></div>
+        <div class="wave-bar" style="height:75%"></div><div class="wave-bar" style="height:50%"></div>
+        <div class="wave-bar" style="height:85%"></div><div class="wave-bar" style="height:40%"></div>
+        <div class="wave-bar" style="height:65%"></div><div class="wave-bar" style="height:90%"></div>
+        <div class="wave-bar" style="height:55%"></div><div class="wave-bar" style="height:70%"></div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <div class="exp-btn coral" style="flex:2">🎤 Start Recording</div>
+        <div class="exp-btn ghost">▶ Play</div>
+      </div>
+    </div>
+
+    <!-- CLIPS LIBRARY -->
+    <div class="panel">
+      <div class="ptitle">Recorded Clips</div>
+      <div class="clip">
+        <div class="clip-art">🎤</div>
+        <div class="clip-info">
+          <div class="clip-name">Healing Verse — Take 1</div>
+          <div class="clip-meta">Voice + Beat · 0:32 · Afrobeats</div>
+          <div class="clip-wave">
+            <div class="cw" style="height:8px"></div><div class="cw" style="height:12px"></div>
+            <div class="cw" style="height:6px"></div><div class="cw" style="height:14px"></div>
+            <div class="cw" style="height:10px"></div><div class="cw" style="height:8px"></div>
+            <div class="cw" style="height:13px"></div><div class="cw" style="height:7px"></div>
+            <div class="cw" style="height:11px"></div><div class="cw" style="height:9px"></div>
+          </div>
+        </div>
+        <div class="clip-btns">
+          <div class="cb">▶</div>
+          <div class="cb" style="border-color:rgba(232,98,74,0.3);color:#E8624A">✕</div>
+        </div>
+      </div>
+      <div class="clip">
+        <div class="clip-art" style="background:rgba(232,98,74,0.15)">🎙️</div>
+        <div class="clip-info">
+          <div class="clip-name">Gospel Bridge</div>
+          <div class="clip-meta">Voice Only · 0:18 · No kit</div>
+          <div class="clip-wave">
+            <div class="cw" style="height:10px;background:#E8624A"></div><div class="cw" style="height:7px;background:#E8624A"></div>
+            <div class="cw" style="height:13px;background:#E8624A"></div><div class="cw" style="height:9px;background:#E8624A"></div>
+            <div class="cw" style="height:11px;background:#E8624A"></div><div class="cw" style="height:8px;background:#E8624A"></div>
+            <div class="cw" style="height:14px;background:#E8624A"></div><div class="cw" style="height:6px;background:#E8624A"></div>
+            <div class="cw" style="height:12px;background:#E8624A"></div><div class="cw" style="height:10px;background:#E8624A"></div>
+          </div>
+        </div>
+        <div class="clip-btns">
+          <div class="cb">▶</div>
+          <div class="cb" style="border-color:rgba(232,98,74,0.3);color:#E8624A">✕</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EFFECTS + VU -->
+    <div class="panel">
+      <div class="ptitle">Effects Rack</div>
+      <div class="fx-row">
+        <div class="knob-wrap"><div class="knob"></div><div class="k-lbl">Reverb</div><div class="k-val">50</div></div>
+        <div class="knob-wrap"><div class="knob coral"></div><div class="k-lbl">Delay</div><div class="k-val">35</div></div>
+        <div class="knob-wrap"><div class="knob amber"></div><div class="k-lbl">EQ Hi</div><div class="k-val">60</div></div>
+        <div class="knob-wrap"><div class="knob"></div><div class="k-lbl">Comp</div><div class="k-val">45</div></div>
+      </div>
+      <div style="font-size:7px;color:#5a9090;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Output Level</div>
+      <div class="vu-row">
+        <div class="vu"><div class="vu-f" style="height:65%"></div></div>
+        <div class="vu"><div class="vu-f" style="height:80%"></div></div>
+        <div class="vu"><div class="vu-f" style="height:45%"></div></div>
+        <div class="vu"><div class="vu-f" style="height:70%"></div></div>
+        <div class="vu"><div class="vu-f" style="height:55%"></div></div>
+        <div class="vu"><div class="vu-f" style="height:75%"></div></div>
+      </div>
+    </div>
+
+    <!-- EXPORT FULL WIDTH -->
+    <div class="panel full">
+      <div class="ptitle">Export Suite</div>
+      <div style="display:flex;gap:6px">
+        <div class="exp-btn teal" style="padding:8px 16px">⬇ Export Beat (WAV)</div>
+        <div class="exp-btn coral" style="padding:8px 16px">⬇ Export Voice + Beat (WAV)</div>
+        <div class="exp-btn ghost" style="padding:8px 16px">⬇ Export All Clips</div>
+        <div class="exp-btn ghost" style="padding:8px 16px">💾 Save Project</div>
+        <div class="exp-btn ghost" style="padding:8px 16px">📂 Load Project</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="status">
+    <div class="si">Kit <span>Afrobeats</span></div>
+    <div class="si">BPM <span>092</span></div>
+    <div class="si">Mode <span>Live Mix</span></div>
+    <div class="si">Clips <span>2</span></div>
+    <div class="si">Status <span>Ready</span></div>
+    <div class="si" style="margin-left:auto">
+      <span style="font-family:cursive;font-size:8px;color:#5a9090">Voices & Vibes Radio</span>
+    </div>
+  </div>
+
+</div>

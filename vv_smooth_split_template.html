@@ -1,0 +1,262 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.root{font-family:'Georgia',serif;background:var(--color-background-secondary);padding:12px}
+.nav{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.nb{padding:7px 18px;font-size:11px;font-weight:600;border-radius:50px;cursor:pointer;border:1px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);font-family:system-ui;transition:all .15s}
+.nb.on{background:#8b0000;color:#fff;border-color:#8b0000}
+.pv{display:none}
+.pv.on{display:block}
+
+/* ── SHARED SPLIT SHELL ── */
+.split{background:#fff;min-height:520px}
+.split-hero{display:grid;grid-template-columns:40% 60%;height:260px}
+
+/* LEFT PANEL */
+.sp-left{padding:40px 36px;display:flex;flex-direction:column;justify-content:center;gap:10px}
+.sp-eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-family:system-ui;opacity:.6}
+.sp-name{font-size:42px;font-weight:700;line-height:1;letter-spacing:-.01em}
+.sp-tagline{font-size:13px;line-height:1.6;opacity:.75;font-style:italic;max-width:260px}
+
+/* RIGHT PANEL — photo area */
+.sp-right{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.sp-right img{width:100%;height:100%;object-fit:cover}
+.sp-flatlay{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+
+/* BODY */
+.split-body{display:grid;grid-template-columns:40% 60%}
+.sp-sidebar{padding:28px 36px;border-right:1px solid #f0f0f0}
+.sp-stats{display:flex;gap:28px;margin-bottom:22px}
+.sp-stat-num{font-size:26px;font-weight:700;line-height:1}
+.sp-stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-family:system-ui;margin-top:3px;opacity:.5}
+.sp-divider{height:1px;background:#f0f0f0;margin:18px 0}
+.sp-genres{font-size:11px;line-height:2;font-family:system-ui;opacity:.6}
+.sp-follow{display:inline-block;margin-top:18px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:10px 24px;border:none;cursor:pointer;font-family:system-ui}
+
+.sp-tracks{padding:28px 32px}
+.sp-track-header{font-size:9px;text-transform:uppercase;letter-spacing:.12em;font-family:system-ui;opacity:.4;margin-bottom:14px}
+.sp-track{display:flex;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid #f8f8f8;cursor:pointer}
+.sp-track:last-child{border-bottom:none}
+.sp-tnum{font-size:12px;width:20px;text-align:center;flex-shrink:0;opacity:.3;font-family:system-ui}
+.sp-tname{font-size:13px;font-weight:500;flex:1;letter-spacing:-.01em}
+.sp-tmeta{font-size:11px;font-family:system-ui;opacity:.35;flex-shrink:0}
+.sp-tdur{font-size:11px;font-family:system-ui;opacity:.35;flex-shrink:0;width:34px;text-align:right}
+
+/* ── CRIMSON ── */
+.cr .sp-left{background:#8b0000;color:#fff}
+.cr .sp-right{background:#1e1e1e}
+.cr .sp-stat-num{color:#8b0000}
+.cr .sp-follow{background:#8b0000;color:#fff}
+.cr .sp-tname.a{color:#8b0000}
+.cr .sp-tnum.a{opacity:1;color:#8b0000}
+
+/* ── FOREST ── */
+.fr .sp-left{background:#1a3a2a;color:#fff}
+.fr .sp-right{background:#0d2010}
+.fr .sp-stat-num{color:#2a6a40}
+.fr .sp-follow{background:#1a3a2a;color:#fff}
+.fr .sp-tname.a{color:#2a6a40}
+.fr .sp-tnum.a{opacity:1;color:#2a6a40}
+.fr .nb.on{background:#1a3a2a;border-color:#1a3a2a}
+
+/* ── SLATE ── */
+.sl .sp-left{background:#2c3a4a;color:#fff}
+.sl .sp-right{background:#e8edf2}
+.sl .sp-stat-num{color:#2c3a4a}
+.sl .sp-follow{background:#2c3a4a;color:#fff}
+.sl .sp-tname.a{color:#2c3a4a}
+.sl .sp-tnum.a{opacity:1;color:#2c3a4a}
+.sl .nb.on{background:#2c3a4a;border-color:#2c3a4a}
+
+/* ── PLUM ── */
+.pl .sp-left{background:#3a1a3a;color:#fff}
+.pl .sp-right{background:#1a0a1a}
+.pl .sp-stat-num{color:#8a3a8a}
+.pl .sp-follow{background:#3a1a3a;color:#fff}
+.pl .sp-tname.a{color:#8a3a8a}
+.pl .sp-tnum.a{opacity:1;color:#8a3a8a}
+.pl .nb.on{background:#3a1a3a;border-color:#3a1a3a}
+
+/* right panel flatlay grid */
+.fl{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:8px;padding:20px;width:100%;height:100%}
+.fl-item{border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;opacity:.85}
+.fl-wide{grid-column:1/3;font-size:22px}
+</style>
+
+<div class="root">
+  <div class="nav">
+    <button class="nb on" onclick="show('cr')">Crimson</button>
+    <button class="nb" onclick="show('fr')">Forest</button>
+    <button class="nb" onclick="show('sl')">Slate</button>
+    <button class="nb" onclick="show('pl')">Plum</button>
+  </div>
+
+  <!-- CRIMSON -->
+  <div class="pv split cr on" id="p-cr">
+    <div class="split-hero">
+      <div class="sp-left">
+        <div class="sp-eyebrow">Voices &amp; Vibes Radio</div>
+        <div class="sp-name">Lady D</div>
+        <div class="sp-tagline">Healing through music &amp; conversation — a smooth start.</div>
+      </div>
+      <div class="sp-right">
+        <div class="fl">
+          <div class="fl-item" style="background:#2a2a2a">🎧</div>
+          <div class="fl-item" style="background:#252525">📖</div>
+          <div class="fl-item" style="background:#252525">⌚</div>
+          <div class="fl-item" style="background:#2a2a2a">🎤</div>
+          <div class="fl-item fl-wide" style="background:#1e1e1e;font-size:13px;font-family:system-ui;letter-spacing:.08em;color:#ffffff44;text-transform:uppercase">Voices &amp; Vibes Radio · Streaming 24/7</div>
+        </div>
+      </div>
+    </div>
+    <div class="split-body">
+      <div class="sp-sidebar">
+        <div class="sp-stats">
+          <div><div class="sp-stat-num">12.4k</div><div class="sp-stat-lbl">Plays</div></div>
+          <div><div class="sp-stat-num">843</div><div class="sp-stat-lbl">Followers</div></div>
+          <div><div class="sp-stat-num">14</div><div class="sp-stat-lbl">Tracks</div></div>
+        </div>
+        <div class="sp-divider"></div>
+        <div class="sp-genres">Neo Soul &nbsp;·&nbsp; Gospel &nbsp;·&nbsp; R&amp;B<br>Grief &nbsp;·&nbsp; Anxiety Relief &nbsp;·&nbsp; Self-Love</div>
+        <button class="sp-follow">+ Follow Artist</button>
+      </div>
+      <div class="sp-tracks">
+        <div class="sp-track-header">Tracklist</div>
+        <div class="sp-track"><div class="sp-tnum a">▶</div><div class="sp-tname a">Rooted in Hope</div><div class="sp-tmeta">Neo Soul</div><div class="sp-tdur">3:42</div></div>
+        <div class="sp-track"><div class="sp-tnum">2</div><div class="sp-tname">Still Water Runs Deep</div><div class="sp-tmeta">Gospel</div><div class="sp-tdur">4:18</div></div>
+        <div class="sp-track"><div class="sp-tnum">3</div><div class="sp-tname">Breathe Again</div><div class="sp-tmeta">R&amp;B</div><div class="sp-tdur">3:55</div></div>
+        <div class="sp-track"><div class="sp-tnum">4</div><div class="sp-tname">Kaleidoscope</div><div class="sp-tmeta">Neo Soul</div><div class="sp-tdur">4:01</div></div>
+        <div class="sp-track"><div class="sp-tnum">5</div><div class="sp-tname">Morning Grace</div><div class="sp-tmeta">Gospel</div><div class="sp-tdur">5:12</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOREST -->
+  <div class="pv split fr" id="p-fr">
+    <div class="split-hero">
+      <div class="sp-left">
+        <div class="sp-eyebrow">Voices &amp; Vibes Radio</div>
+        <div class="sp-name">Lady D</div>
+        <div class="sp-tagline">Healing through music &amp; conversation — a smooth start.</div>
+      </div>
+      <div class="sp-right">
+        <div class="fl">
+          <div class="fl-item" style="background:#142010">🎧</div>
+          <div class="fl-item" style="background:#0d1a0a">📖</div>
+          <div class="fl-item" style="background:#0d1a0a">⌚</div>
+          <div class="fl-item" style="background:#142010">🎤</div>
+          <div class="fl-item fl-wide" style="background:#0a1408;font-size:13px;font-family:system-ui;letter-spacing:.08em;color:#ffffff33;text-transform:uppercase">Voices &amp; Vibes Radio · Streaming 24/7</div>
+        </div>
+      </div>
+    </div>
+    <div class="split-body">
+      <div class="sp-sidebar">
+        <div class="sp-stats">
+          <div><div class="sp-stat-num">12.4k</div><div class="sp-stat-lbl">Plays</div></div>
+          <div><div class="sp-stat-num">843</div><div class="sp-stat-lbl">Followers</div></div>
+          <div><div class="sp-stat-num">14</div><div class="sp-stat-lbl">Tracks</div></div>
+        </div>
+        <div class="sp-divider"></div>
+        <div class="sp-genres">Neo Soul &nbsp;·&nbsp; Gospel &nbsp;·&nbsp; R&amp;B<br>Grief &nbsp;·&nbsp; Anxiety Relief &nbsp;·&nbsp; Self-Love</div>
+        <button class="sp-follow">+ Follow Artist</button>
+      </div>
+      <div class="sp-tracks">
+        <div class="sp-track-header">Tracklist</div>
+        <div class="sp-track"><div class="sp-tnum a">▶</div><div class="sp-tname a">Rooted in Hope</div><div class="sp-tmeta">Neo Soul</div><div class="sp-tdur">3:42</div></div>
+        <div class="sp-track"><div class="sp-tnum">2</div><div class="sp-tname">Still Water Runs Deep</div><div class="sp-tmeta">Gospel</div><div class="sp-tdur">4:18</div></div>
+        <div class="sp-track"><div class="sp-tnum">3</div><div class="sp-tname">Breathe Again</div><div class="sp-tmeta">R&amp;B</div><div class="sp-tdur">3:55</div></div>
+        <div class="sp-track"><div class="sp-tnum">4</div><div class="sp-tname">Kaleidoscope</div><div class="sp-tmeta">Neo Soul</div><div class="sp-tdur">4:01</div></div>
+        <div class="sp-track"><div class="sp-tnum">5</div><div class="sp-tname">Morning Grace</div><div class="sp-tmeta">Gospel</div><div class="sp-tdur">5:12</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLATE -->
+  <div class="pv split sl" id="p-sl">
+    <div class="split-hero">
+      <div class="sp-left">
+        <div class="sp-eyebrow">Voices &amp; Vibes Radio</div>
+        <div class="sp-name">Lady D</div>
+        <div class="sp-tagline">Healing through music &amp; conversation — a smooth start.</div>
+      </div>
+      <div class="sp-right">
+        <div class="fl">
+          <div class="fl-item" style="background:#d8e2ec">🎧</div>
+          <div class="fl-item" style="background:#dde6ee">📖</div>
+          <div class="fl-item" style="background:#dde6ee">⌚</div>
+          <div class="fl-item" style="background:#d8e2ec">🎤</div>
+          <div class="fl-item fl-wide" style="background:#ccd8e4;font-size:13px;font-family:system-ui;letter-spacing:.08em;color:#2c3a4a88;text-transform:uppercase">Voices &amp; Vibes Radio · Streaming 24/7</div>
+        </div>
+      </div>
+    </div>
+    <div class="split-body">
+      <div class="sp-sidebar">
+        <div class="sp-stats">
+          <div><div class="sp-stat-num">12.4k</div><div class="sp-stat-lbl">Plays</div></div>
+          <div><div class="sp-stat-num">843</div><div class="sp-stat-lbl">Followers</div></div>
+          <div><div class="sp-stat-num">14</div><div class="sp-stat-lbl">Tracks</div></div>
+        </div>
+        <div class="sp-divider"></div>
+        <div class="sp-genres">Neo Soul &nbsp;·&nbsp; Gospel &nbsp;·&nbsp; R&amp;B<br>Grief &nbsp;·&nbsp; Anxiety Relief &nbsp;·&nbsp; Self-Love</div>
+        <button class="sp-follow">+ Follow Artist</button>
+      </div>
+      <div class="sp-tracks">
+        <div class="sp-track-header">Tracklist</div>
+        <div class="sp-track"><div class="sp-tnum a">▶</div><div class="sp-tname a">Rooted in Hope</div><div class="sp-tmeta">Neo Soul</div><div class="sp-tdur">3:42</div></div>
+        <div class="sp-track"><div class="sp-tnum">2</div><div class="sp-tname">Still Water Runs Deep</div><div class="sp-tmeta">Gospel</div><div class="sp-tdur">4:18</div></div>
+        <div class="sp-track"><div class="sp-tnum">3</div><div class="sp-tname">Breathe Again</div><div class="sp-tmeta">R&amp;B</div><div class="sp-tdur">3:55</div></div>
+        <div class="sp-track"><div class="sp-tnum">4</div><div class="sp-tname">Kaleidoscope</div><div class="sp-tmeta">Neo Soul</div><div class="sp-tdur">4:01</div></div>
+        <div class="sp-track"><div class="sp-tnum">5</div><div class="sp-tname">Morning Grace</div><div class="sp-tmeta">Gospel</div><div class="sp-tdur">5:12</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLUM -->
+  <div class="pv split pl" id="p-pl">
+    <div class="split-hero">
+      <div class="sp-left">
+        <div class="sp-eyebrow">Voices &amp; Vibes Radio</div>
+        <div class="sp-name">Lady D</div>
+        <div class="sp-tagline">Healing through music &amp; conversation — a smooth start.</div>
+      </div>
+      <div class="sp-right">
+        <div class="fl">
+          <div class="fl-item" style="background:#2a102a">🎧</div>
+          <div class="fl-item" style="background:#220a22">📖</div>
+          <div class="fl-item" style="background:#220a22">⌚</div>
+          <div class="fl-item" style="background:#2a102a">🎤</div>
+          <div class="fl-item fl-wide" style="background:#1a081a;font-size:13px;font-family:system-ui;letter-spacing:.08em;color:#ffffff22;text-transform:uppercase">Voices &amp; Vibes Radio · Streaming 24/7</div>
+        </div>
+      </div>
+    </div>
+    <div class="split-body">
+      <div class="sp-sidebar">
+        <div class="sp-stats">
+          <div><div class="sp-stat-num">12.4k</div><div class="sp-stat-lbl">Plays</div></div>
+          <div><div class="sp-stat-num">843</div><div class="sp-stat-lbl">Followers</div></div>
+          <div><div class="sp-stat-num">14</div><div class="sp-stat-lbl">Tracks</div></div>
+        </div>
+        <div class="sp-divider"></div>
+        <div class="sp-genres">Neo Soul &nbsp;·&nbsp; Gospel &nbsp;·&nbsp; R&amp;B<br>Grief &nbsp;·&nbsp; Anxiety Relief &nbsp;·&nbsp; Self-Love</div>
+        <button class="sp-follow">+ Follow Artist</button>
+      </div>
+      <div class="sp-tracks">
+        <div class="sp-track-header">Tracklist</div>
+        <div class="sp-track"><div class="sp-tnum a">▶</div><div class="sp-tname a">Rooted in Hope</div><div class="sp-tmeta">Neo Soul</div><div class="sp-tdur">3:42</div></div>
+        <div class="sp-track"><div class="sp-tnum">2</div><div class="sp-tname">Still Water Runs Deep</div><div class="sp-tmeta">Gospel</div><div class="sp-tdur">4:18</div></div>
+        <div class="sp-track"><div class="sp-tnum">3</div><div class="sp-tname">Breathe Again</div><div class="sp-tmeta">R&amp;B</div><div class="sp-tdur">3:55</div></div>
+        <div class="sp-track"><div class="sp-tnum">4</div><div class="sp-tname">Kaleidoscope</div><div class="sp-tmeta">Neo Soul</div><div class="sp-tdur">4:01</div></div>
+        <div class="sp-track"><div class="sp-tnum">5</div><div class="sp-tname">Morning Grace</div><div class="sp-tmeta">Gospel</div><div class="sp-tdur">5:12</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.pv').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  event.target.classList.add('on');
+}
+</script>

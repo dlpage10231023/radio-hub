@@ -1,0 +1,822 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0118;--card:#130a2a;--card2:#1a0f35;
+  --purple:#7c3aed;--violet:#5b21b6;--deep:#2d1b69;
+  --gold:#f59e0b;--amber:#fbbf24;--orange:#f97316;
+  --pink:#ec4899;--blue:#3b82f6;--cyan:#06b6d4;
+  --green:#10b981;--red:#ef4444;
+  --text:#f1e8ff;--muted:#9d8fb8;
+  --font-head:'Orbitron',monospace;--font-body:'Nunito',sans-serif;
+}
+#APP{position:relative;min-height:680px;border-radius:18px;overflow:hidden;font-family:var(--font-body);background:var(--bg);}
+/* Animated BG */
+#VVBG{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden;}
+.vvstar{position:absolute;border-radius:50%;animation:vvtw var(--d,3s) ease-in-out infinite var(--dl,0s);}
+@keyframes vvtw{0%,100%{opacity:.1;}50%{opacity:.7;}}
+.vvneb{position:absolute;border-radius:50%;filter:blur(60px);}
+/* Screens */
+.scr{display:none;position:absolute;top:0;left:0;width:100%;min-height:680px;z-index:2;padding:14px;}
+.scr.on{display:flex;flex-direction:column;}
+/* Top bar */
+.topbar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-shrink:0;}
+.vv-logo{font-family:var(--font-head);font-size:.7rem;font-weight:900;background:linear-gradient(135deg,#f59e0b,#ec4899,#7c3aed,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex-shrink:0;}
+.on-air{background:var(--red);color:#fff;font-size:.55rem;font-weight:800;padding:2px 6px;border-radius:4px;animation:onair 1.5s ease-in-out infinite;flex-shrink:0;}
+@keyframes onair{0%,100%{opacity:1;}50%{opacity:.4;}}
+.screen-title{font-family:var(--font-head);font-size:.65rem;font-weight:700;color:var(--purple);flex:1;text-align:center;}
+.xp-badge{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--gold);padding:3px 8px;border-radius:10px;font-size:.65rem;font-weight:800;font-family:var(--font-head);flex-shrink:0;}
+/* Buttons */
+.btn{padding:8px 14px;border-radius:10px;border:none;font-weight:800;font-size:.78rem;cursor:pointer;transition:all .14s;font-family:var(--font-body);}
+.btn:active{transform:scale(.95);}
+.bpurp{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;}
+.bgold{background:linear-gradient(135deg,#f59e0b,#f97316);color:#1a0a00;}
+.bpink{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;}
+.bblue{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;}
+.bgreen{background:linear-gradient(135deg,#10b981,#059669);color:#fff;}
+.bred{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;}
+.bgh{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);color:var(--text);}
+.bsm{padding:5px 10px;font-size:.7rem;width:auto;}
+.bxs{padding:3px 7px;font-size:.62rem;width:auto;}
+.back-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:var(--muted);cursor:pointer;font-size:.7rem;padding:3px 9px;border-radius:7px;font-weight:700;font-family:var(--font-body);}
+.back-btn:hover{color:#fff;}
+/* Cards */
+.glass{background:rgba(19,10,42,.8);border:1px solid rgba(124,58,237,.2);border-radius:13px;padding:12px;}
+.glass-h{background:rgba(19,10,42,.95);border:1.5px solid var(--purple);border-radius:13px;padding:12px;}
+/* Zone cards */
+.zone-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.zone-card{border-radius:14px;padding:14px 10px;cursor:pointer;transition:transform .18s,box-shadow .18s;display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;position:relative;border:2px solid rgba(255,255,255,.08);}
+.zone-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.zone-card.locked{opacity:.5;cursor:not-allowed;}
+.zone-icon{font-size:2rem;}
+.zone-name{font-family:var(--font-head);font-size:.65rem;font-weight:700;color:#fff;}
+.zone-desc{font-size:.65rem;color:var(--muted);}
+.lock-badge{position:absolute;top:6px;right:6px;font-size:.6rem;background:rgba(0,0,0,.5);padding:2px 5px;border-radius:5px;color:var(--gold);}
+/* XP Bar */
+.xp-bar-wrap{margin-bottom:10px;}
+.xp-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.xp-lbl{font-family:var(--font-head);font-size:.6rem;color:var(--gold);}
+.xp-track{flex:1;height:8px;background:rgba(255,255,255,.1);border-radius:5px;overflow:hidden;margin:0 8px;}
+.xp-fill{height:100%;background:linear-gradient(90deg,#f59e0b,#ec4899,#7c3aed);border-radius:5px;transition:width .5s ease;}
+/* Studio tabs */
+.tabs{display:flex;gap:4px;margin-bottom:10px;flex-shrink:0;background:rgba(255,255,255,.05);border-radius:10px;padding:3px;}
+.tab{flex:1;padding:6px 4px;border-radius:8px;border:none;font-size:.65rem;font-weight:800;cursor:pointer;transition:all .14s;font-family:var(--font-body);color:var(--muted);background:transparent;}
+.tab.on{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;}
+.tab-pane{display:none;flex:1;overflow-y:auto;}
+.tab-pane.on{display:flex;flex-direction:column;}
+/* Drum sequencer */
+.seq-controls{display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.bpm-box{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.06);border-radius:8px;padding:4px 8px;}
+.bpm-lbl{font-size:.62rem;color:var(--gold);font-family:var(--font-head);}
+.bpm-inp{width:44px;background:transparent;border:none;color:#fff;font-size:.78rem;font-weight:800;font-family:var(--font-head);text-align:center;outline:none;}
+.seq-grid{overflow-x:auto;}
+.seq-row{display:flex;align-items:center;gap:3px;margin-bottom:3px;}
+.seq-name{font-size:.6rem;font-weight:800;color:var(--muted);width:52px;flex-shrink:0;font-family:var(--font-head);}
+.seq-btn{width:18px;height:22px;border-radius:3px;border:none;cursor:pointer;background:rgba(255,255,255,.08);transition:all .1s;flex-shrink:0;}
+.seq-btn.on{background:var(--purple);}
+.seq-btn.beat0.on{background:var(--pink);}
+.seq-btn.beat1.on{background:var(--orange);}
+.seq-btn.beat2.on{background:var(--cyan);}
+.seq-btn.beat3.on{background:var(--green);}
+.seq-btn.beat4.on{background:var(--gold);}
+.seq-btn.beat5.on{background:var(--blue);}
+.seq-btn.beat6.on{background:#a78bfa;}
+.seq-btn.beat7.on{background:#f472b6;}
+.seq-btn.playing{outline:2px solid #fff;outline-offset:1px;}
+/* Piano */
+.piano-wrap{overflow-x:auto;padding-bottom:4px;}
+.piano{display:flex;position:relative;height:90px;user-select:none;}
+.wkey{width:26px;height:88px;background:#f1e8ff;border:1px solid #2d1b69;border-radius:0 0 5px 5px;cursor:pointer;position:relative;z-index:1;flex-shrink:0;transition:background .08s;}
+.wkey:hover{background:#e8d5ff;}
+.wkey.active,.wkey.in-scale{background:#86efac;}
+.wkey.pressed{background:#fbbf24;}
+.bkey{width:16px;height:56px;background:#1a0a35;border-radius:0 0 4px 4px;cursor:pointer;position:absolute;z-index:2;transition:background .08s;}
+.bkey:hover{background:#2d1b69;}
+.bkey.active,.bkey.in-scale{background:#4ade80;}
+.bkey.pressed{background:#f59e0b;}
+.piano-note{font-size:.5rem;position:absolute;bottom:3px;left:50%;transform:translateX(-50%);color:#4a2c7a;pointer-events:none;font-weight:800;}
+/* Mixer */
+.mixer-row{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;}
+.channel{background:rgba(255,255,255,.04);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:52px;flex-shrink:0;}
+.ch-name{font-size:.55rem;font-weight:800;color:var(--muted);font-family:var(--font-head);}
+.fader-wrap{display:flex;flex-direction:column;align-items:center;height:80px;justify-content:center;}
+input[type=range].fader{-webkit-appearance:none;appearance:none;width:70px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;outline:none;writing-mode:vertical-lr;direction:rtl;width:4px;height:70px;}
+input[type=range].fader::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:6px;background:#7c3aed;border-radius:2px;cursor:pointer;}
+.pan-knob{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid rgba(124,58,237,.3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--muted);}
+.mute-btn,.solo-btn{width:26px;height:16px;border-radius:3px;border:none;font-size:.5rem;font-weight:800;cursor:pointer;}
+.mute-btn{background:rgba(239,68,68,.2);color:#fca5a5;}
+.mute-btn.on{background:#ef4444;color:#fff;}
+.solo-btn{background:rgba(251,191,36,.2);color:#fde68a;}
+.solo-btn.on{background:#fbbf24;color:#1a0a00;}
+/* Keys */
+.scale-btns{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.scale-btn{padding:4px 8px;border-radius:6px;border:1.5px solid rgba(124,58,237,.3);background:rgba(124,58,237,.08);color:var(--muted);font-size:.62rem;font-weight:700;cursor:pointer;font-family:var(--font-body);}
+.scale-btn.on{background:var(--purple);border-color:var(--purple);color:#fff;}
+.piano-hint{font-size:.62rem;color:var(--muted);margin-bottom:5px;font-weight:600;}
+/* Lessons */
+.lesson-track{margin-bottom:10px;}
+.track-title{font-family:var(--font-head);font-size:.65rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.lesson-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:9px 10px;margin-bottom:5px;display:flex;align-items:center;gap:8px;}
+.lesson-icon{font-size:1.2rem;flex-shrink:0;}
+.lesson-title{font-size:.78rem;font-weight:700;color:#fff;}
+.lesson-desc{font-size:.66rem;color:var(--muted);}
+/* Challenges */
+.challenge-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.chal-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:11px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.chal-card:hover{transform:translateY(-2px);}
+.chal-icon{font-size:1.6rem;}
+.chal-name{font-size:.68rem;font-weight:800;color:#fff;}
+.chal-sub{font-size:.6rem;color:var(--muted);}
+/* Badges */
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.badge-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);border-radius:11px;padding:10px 6px;text-align:center;transition:all .2s;}
+.badge-card.earned{border-color:var(--gold);background:rgba(245,158,11,.08);}
+.badge-icon{font-size:1.6rem;display:block;margin-bottom:3px;}
+.badge-name{font-size:.58rem;font-weight:800;color:var(--muted);}
+.badge-card.earned .badge-name{color:var(--gold);}
+/* My Beats */
+.beat-item{background:rgba(255,255,255,.04);border:1px solid rgba(124,58,237,.2);border-radius:9px;padding:9px 10px;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+/* Toast */
+.toast{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(124,58,237,.9);color:#fff;padding:6px 14px;border-radius:9px;font-weight:800;font-size:.72rem;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:60;font-family:var(--font-body);}
+.toast.show{opacity:1;}
+/* Promo banner */
+.promo-bar{background:linear-gradient(135deg,rgba(124,58,237,.3),rgba(245,158,11,.2));border:1px solid rgba(124,58,237,.3);border-radius:10px;padding:7px 10px;margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.promo-txt{font-size:.68rem;color:var(--text);font-weight:700;}
+/* Active step indicator */
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+.playing-ind{animation:pulse .5s ease-in-out infinite;}
+</style>
+
+<div id="APP">
+<div id="VVBG"></div>
+
+<!-- HOME -->
+<div id="S-HOME" class="scr on">
+  <div class="topbar">
+    <div class="vv-logo">V&V RADIO</div>
+    <div class="on-air">● ON AIR</div>
+    <div class="screen-title" id="home-title">MUSIC STUDIO</div>
+    <div class="xp-badge">⭐ <span id="xp-disp">0</span> XP</div>
+  </div>
+
+  <!-- Promo banner -->
+  <div class="promo-bar">
+    <div style="font-size:1.4rem;">🎙️</div>
+    <div>
+      <div style="font-family:'Orbitron',monospace;font-size:.6rem;font-weight:700;color:var(--gold);">VOICES & VIBES RADIO STUDIO</div>
+      <div class="promo-txt">Create beats, learn music, earn badges — no download needed!</div>
+    </div>
+  </div>
+
+  <!-- XP / Level -->
+  <div class="xp-bar-wrap glass" style="margin-bottom:8px;">
+    <div class="xp-row">
+      <span class="xp-lbl" id="lvl-lbl">LEVEL 1 — ROOKIE</span>
+      <span style="font-size:.6rem;color:var(--muted);" id="xp-needed">0 / 100 XP</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- Zone cards -->
+  <div class="zone-grid" id="zone-grid">
+    <div class="zone-card" style="background:linear-gradient(135deg,#2d1b69,#1a0f35);" onclick="goTo('S-STUDIO');setTitle('🎛️ STUDIO');">
+      <div class="zone-icon">🎛️</div><div class="zone-name">Studio</div><div class="zone-desc">Make your beats</div>
+    </div>
+    <div class="zone-card" style="background:linear-gradient(135deg,#1a3a2e,#0d1a15);" onclick="goTo('S-LESSONS');setTitle('📖 LESSONS');">
+      <div class="zone-icon">📖</div><div class="zone-name">Lessons</div><div class="zone-desc">Learn music</div>
+    </div>
+    <div class="zone-card" style="background:linear-gradient(135deg,#3b1a00,#1a0d00);" onclick="goTo('S-CHALLENGES');setTitle('🎮 CHALLENGES');">
+      <div class="zone-icon">🎮</div><div class="zone-name">Challenges</div><div class="zone-desc">Test your skills</div>
+    </div>
+    <div class="zone-card" style="background:linear-gradient(135deg,#1a0a2e,#0d0518);" onclick="goTo('S-MYBEATS');setTitle('🎙️ MY BEATS');">
+      <div class="zone-icon">🎙️</div><div class="zone-name">My Beats</div><div class="zone-desc">Session saves</div>
+    </div>
+    <div class="zone-card" style="background:linear-gradient(135deg,#1a1500,#0d0a00);" onclick="goTo('S-BADGES');setTitle('🏆 BADGES');">
+      <div class="zone-icon">🏆</div><div class="zone-name">Badges</div><div class="zone-desc">Your achievements</div>
+    </div>
+    <div class="zone-card locked" id="jamcard" style="background:linear-gradient(135deg,#1a1a2e,#0d0d1a);" onclick="checkJam()">
+      <div class="lock-badge">🔒 LVL 5</div>
+      <div class="zone-icon">🎸</div><div class="zone-name">Jam Room</div><div class="zone-desc">Unlocks at Level 5</div>
+    </div>
+  </div>
+</div>
+
+<!-- STUDIO -->
+<div id="S-STUDIO" class="scr">
+  <div class="topbar" style="margin-bottom:6px;">
+    <button class="back-btn" onclick="goHome()">◀ Home</button>
+    <div class="screen-title">🎛️ STUDIO</div>
+    <div style="font-size:.6rem;color:var(--muted);" id="beat-status">Ready</div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab(0)">🥁 BEATS</button>
+    <button class="tab" onclick="switchTab(1)">🎹 KEYS</button>
+    <button class="tab" onclick="switchTab(2)">🎛️ MIXER</button>
+    <button class="tab" onclick="switchTab(3)">🎼 ARRANGE</button>
+  </div>
+
+  <!-- BEATS TAB -->
+  <div class="tab-pane on" id="tab-beats">
+    <div class="seq-controls">
+      <button class="btn bgreen bsm" id="play-btn" onclick="togglePlay()">▶ PLAY</button>
+      <button class="btn bred bsm" onclick="clearSeq()">✕ CLEAR</button>
+      <button class="btn bpurp bsm" onclick="randomSeq()">🎲 RANDOM</button>
+      <div class="bpm-box">
+        <span class="bpm-lbl">BPM</span>
+        <input type="number" class="bpm-inp" id="bpm" value="90" min="60" max="180" onchange="updateBPM()">
+        <input type="range" min="60" max="180" value="90" id="bpm-sl" oninput="syncBPM(this.value)" style="width:50px;height:3px;accent-color:#7c3aed;">
+      </div>
+      <button class="btn bgold bsm" onclick="saveSession()">💾 SAVE</button>
+    </div>
+    <div class="seq-grid" id="seq-grid"></div>
+    <div style="margin-top:6px;display:flex;gap:4px;align-items:center;">
+      <div style="font-size:.6rem;color:var(--muted);">Step: <span id="step-disp" style="color:var(--gold);font-weight:800;">—</span></div>
+      <div id="play-ind" style="display:none;width:8px;height:8px;border-radius:50%;background:var(--green);margin-left:4px;" class="playing-ind"></div>
+    </div>
+  </div>
+
+  <!-- KEYS TAB -->
+  <div class="tab-pane" id="tab-keys">
+    <div style="font-size:.7rem;color:var(--gold);font-family:'Orbitron',monospace;margin-bottom:6px;">SCALE MODE</div>
+    <div class="scale-btns" id="scale-btns"></div>
+    <div class="piano-hint">🖱️ Click keys &nbsp;·&nbsp; ⌨️ Use A S D F G H J K (white) W E T Y U (black)</div>
+    <div class="piano-wrap"><div class="piano" id="piano-keys"></div></div>
+    <div style="margin-top:8px;background:rgba(255,255,255,.04);border-radius:8px;padding:8px;">
+      <div style="font-size:.6rem;color:var(--muted);margin-bottom:3px;">Note played:</div>
+      <div id="note-display" style="font-family:'Orbitron',monospace;font-size:.9rem;color:var(--gold);font-weight:700;">—</div>
+    </div>
+  </div>
+
+  <!-- MIXER TAB -->
+  <div class="tab-pane" id="tab-mixer">
+    <div style="font-size:.65rem;color:var(--muted);margin-bottom:8px;">Channel strips — adjust volume, pan, mute & solo</div>
+    <div class="mixer-row" id="mixer-strips"></div>
+    <div style="margin-top:8px;font-size:.62rem;color:var(--muted);">Master volume: <input type="range" min="0" max="100" value="80" id="master-vol" style="accent-color:#7c3aed;width:80px;vertical-align:middle;" oninput="setMasterVol(this.value)"> <span id="mvol-disp">80</span></div>
+  </div>
+
+  <!-- ARRANGE TAB -->
+  <div class="tab-pane" id="tab-arrange">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 0;gap:12px;text-align:center;">
+      <div style="font-size:3rem;">🎼</div>
+      <div style="font-family:'Orbitron',monospace;font-size:.8rem;font-weight:700;color:var(--purple);">SONG ARRANGER</div>
+      <div style="font-size:.78rem;color:var(--muted);max-width:260px;line-height:1.5;">Song arrangement tools are coming soon! Build your beats in the Beats tab, then return here to arrange full songs.</div>
+      <div style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);border-radius:9px;padding:8px 14px;font-size:.7rem;color:var(--purple);font-weight:700;">🚀 Coming in Next Update</div>
+    </div>
+  </div>
+</div>
+
+<!-- LESSONS -->
+<div id="S-LESSONS" class="scr">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">◀ Home</button>
+    <div class="screen-title">📖 LESSONS</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;" id="lessons-con"></div>
+</div>
+
+<!-- CHALLENGES -->
+<div id="S-CHALLENGES" class="scr">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">◀ Home</button>
+    <div class="screen-title">🎮 CHALLENGES</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;" id="chal-con"></div>
+</div>
+
+<!-- ACTIVE CHALLENGE -->
+<div id="S-CHAL-ACT" class="scr">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('S-CHALLENGES')">◀ Challenges</button>
+    <div class="screen-title" id="chal-title">CHALLENGE</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;" id="chal-act-con"></div>
+</div>
+
+<!-- MY BEATS -->
+<div id="S-MYBEATS" class="scr">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">◀ Home</button>
+    <div class="screen-title">🎙️ MY BEATS</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;" id="beats-con"></div>
+</div>
+
+<!-- BADGES -->
+<div id="S-BADGES" class="scr">
+  <div class="topbar">
+    <button class="back-btn" onclick="goHome()">◀ Home</button>
+    <div class="screen-title">🏆 BADGES</div>
+  </div>
+  <div style="flex:1;overflow-y:auto;" id="badges-con"></div>
+</div>
+
+<div class="toast" id="TOAST"></div>
+</div>
+
+<script>
+// ─── STATE ───
+let xp=0,level=1;
+let isPlaying=false,currentStep=0,playInterval=null;
+let bpm=90;
+let savedBeats=[];
+let badges={firstBeat:false,loopMaster:false,pianoPlayer:false,speedDemon:false,composer:false,learner:false,challenger:false,saver:false};
+let masterVol=0.8;
+
+// ─── INSTRUMENTS & COLORS ───
+const TRACKS=[
+  {name:'KICK', color:'beat0',freq:80,type:'sine',decay:.3},
+  {name:'SNARE',color:'beat1',freq:200,type:'triangle',decay:.15},
+  {name:'HIHAT',color:'beat2',freq:800,type:'square',decay:.05},
+  {name:'CLAP', color:'beat3',freq:300,type:'sawtooth',decay:.1},
+  {name:'TOM',  color:'beat4',freq:150,type:'sine',decay:.2},
+  {name:'RIDE', color:'beat5',freq:600,type:'triangle',decay:.08},
+  {name:'BASS', color:'beat6',freq:60,type:'sine',decay:.25},
+  {name:'FX',   color:'beat7',freq:400,type:'square',decay:.12},
+];
+let seqState=TRACKS.map(()=>Array(16).fill(false));
+let volState=TRACKS.map(()=>80);
+let panState=TRACKS.map(()=>0);
+let muteState=TRACKS.map(()=>false);
+let soloState=TRACKS.map(()=>false);
+
+let audioCtx=null;
+function getAC(){return audioCtx||(audioCtx=new(window.AudioContext||window.webkitAudioContext)());}
+
+function playDrum(trackIdx){
+  if(muteState[trackIdx])return;
+  const hasSolo=soloState.some(s=>s);
+  if(hasSolo&&!soloState[trackIdx])return;
+  try{
+    const ac=getAC();const t=TRACKS[trackIdx];
+    const o=ac.createOscillator();const g=ac.createGain();const gain2=ac.createGain();
+    o.type=t.type;o.frequency.value=t.freq;
+    g.gain.setValueAtTime((volState[trackIdx]/100)*masterVol,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+t.decay);
+    o.connect(g);g.connect(gain2);gain2.gain.value=masterVol;gain2.connect(ac.destination);
+    o.start();o.stop(ac.currentTime+t.decay);
+  }catch(e){}
+}
+
+function playNote(freq,dur=0.3){
+  try{
+    const ac=getAC();const o=ac.createOscillator();const g=ac.createGain();
+    o.type='sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(.4*masterVol,ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);
+    o.connect(g);g.connect(ac.destination);
+    o.start();o.stop(ac.currentTime+dur);
+  }catch(e){}
+}
+
+// ─── SCREENS ───
+const SCREENS=['S-HOME','S-STUDIO','S-LESSONS','S-CHALLENGES','S-CHAL-ACT','S-MYBEATS','S-BADGES'];
+function goTo(id){SCREENS.forEach(s=>{const e=document.getElementById(s);if(e)e.className='scr';});const t=document.getElementById(id);if(t)t.className='scr on';}
+function goHome(){goTo('S-HOME');updateXPBar();}
+function setTitle(t){document.getElementById('home-title').textContent=t;}
+
+function toast(m){const t=document.getElementById('TOAST');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+// ─── BACKGROUND ───
+function buildBG(){
+  const bg=document.getElementById('VVBG');
+  const cols=['#7c3aed','#ec4899','#f59e0b','#3b82f6','#10b981','#fff'];
+  for(let i=0;i<90;i++){const s=document.createElement('div');s.className='vvstar';const sz=.4+Math.random()*2;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--d:${2+Math.random()*4}s;--dl:${Math.random()*4}s;`;bg.appendChild(s);}
+  [{x:5,y:8,w:200,h:120,c:'rgba(124,58,237,.12)'},{x:60,y:50,w:220,h:160,c:'rgba(245,158,11,.08)'},{x:30,y:70,w:180,h:100,c:'rgba(236,72,153,.07)'}].forEach(n=>{const d=document.createElement('div');d.className='vvneb';d.style.cssText=`left:${n.x}%;top:${n.y}%;width:${n.w}px;height:${n.h}px;background:${n.c};`;bg.appendChild(d);});
+}
+
+// ─── XP SYSTEM ───
+const LEVELS=[{lvl:1,name:'ROOKIE',xp:0},{lvl:2,name:'PRODUCER',xp:100},{lvl:3,name:'BEATMAKER',xp:250},{lvl:4,name:'COMPOSER',xp:500},{lvl:5,name:'MAESTRO',xp:1000}];
+function addXP(n){
+  xp+=n;document.getElementById('xp-disp').textContent=xp;
+  const prevLevel=level;
+  for(let i=LEVELS.length-1;i>=0;i--){if(xp>=LEVELS[i].xp){level=LEVELS[i].lvl;break;}}
+  if(level>prevLevel){toast('🎉 Level Up! You\'re now a '+LEVELS[level-1].name+'!');checkJamUnlock();}
+  updateXPBar();
+}
+function updateXPBar(){
+  const cur=LEVELS[level-1];const next=LEVELS[Math.min(level,LEVELS.length-1)];
+  const curXP=xp-cur.xp;const needXP=next.xp-cur.xp;
+  const pct=level>=5?100:Math.min(100,Math.round(curXP/needXP*100));
+  document.getElementById('xp-fill').style.width=pct+'%';
+  document.getElementById('lvl-lbl').textContent=`LEVEL ${level} — ${LEVELS[level-1].name}`;
+  document.getElementById('xp-needed').textContent=level>=5?'MAX LEVEL!':xp+' / '+next.xp+' XP';
+  document.getElementById('xp-disp').textContent=xp;
+}
+function checkJamUnlock(){
+  if(level>=5){const jc=document.getElementById('jamcard');jc.classList.remove('locked');jc.onclick=()=>toast('🎸 Jam Room — Full version coming soon!');}
+}
+function checkJam(){if(level<5)toast('🔒 Reach Level 5 to unlock the Jam Room!');}
+
+// ─── SEQ GRID ───
+function buildSeqGrid(){
+  const g=document.getElementById('seq-grid');g.innerHTML='';
+  TRACKS.forEach((track,ti)=>{
+    const row=document.createElement('div');row.className='seq-row';
+    const lbl=document.createElement('div');lbl.className='seq-name';lbl.textContent=track.name;row.appendChild(lbl);
+    for(let s=0;s<16;s++){
+      const btn=document.createElement('button');
+      btn.className=`seq-btn ${track.color}${seqState[ti][s]?' on':''}`;
+      btn.id=`sb-${ti}-${s}`;
+      btn.onclick=()=>{seqState[ti][s]=!seqState[ti][s];btn.classList.toggle('on',seqState[ti][s]);if(seqState[ti][s]){addXP(1);awardBadge('firstBeat');}};
+      row.appendChild(btn);
+    }
+    g.appendChild(row);
+  });
+}
+
+function togglePlay(){
+  isPlaying=!isPlaying;
+  document.getElementById('play-btn').textContent=isPlaying?'⏸ PAUSE':'▶ PLAY';
+  document.getElementById('play-btn').className=isPlaying?'btn bred bsm':'btn bgreen bsm';
+  document.getElementById('play-ind').style.display=isPlaying?'block':'none';
+  if(isPlaying){startSeq();addXP(5);checkLoopMaster();}else{stopSeq();}
+  document.getElementById('beat-status').textContent=isPlaying?'● Playing...':'Ready';
+}
+let loopCount=0;
+function checkLoopMaster(){loopCount++;if(loopCount>=3)awardBadge('loopMaster');}
+
+function startSeq(){
+  if(playInterval)clearInterval(playInterval);
+  const interval=Math.round(60000/bpm/4);
+  playInterval=setInterval(()=>{
+    // clear previous step highlight
+    TRACKS.forEach((_,ti)=>{const prev=document.getElementById(`sb-${ti}-${(currentStep+15)%16}`);if(prev)prev.classList.remove('playing');});
+    // play current step
+    TRACKS.forEach((t,ti)=>{
+      const btn=document.getElementById(`sb-${ti}-${currentStep}`);
+      if(btn)btn.classList.add('playing');
+      if(seqState[ti][currentStep])playDrum(ti);
+    });
+    document.getElementById('step-disp').textContent=currentStep+1;
+    currentStep=(currentStep+1)%16;
+    if(currentStep===0)checkLoopMaster();
+  },interval);
+}
+
+function stopSeq(){
+  if(playInterval){clearInterval(playInterval);playInterval=null;}
+  TRACKS.forEach((_,ti)=>{for(let s=0;s<16;s++){const b=document.getElementById(`sb-${ti}-${s}`);if(b)b.classList.remove('playing');}});
+  document.getElementById('step-disp').textContent='—';
+  currentStep=0;
+}
+
+function clearSeq(){
+  if(isPlaying)togglePlay();
+  seqState=TRACKS.map(()=>Array(16).fill(false));
+  buildSeqGrid();toast('Sequence cleared!');
+}
+
+function randomSeq(){
+  seqState=TRACKS.map((_,ti)=>Array(16).fill(false).map(()=>Math.random()<(ti===0?.5:ti===1?.25:.15)));
+  buildSeqGrid();addXP(5);toast('Random beat generated! 🎲');awardBadge('composer');
+  if(isPlaying){stopSeq();startSeq();}
+}
+
+function updateBPM(){bpm=parseInt(document.getElementById('bpm').value)||90;bpm=Math.max(60,Math.min(180,bpm));document.getElementById('bpm-sl').value=bpm;if(isPlaying){stopSeq();startSeq();}}
+function syncBPM(v){bpm=parseInt(v);document.getElementById('bpm').value=bpm;if(isPlaying){stopSeq();startSeq();}}
+
+// ─── TABS ───
+function switchTab(idx){
+  ['tab-beats','tab-keys','tab-mixer','tab-arrange'].forEach((id,i)=>{document.getElementById(id).className='tab-pane'+(i===idx?' on':'');});
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.className='tab'+(i===idx?' on':'');});
+}
+
+// ─── MIXER ───
+function buildMixer(){
+  const wrap=document.getElementById('mixer-strips');wrap.innerHTML='';
+  TRACKS.forEach((t,ti)=>{
+    const ch=document.createElement('div');ch.className='channel';
+    ch.innerHTML=`<div class="ch-name">${t.name}</div>
+      <div class="fader-wrap"><input type="range" min="0" max="100" value="${volState[ti]}" class="fader" oninput="setVol(${ti},this.value)" orient="vertical"></div>
+      <div class="pan-knob" id="pan-${ti}" title="Pan" onclick="cyclePan(${ti})">C</div>
+      <button class="mute-btn${muteState[ti]?' on':''}" id="mute-${ti}" onclick="toggleMute(${ti})">M</button>
+      <button class="solo-btn${soloState[ti]?' on':''}" id="solo-${ti}" onclick="toggleSolo(${ti})">S</button>`;
+    wrap.appendChild(ch);
+  });
+}
+function setVol(ti,v){volState[ti]=parseInt(v);}
+function cyclePan(ti){panState[ti]=(panState[ti]===0?-1:panState[ti]===-1?1:0);const lb=['L','C','R'];document.getElementById('pan-'+ti).textContent=lb[panState[ti]+1];}
+function toggleMute(ti){muteState[ti]=!muteState[ti];document.getElementById('mute-'+ti).className='mute-btn'+(muteState[ti]?' on':'');}
+function toggleSolo(ti){soloState[ti]=!soloState[ti];document.getElementById('solo-'+ti).className='solo-btn'+(soloState[ti]?' on':'');}
+function setMasterVol(v){masterVol=v/100;document.getElementById('mvol-disp').textContent=v;}
+
+// ─── PIANO KEYS ───
+const NOTES_C4=['C4','C#4','D4','D#4','E4','F4','F#4','G4','G#4','A4','A#4','B4','C5','C#5','D5','D#5','E5','F5','F#5','G5','G#5','A5','A#5','B5'];
+const NOTE_FREQS={C4:261.6,'C#4':277.2,D4:293.7,'D#4':311.1,E4:329.6,F4:349.2,'F#4':370,'G4':392,'G#4':415.3,A4:440,'A#4':466.2,B4:493.9,C5:523.3,'C#5':554.4,D5:587.3,'D#5':622.3,E5:659.3,F5:698.5,'F#5':740,'G5':784,'G#5':830.6,A5:880,'A#5':932.3,B5:987.8};
+const BLACK_NOTES=['C#4','D#4','F#4','G#4','A#4','C#5','D#5','F#5','G#5','A#5'];
+const SCALES={Chromatic:[],Major:['C','D','E','F','G','A','B'],Minor:['C','D','Eb','F','G','Ab','Bb'],Pentatonic:['C','D','E','G','A'],Blues:['C','Eb','F','F#','G','Bb']};
+const KB_MAP={'a':'C4','w':'C#4','s':'D4','e':'D#4','d':'E4','f':'F4','t':'F#4','g':'G4','y':'G#4','h':'A4','u':'A#4','j':'B4','k':'C5'};
+let curScale='Chromatic';
+
+function isInScale(note){
+  if(curScale==='Chromatic')return false;
+  const noteName=note.replace(/[0-9]/g,'').replace('#','#');
+  const scaleNotes=SCALES[curScale]||[];
+  return scaleNotes.some(n=>noteName.startsWith(n.replace('b','').replace('#','#'))||noteName===n);
+}
+
+function buildPiano(){
+  const piano=document.getElementById('piano-keys');piano.innerHTML='';
+  const whites=NOTES_C4.filter(n=>!n.includes('#'));
+  let wIdx=0;
+  whites.forEach((note,wi)=>{
+    const key=document.createElement('div');key.className='wkey';key.id='pk-'+note;
+    const inScale=isInScale(note);if(inScale)key.classList.add('in-scale');
+    const lbl=document.createElement('div');lbl.className='piano-note';lbl.textContent=note.replace(/[0-9]/g,'');
+    key.appendChild(lbl);
+    key.addEventListener('mousedown',()=>pressKey(note));
+    piano.appendChild(key);
+  });
+  // Black keys
+  const wKeys=piano.querySelectorAll('.wkey');
+  BLACK_NOTES.forEach(note=>{
+    const baseName=note.replace('#','').replace(/[0-9]/g,'');
+    const oct=note.match(/[0-9]/)[0];
+    const whiteNotes={'C#':'C','D#':'D','F#':'F','G#':'G','A#':'A'};
+    const prevWhite=whiteNotes[note.replace(/[0-9]/g,'')]+oct;
+    const prevEl=document.getElementById('pk-'+prevWhite);
+    if(prevEl){
+      const bkey=document.createElement('div');bkey.className='bkey';bkey.id='pk-'+note;
+      const inScale=isInScale(note);if(inScale)bkey.classList.add('in-scale');
+      const left=prevEl.offsetLeft+prevEl.offsetWidth-9;
+      bkey.style.left=left+'px';
+      bkey.addEventListener('mousedown',(e)=>{e.stopPropagation();pressKey(note);});
+      piano.appendChild(bkey);
+    }
+  });
+}
+
+function pressKey(note){
+  const freq=NOTE_FREQS[note];if(!freq)return;
+  playNote(freq);
+  awardBadge('pianoPlayer');addXP(2);
+  document.getElementById('note-display').textContent=note;
+  const el=document.getElementById('pk-'+note);if(el){el.classList.add('pressed');setTimeout(()=>el.classList.remove('pressed'),200);}
+  toast('♪ '+note);
+}
+
+function buildScaleBtns(){
+  const wrap=document.getElementById('scale-btns');wrap.innerHTML='';
+  Object.keys(SCALES).forEach(s=>{
+    const btn=document.createElement('button');btn.className='scale-btn'+(s===curScale?' on':'');btn.textContent=s;
+    btn.onclick=()=>{curScale=s;buildScaleBtns();buildPiano();};
+    wrap.appendChild(btn);
+  });
+}
+
+// ─── KEYBOARD ───
+const pressedKeys=new Set();
+document.addEventListener('keydown',e=>{
+  if(pressedKeys.has(e.key))return;
+  pressedKeys.add(e.key);
+  const note=KB_MAP[e.key.toLowerCase()];
+  if(note){pressKey(note);if(level>=3)awardBadge('speedDemon');}
+});
+document.addEventListener('keyup',e=>{pressedKeys.delete(e.key);});
+
+// ─── LESSONS ───
+const LESSONS=[
+  {track:'Beginner',color:'#1a3a2e',stroke:'#10b981',items:[
+    {icon:'🥁',title:'What is a beat?',desc:'Learn the basics of rhythm and timing',xp:10,action:'loadBasicBeat'},
+    {icon:'🎵',title:'The 4/4 Time Signature',desc:'Understand how music is counted',xp:10,action:'load44Beat'},
+    {icon:'🥁',title:'Your First Kick Pattern',desc:'Program a simple kick drum loop',xp:15,action:'loadKickBeat'},
+    {icon:'🎶',title:'Adding the Snare',desc:'Add snare hits on beats 2 and 4',xp:15,action:'loadSnareBeat'},
+  ]},
+  {track:'Intermediate',color:'#1a1a3a',stroke:'#7c3aed',items:[
+    {icon:'🎹',title:'Major Scale on Piano',desc:'Play all 7 notes of the major scale',xp:20,action:'loadMajorScale'},
+    {icon:'🎛️',title:'Using the Mixer',desc:'Balance your track volumes',xp:20,action:'loadMixerLesson'},
+    {icon:'🥁',title:'Hi-Hat Patterns',desc:'Add groove with hi-hat variations',xp:25,action:'loadHiHatBeat'},
+    {icon:'🎵',title:'The Blues Feel',desc:'Add swing and blues notes',xp:25,action:'loadBluesBeat'},
+  ]},
+  {track:'Advanced',color:'#3a1a1a',stroke:'#f97316',items:[
+    {icon:'🎛️',title:'Layering Sounds',desc:'Create depth with multiple tracks',xp:35,action:'loadLayered'},
+    {icon:'🎹',title:'Minor Pentatonic',desc:'The secret to soulful melodies',xp:35,action:'loadPentaScale'},
+    {icon:'🥁',title:'Syncopated Rhythms',desc:'Off-beat patterns that groove',xp:40,action:'loadSyncoBeat'},
+    {icon:'🎵',title:'Full Song Structure',desc:'Intro, verse, chorus, and bridge',xp:45,action:'loadFullSong'},
+  ]},
+];
+
+function buildLessons(){
+  const con=document.getElementById('lessons-con');con.innerHTML='';
+  LESSONS.forEach(track=>{
+    const div=document.createElement('div');div.className='lesson-track';
+    div.innerHTML=`<div class="track-title" style="color:${track.stroke};">${track.track === 'Beginner'?'🟢':'track.track === 'Intermediate'?'🟡':'🔴'} ${track.track}</div>`;
+    track.items.forEach(lesson=>{
+      const card=document.createElement('div');card.className='lesson-card';
+      card.innerHTML=`<div class="lesson-icon">${lesson.icon}</div><div style="flex:1;"><div class="lesson-title">${lesson.title}</div><div class="lesson-desc">${lesson.desc}</div></div><button class="btn bsm" style="background:${track.stroke};color:#fff;" onclick="loadLesson('${lesson.action}',${lesson.xp})">Try It →</button>`;
+      div.appendChild(card);
+    });
+    con.appendChild(div);
+  });
+}
+
+const LESSON_PATTERNS={
+  loadBasicBeat:()=>{seqState=TRACKS.map(()=>Array(16).fill(false));seqState[0]=[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0].map(Boolean);},
+  load44Beat:()=>{seqState=TRACKS.map(()=>Array(16).fill(false));seqState[0]=[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0].map(Boolean);seqState[1]=[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0].map(Boolean);},
+  loadKickBeat:()=>{seqState=TRACKS.map(()=>Array(16).fill(false));seqState[0]=[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0].map(Boolean);},
+  loadSnareBeat:()=>{seqState=TRACKS.map(()=>Array(16).fill(false));seqState[0]=[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0].map(Boolean);seqState[1]=[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0].map(Boolean);seqState[2]=[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0].map(Boolean);},
+  loadMajorScale:()=>{curScale='Major';buildScaleBtns();buildPiano();goTo('S-STUDIO');switchTab(1);},
+  loadMixerLesson:()=>{goTo('S-STUDIO');switchTab(2);},
+  loadHiHatBeat:()=>{seqState=TRACKS.map(()=>Array(16).fill(false));seqState[0]=[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0].map(Boolean);seqState[2]=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1].map(Boolean);},
+  loadBluesBeat:()=>{curScale='Blues';buildScaleBtns();buildPiano();goTo('S-STUDIO');switchTab(1);},
+  loadLayered:()=>{seqState=TRACKS.map((_,i)=>Array(16).fill(false).map((_,s)=>i<4&&Math.random()<.3));buildSeqGrid();},
+  loadPentaScale:()=>{curScale='Pentatonic';buildScaleBtns();buildPiano();goTo('S-STUDIO');switchTab(1);},
+  loadSyncoBeat:()=>{seqState=TRACKS.map(()=>Array(16).fill(false));seqState[0]=[1,0,0,1,0,1,0,0,1,0,0,1,0,1,0,0].map(Boolean);seqState[1]=[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0].map(Boolean);seqState[2]=[1,0,1,1,0,1,0,1,1,0,1,1,0,1,0,1].map(Boolean);},
+  loadFullSong:()=>{seqState=TRACKS.map((_,i)=>Array(16).fill(false).map((_,s)=>{if(i===0)return[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0][s];if(i===1)return[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0][s];if(i===2)return[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1][s];return false;}));},
+};
+
+function loadLesson(action,xp){
+  if(LESSON_PATTERNS[action]){LESSON_PATTERNS[action]();}
+  buildSeqGrid();addXP(xp);awardBadge('learner');
+  toast(`Lesson loaded! +${xp} XP 📖`);
+  if(action!=='loadMixerLesson'&&action!=='loadMajorScale'&&action!=='loadMixerLesson'&&action!=='loadBluesBeat'&&action!=='loadPentaScale'){goTo('S-STUDIO');switchTab(0);}
+}
+
+// ─── CHALLENGES ───
+const CHALLENGES_DEF=[
+  {id:'copy',icon:'👂',name:'Copy the Beat',desc:'Listen and reproduce!',color:'#2d1b69',stroke:'#7c3aed'},
+  {id:'fill',icon:'🔲',name:'Fill the Grid',desc:'Hit 12 or more buttons',color:'#1a3a2e',stroke:'#10b981'},
+  {id:'speed',icon:'⚡',name:'Speed Round',desc:'Play 8 keys in 10 seconds',color:'#3a1a00',stroke:'#f97316'},
+  {id:'genre',icon:'🎧',name:'Guess the Genre',desc:'Identify the beat style',color:'#1a0a3a',stroke:'#ec4899'},
+  {id:'ear',icon:'🎵',name:'Ear Training',desc:'Match the note you hear',color:'#0a1a3a',stroke:'#3b82f6'},
+  {id:'daily',icon:'⭐',name:'Daily Challenge',desc:'Special challenge today!',color:'#1a1a00',stroke:'#fbbf24'},
+];
+
+function buildChallenges(){
+  const con=document.getElementById('chal-con');con.innerHTML='';
+  const grid=document.createElement('div');grid.className='challenge-grid';
+  CHALLENGES_DEF.forEach(c=>{
+    const card=document.createElement('div');card.className='chal-card';card.style.background=c.color;card.style.borderColor=c.stroke+'44';
+    card.innerHTML=`<div class="chal-icon">${c.icon}</div><div class="chal-name">${c.name}</div><div class="chal-sub">${c.desc}</div>`;
+    card.onclick=()=>launchChallenge(c.id);
+    grid.appendChild(card);
+  });
+  con.appendChild(grid);
+}
+
+function launchChallenge(id){
+  const c=CHALLENGES_DEF.find(x=>x.id===id);
+  document.getElementById('chal-title').textContent=c.icon+' '+c.name;
+  const con=document.getElementById('chal-act-con');
+  const templates={
+    copy:()=>{
+      const tgt=TRACKS.map(()=>Array(16).fill(false).map(()=>Math.random()<.2));
+      const tmp=JSON.parse(JSON.stringify(seqState));
+      seqState=tgt;buildSeqGrid();const sav=JSON.parse(JSON.stringify(tgt));seqState=tmp;buildSeqGrid();
+      con.innerHTML=`<div class="glass" style="margin-bottom:10px;"><div style="font-size:.8rem;color:var(--text);font-weight:700;margin-bottom:6px;">🎯 Listen to the target beat, then recreate it in the Studio!</div>
+        <button class="btn bpurp bsm" onclick="previewBeat(${JSON.stringify(sav).replace(/"/g,'&quot;')})">▶ Preview Target</button>
+      </div>
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:8px;">Go to Studio and program the beat, then come back to submit!</div>
+      <button class="btn bgold" onclick="chalComplete('copy',30)">✓ I Did It! +30 XP</button>`;
+    },
+    fill:()=>{
+      let hits=0;
+      seqState=TRACKS.map(()=>Array(16).fill(false));buildSeqGrid();
+      con.innerHTML=`<div class="glass" style="margin-bottom:10px;"><div style="font-size:.8rem;color:var(--text);font-weight:700;">🔲 Fill the Grid Challenge!</div><div style="font-size:.72rem;color:var(--muted);margin-top:4px;">Go to Studio → Beats and activate 12 or more buttons, then come back!</div></div>
+        <button class="btn bgreen" onclick="checkFillGrid()">Check My Grid ✓</button>`;
+    },
+    speed:()=>{
+      let count=0;let timer=null;let active=false;
+      con.innerHTML=`<div class="glass" style="text-align:center;margin-bottom:10px;">
+        <div style="font-size:.9rem;font-weight:700;color:var(--orange);">⚡ SPEED ROUND</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:4px;">Play 8 piano keys in 10 seconds!</div>
+        <div id="speed-count" style="font-family:'Orbitron',monospace;font-size:2rem;color:var(--gold);margin:10px 0;">0 / 8</div>
+        <div id="speed-timer" style="font-size:.8rem;color:var(--muted);">Press Start!</div>
+        <button class="btn bo" id="speed-start" onclick="startSpeedChallenge()">START ⚡</button>
+      </div>`;
+    },
+    genre:()=>{
+      const genres=['Hip-Hop','Rock','Electronic','Latin','Jazz'];
+      const ans=genres[Math.floor(Math.random()*genres.length)];
+      const patterns={HipHop:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],Rock:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],Electronic:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],Latin:[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1],Jazz:[1,1,0,1,1,0,1,0,1,1,0,1,1,0,1,0]};
+      con.innerHTML=`<div class="glass" style="margin-bottom:10px;"><div style="font-size:.8rem;color:var(--text);font-weight:700;margin-bottom:4px;">🎧 Guess the Genre!</div>
+        <div style="font-size:.72rem;color:var(--muted);">Listen to the beat and identify the genre.</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;">
+          ${genres.map(g=>`<button class="copt" onclick="guessGenre('${g}','${ans}',this)">${g}</button>`).join('')}
+        </div>
+        <div id="genre-result"></div>`;
+    },
+    ear:()=>{
+      const notes=['C4','D4','E4','F4','G4','A4','B4','C5'];
+      const target=notes[Math.floor(Math.random()*notes.length)];
+      con.innerHTML=`<div class="glass" style="margin-bottom:10px;"><div style="font-size:.8rem;color:var(--text);font-weight:700;margin-bottom:4px;">🎵 Ear Training!</div>
+        <div style="font-size:.72rem;color:var(--muted);">Listen to the note, then identify it.</div>
+        <button class="btn bpurp bsm" style="margin-top:8px;" onclick="playNote(${NOTE_FREQS[target]},0.5)">🔊 Play Note</button></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;">
+          ${notes.map(n=>`<button class="copt" onclick="guessNote('${n}','${target}',this)" style="text-align:center;">${n.replace('4','').replace('5','')}</button>`).join('')}
+        </div>
+        <div id="ear-result"></div>`;
+    },
+    daily:()=>{
+      con.innerHTML=`<div class="glass" style="text-align:center;padding:20px;">
+        <div style="font-size:2rem;margin-bottom:8px;">⭐</div>
+        <div style="font-family:'Orbitron',monospace;font-size:.8rem;font-weight:700;color:var(--gold);margin-bottom:6px;">DAILY CHALLENGE</div>
+        <div style="font-size:.78rem;color:var(--text);font-weight:600;margin-bottom:8px;">Today's challenge: Create a beat using ALL 8 tracks, then play it for at least 4 loops!</div>
+        <button class="btn bpurp" onclick="chalComplete('daily',50)">I Completed It! +50 XP ⭐</button>
+      </div>`;
+    },
+  };
+  (templates[id]||templates.daily)();
+  goTo('S-CHAL-ACT');
+}
+
+function previewBeat(pattern){
+  const old=JSON.parse(JSON.stringify(seqState));
+  seqState=pattern;buildSeqGrid();
+  const ac=getAC();let step=0;
+  const iv=setInterval(()=>{TRACKS.forEach((_,ti)=>{if(pattern[ti]&&pattern[ti][step])playDrum(ti);});step++;if(step>=16){clearInterval(iv);seqState=old;buildSeqGrid();}},Math.round(60000/bpm/4));
+}
+
+function checkFillGrid(){
+  let count=0;seqState.forEach(row=>row.forEach(v=>{if(v)count++;}));
+  if(count>=12){chalComplete('fill',25);toast('Grid filled! 🔲 +25 XP');}
+  else{toast(`Only ${count}/12 buttons! Keep filling! 🎯`);}
+}
+
+let speedActive=false,speedCount=0,speedTimer=null,speedInterval=null;
+function startSpeedChallenge(){
+  speedCount=0;speedActive=true;let timeLeft=10;
+  document.getElementById('speed-start').style.display='none';
+  document.getElementById('speed-count').textContent='0 / 8';
+  speedTimer=setInterval(()=>{timeLeft--;document.getElementById('speed-timer').textContent=timeLeft+'s remaining';if(timeLeft<=0){clearInterval(speedTimer);speedActive=false;if(speedCount>=8){chalComplete('speed',35);awardBadge('speedDemon');}else toast('Not quite! Try again 💪');}},1000);
+  window._speedCallback=(note)=>{if(!speedActive)return;speedCount++;document.getElementById('speed-count').textContent=speedCount+' / 8';if(speedCount>=8){clearInterval(speedTimer);speedActive=false;chalComplete('speed',35);awardBadge('speedDemon');}};
+}
+
+function guessGenre(guess,ans,el){
+  document.querySelectorAll('#chal-act-con .copt').forEach(b=>b.disabled=true);
+  if(guess===ans){el.classList.add('ok');document.getElementById('genre-result').innerHTML=`<div style="color:#86efac;font-weight:700;font-size:.8rem;">✅ Correct! It was ${ans}! +20 XP</div>`;chalComplete('genre',20);}
+  else{el.classList.add('no');document.getElementById('genre-result').innerHTML=`<div style="color:#fca5a5;font-weight:700;font-size:.8rem;">❌ It was ${ans}. Good ear training! +5 XP</div>`;addXP(5);}
+}
+
+function guessNote(guess,ans,el){
+  document.querySelectorAll('#chal-act-con .copt').forEach(b=>b.disabled=true);
+  if(guess===ans){el.classList.add('ok');document.getElementById('ear-result').innerHTML=`<div style="color:#86efac;font-weight:700;font-size:.8rem;">✅ Perfect pitch! +25 XP</div>`;chalComplete('ear',25);}
+  else{el.classList.add('no');playNote(NOTE_FREQS[ans]);document.getElementById('ear-result').innerHTML=`<div style="color:#fca5a5;font-weight:700;font-size:.8rem;">❌ It was ${ans} — listen again! +5 XP</div>`;addXP(5);}
+}
+
+function chalComplete(id,xpGain){addXP(xpGain);awardBadge('challenger');toast(`Challenge complete! +${xpGain} XP 🎮`);const con=document.getElementById('chal-act-con');const fin=document.createElement('div');fin.style.cssText='margin-top:10px;';fin.innerHTML=`<div class="glass-h" style="text-align:center;padding:14px;"><div style="font-size:2rem;margin-bottom:5px;">🎉</div><div style="font-family:'Orbitron',monospace;font-size:.8rem;color:var(--gold);font-weight:700;">CHALLENGE COMPLETE</div><div style="font-size:.75rem;color:var(--muted);margin:5px 0;">+${xpGain} XP earned!</div><button class="btn bpurp bsm" onclick="goTo('S-CHALLENGES')">More Challenges</button></div>`;con.appendChild(fin);}
+
+// ─── MY BEATS ───
+function saveSession(){
+  const totalHits=seqState.reduce((a,row)=>a+row.filter(Boolean).length,0);
+  if(totalHits===0){toast('Add some beats first! 🥁');return;}
+  const beat={id:Date.now(),name:'Beat '+(savedBeats.length+1),bpm,date:new Date().toLocaleDateString(),hits:totalHits,pattern:JSON.parse(JSON.stringify(seqState))};
+  savedBeats.push(beat);awardBadge('saver');addXP(10);toast('Beat saved to session! 💾 +10 XP');buildMyBeats();
+}
+function buildMyBeats(){
+  const con=document.getElementById('beats-con');
+  if(savedBeats.length===0){con.innerHTML=`<div style="text-align:center;padding:30px;color:var(--muted);font-size:.82rem;font-weight:600;">No beats saved yet!<br><br>Go to Studio → Beats and create a pattern, then hit 💾 SAVE.</div>`;return;}
+  con.innerHTML=`<div style="font-size:.7rem;color:var(--muted);margin-bottom:8px;font-weight:600;">Session saves — cleared when you leave. No files stored.</div>`;
+  savedBeats.forEach((beat,i)=>{
+    const item=document.createElement('div');item.className='beat-item';
+    item.innerHTML=`<div style="font-size:1.5rem;">🥁</div><div style="flex:1;"><div style="font-weight:800;font-size:.82rem;color:#fff;">${beat.name}</div><div style="font-size:.7rem;color:var(--muted);">${beat.bpm} BPM · ${beat.hits} hits · ${beat.date}</div></div>
+      <button class="btn bpurp bxs" onclick="loadBeat(${i})">Load</button>
+      <button class="btn bred bxs" onclick="deleteBeat(${i})" style="margin-left:4px;">✕</button>`;
+    con.appendChild(item);
+  });
+}
+function loadBeat(i){seqState=JSON.parse(JSON.stringify(savedBeats[i].pattern));bpm=savedBeats[i].bpm;document.getElementById('bpm').value=bpm;document.getElementById('bpm-sl').value=bpm;buildSeqGrid();goTo('S-STUDIO');switchTab(0);toast('Beat loaded! 🎵');}
+function deleteBeat(i){savedBeats.splice(i,1);buildMyBeats();toast('Beat deleted.');}
+
+// ─── BADGES ───
+const BADGE_DEF=[
+  {id:'firstBeat',icon:'🥁',name:'First Beat',desc:'Activate your first step'},
+  {id:'loopMaster',icon:'🔄',name:'Loop Master',desc:'Play 3+ loops in a row'},
+  {id:'pianoPlayer',icon:'🎹',name:'Piano Player',desc:'Play a note on the piano'},
+  {id:'speedDemon',icon:'⚡',name:'Speed Demon',desc:'Complete Speed Round'},
+  {id:'composer',icon:'🎼',name:'Composer',desc:'Use Randomize feature'},
+  {id:'learner',icon:'📖',name:'Learner',desc:'Complete a lesson'},
+  {id:'challenger',icon:'🎮',name:'Challenger',desc:'Complete a challenge'},
+  {id:'saver',icon:'💾',name:'Saver',desc:'Save a beat to session'},
+];
+function buildBadges(){
+  const con=document.getElementById('badges-con');
+  const earned=Object.values(badges).filter(Boolean).length;
+  con.innerHTML=`<div style="font-size:.75rem;color:var(--muted);margin-bottom:10px;font-weight:600;">${earned}/8 badges earned 🏆</div>`;
+  const grid=document.createElement('div');grid.className='badge-grid';
+  BADGE_DEF.forEach(b=>{
+    const card=document.createElement('div');card.className='badge-card'+(badges[b.id]?' earned':'');
+    card.id='badge-card-'+b.id;
+    card.innerHTML=`<span class="badge-icon">${badges[b.id]?b.icon:'🔒'}</span><div class="badge-name">${b.name}</div><div style="font-size:.52rem;color:var(--muted);margin-top:2px;">${b.desc}</div>`;
+    grid.appendChild(card);
+  });
+  con.appendChild(grid);
+}
+function awardBadge(id){
+  if(badges[id])return;badges[id]=true;
+  const b=BADGE_DEF.find(x=>x.id===id);toast(`🏆 Badge Unlocked: ${b.name}!`);addXP(20);
+  const card=document.getElementById('badge-card-'+id);
+  if(card){card.className='badge-card earned';card.querySelector('.badge-icon').textContent=b.icon;card.querySelector('.badge-name').style.color='var(--gold)';}
+}
+
+// ─── INIT ───
+document.addEventListener('DOMContentLoaded',()=>{
+  buildBG();buildSeqGrid();buildMixer();buildScaleBtns();buildPiano();buildLessons();buildChallenges();buildMyBeats();buildBadges();
+  // Piano key play hook for speed challenge
+  const origPress=pressKey;
+  window.pressKey=function(note){origPress(note);if(window._speedCallback)window._speedCallback(note);};
+});
+</script>

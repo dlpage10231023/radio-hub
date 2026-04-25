@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voices & Vibes Radio — Player</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0a0a0a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Montserrat',sans-serif}
+
+:root{
+  --teal:#009B9B;
+  --teal-dark:#007A7A;
+  --teal-light:#00C4C4;
+  --coral:#E8624A;
+  --black:#0a0a0a;
+  --dark:#111;
+  --card:#1a1a1a;
+  --white:#fff;
+  --muted:#8ab8b8;
+}
+
+/* ── PLAYER CARD ── */
+.player-wrap{
+  width:100%;max-width:480px;
+  background:var(--card);
+  border:1px solid rgba(0,155,155,0.2);
+  padding:2.5rem 2rem 2rem;
+  position:relative;overflow:hidden;
+}
+.player-wrap::before{
+  content:'';position:absolute;top:-80px;left:-80px;
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,155,155,0.12),transparent 70%);
+  pointer-events:none;
+}
+.player-wrap::after{
+  content:'';position:absolute;bottom:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,98,74,0.1),transparent 70%);
+  pointer-events:none;
+}
+
+/* ── TOP BADGE ── */
+.live-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(232,98,74,0.12);border:1px solid rgba(232,98,74,0.35);
+  color:var(--coral);font-size:10px;font-weight:700;
+  letter-spacing:0.22em;text-transform:uppercase;
+  padding:5px 14px;margin-bottom:1.5rem;
+}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--coral);animation:blink 1.3s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.1}}
+
+/* ── STATION INFO ── */
+.station-name{
+  font-family:'Dancing Script',cursive;
+  font-size:2.6rem;font-weight:700;line-height:1;
+  color:var(--coral);margin-bottom:0.15rem;
+}
+.station-name span{color:var(--teal)}
+.station-sub{
+  font-size:10px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:1.75rem;font-weight:500;
+}
+
+/* ── VISUALIZER ── */
+.visualizer{
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:4px;height:52px;margin-bottom:1.75rem;
+  background:rgba(0,155,155,0.04);border:1px solid rgba(0,155,155,0.1);
+  padding:8px 12px;
+}
+.vbar{
+  width:6px;border-radius:2px 2px 0 0;
+  transition:height 0.12s ease;
+}
+.vbar.t{background:linear-gradient(to top,var(--teal-dark),var(--teal-light))}
+.vbar.c{background:linear-gradient(to top,#c04030,var(--coral))}
+.visualizer.idle .vbar{animation:none!important;height:4px!important}
+
+/* ── NOW PLAYING ── */
+.now-playing{
+  font-size:11px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.4rem;font-weight:700;
+}
+.track-name{
+  font-size:15px;font-weight:600;color:var(--white);
+  margin-bottom:0.2rem;white-space:nowrap;overflow:hidden;
+  position:relative;
+}
+.track-scroll{
+  display:inline-block;
+  animation:scroll-text 12s linear infinite;
+}
+@keyframes scroll-text{
+  0%,15%{transform:translateX(0)}
+  85%,100%{transform:translateX(-60%)}
+}
+.track-meta{font-size:12px;color:var(--muted);margin-bottom:1.5rem}
+
+/* ── PROGRESS ── */
+.progress-wrap{margin-bottom:1.5rem}
+.progress-bar{
+  width:100%;height:3px;background:rgba(255,255,255,0.08);
+  cursor:pointer;position:relative;
+}
+.progress-fill{
+  height:100%;background:linear-gradient(to right,var(--teal),var(--coral));
+  width:0%;transition:width 0.5s linear;
+}
+.progress-time{
+  display:flex;justify-content:space-between;
+  font-size:10px;color:var(--muted);margin-top:6px;letter-spacing:0.05em;
+}
+
+/* ── CONTROLS ── */
+.controls{
+  display:flex;align-items:center;justify-content:center;
+  gap:1rem;margin-bottom:1.75rem;
+}
+.ctrl{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:1.1rem;
+  transition:color 0.2s,transform 0.15s;padding:6px;
+}
+.ctrl:hover{color:var(--white);transform:scale(1.15)}
+.ctrl-play{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--teal);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;color:var(--black);
+  transition:background 0.2s,transform 0.15s;
+  box-shadow:0 0 24px rgba(0,155,155,0.35);
+}
+.ctrl-play:hover{background:var(--teal-light);transform:scale(1.08)}
+.ctrl-play.playing{background:var(--coral);box-shadow:0 0 24px rgba(232,98,74,0.35)}
+.ctrl-play.playing:hover{background:#F07A62}
+
+/* ── VOLUME ── */
+.vol-row{
+  display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;
+}
+.vol-icon{font-size:14px;color:var(--muted)}
+input[type=range]{
+  flex:1;height:3px;-webkit-appearance:none;appearance:none;
+  background:rgba(255,255,255,0.1);border-radius:2px;cursor:pointer;outline:none;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--teal);cursor:pointer;
+  box-shadow:0 0 8px rgba(0,155,155,0.5);
+}
+input[type=range]::-moz-range-thumb{
+  width:14px;height:14px;border-radius:50%;border:none;
+  background:var(--teal);cursor:pointer;
+}
+.vol-pct{font-size:11px;color:var(--muted);min-width:30px;text-align:right;letter-spacing:0.05em}
+
+/* ── LINKS ── */
+.player-links{
+  display:flex;gap:0.75rem;
+}
+.plink{
+  flex:1;text-align:center;
+  padding:10px;font-size:11px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;
+  text-decoration:none;transition:all 0.2s;
+}
+.plink.teal{
+  background:var(--teal);color:var(--black);
+}
+.plink.teal:hover{background:var(--teal-light)}
+.plink.outline{
+  border:1px solid rgba(0,155,155,0.3);color:var(--teal);
+  background:transparent;
+}
+.plink.outline:hover{background:rgba(0,155,155,0.1)}
+
+/* ── FOOTER ── */
+.player-footer{
+  margin-top:1.25rem;text-align:center;
+  font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:rgba(138,184,184,0.35);
+}
+
+/* ── EMBED NOTE (shown at bottom, for devs) ── */
+.embed-note{
+  margin-top:2rem;padding:1rem;
+  background:rgba(0,155,155,0.05);border:1px dashed rgba(0,155,155,0.2);
+  font-size:11px;color:var(--muted);line-height:1.8;
+}
+.embed-note code{
+  color:var(--teal);font-family:monospace;font-size:11px;
+  background:rgba(0,155,155,0.1);padding:2px 6px;
+}
+</style>
+</head>
+<body>
+
+<div style="padding:2rem;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.5rem">
+
+  <!-- ══ PLAYER ══ -->
+  <div class="player-wrap">
+
+    <div class="live-badge"><span class="live-dot"></span> Live · Houston, TX</div>
+
+    <div class="station-name">Voices &amp; <span>Vibes</span></div>
+    <div class="station-sub">Healing Conversations &amp; Restorative Jazz</div>
+
+    <!-- Visualizer -->
+    <div class="visualizer idle" id="viz">
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+      <div class="vbar t" style="height:4px"></div>
+      <div class="vbar c" style="height:4px"></div>
+    </div>
+
+    <!-- Now Playing -->
+    <div class="now-playing">Now Playing</div>
+    <div class="track-name"><span class="track-scroll" id="track-name">Healing Conversations &amp; Restorative Jazz · voicesandvibesradio.com</span></div>
+    <div class="track-meta" id="track-meta">Voices &amp; Vibes Radio · Streaming 24/7 Worldwide</div>
+
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-bar">
+        <div class="progress-fill" id="prog-fill"></div>
+      </div>
+      <div class="progress-time">
+        <span id="time-elapsed">0:00</span>
+        <span style="color:rgba(138,184,184,0.4)">LIVE</span>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <button class="ctrl" onclick="prevTrack()" title="Previous mood">⏮</button>
+      <button class="ctrl-play" id="play-btn" onclick="togglePlay()">▶</button>
+      <button class="ctrl" onclick="nextTrack()" title="Next mood">⏭</button>
+    </div>
+
+    <!-- Volume -->
+    <div class="vol-row">
+      <span class="vol-icon">🔈</span>
+      <input type="range" id="vol" min="0" max="100" value="65" oninput="setVol(this.value)">
+      <span class="vol-pct" id="vol-pct">65%</span>
+    </div>
+
+    <!-- Links -->
+    <div class="player-links">
+      <a href="https://hello.citrus3.com:2020/public/voicesandvibes" target="_blank" class="plink teal">🎙️ Full Live Stream</a>
+      <a href="https://voicesandvibesradio.com" target="_blank" class="plink outline">Visit Site</a>
+    </div>
+
+    <div class="player-footer">voicesandvibesradio.com · Est. Jan 2026</div>
+  </div>
+
+  <!-- EMBED INSTRUCTIONS -->
+  <div class="embed-note" style="max-width:480px;width:100%">
+    <strong style="color:var(--teal);display:block;margin-bottom:0.5rem">📋 To embed on your Lovable site:</strong>
+    Save this file and add it to your project. Then embed it anywhere with:<br><br>
+    <code>&lt;iframe src="/player.html" width="100%" height="520" frameborder="0"&gt;&lt;/iframe&gt;</code><br><br>
+    Or paste the full HTML into a Lovable custom HTML block.
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// MOODS / TRACKS
+// ══════════════════════════════════════════
+const moods = [
+  { name: 'Healing Jazz · Smooth & Restorative',  meta: 'Therapy-inspired · Midtempo · 88 BPM',  bpm: 88,  chordSet: 0 },
+  { name: 'Gospel Groove · Sunday Soul Vibes',     meta: 'Faith & Healing · Uplifting · 96 BPM',  bpm: 96,  chordSet: 1 },
+  { name: 'Afrobeats Jazz · Rhythm & Restoration', meta: 'Voices & Vibes Signature · 92 BPM',     bpm: 92,  chordSet: 2 },
+  { name: 'Soul Saturday · Deep Rest & Peace',     meta: 'Self-Care Soundscape · Slow · 76 BPM',  bpm: 76,  chordSet: 3 },
+];
+let moodIdx = 2; // default: afrobeats jazz
+
+// ══════════════════════════════════════════
+// AUDIO ENGINE
+// ══════════════════════════════════════════
+let ctx = null, master = null, reverb = null;
+let isPlaying = false;
+let beatLoopId = null;
+let currentBar = 0, nextBarTime = 0;
+let elapsed = 0, elapsedInterval = null;
+
+// Chord sets
+const CHORD_SETS = [
+  // Set 0: Dm9 → Gm9 → Bbmaj7 → Am9 (healing jazz)
+  [[293.66,349.23,440.00,523.25,659.25],[392.00,466.16,587.33,698.46,880.00],[466.16,587.33,698.46,932.33,1046.50],[440.00,523.25,659.25,783.99,987.77]],
+  // Set 1: Fmaj7 → Gm7 → Am7 → Bbmaj7 (gospel)
+  [[349.23,440.00,523.25,659.25,783.99],[392.00,466.16,587.33,698.46,880.00],[440.00,523.25,659.25,783.99,987.77],[466.16,587.33,698.46,932.33,1046.50]],
+  // Set 2: Dm9 → Gm9 → Bbmaj7 → Am9 (afrobeats)
+  [[293.66,349.23,440.00,523.25,659.25],[392.00,466.16,587.33,698.46,880.00],[466.16,587.33,698.46,932.33,1046.50],[440.00,523.25,659.25,783.99,987.77]],
+  // Set 3: Cmaj9 → Em7 → Am7 → Fmaj7 (soul/rest)
+  [[261.63,329.63,392.00,493.88,587.33],[329.63,392.00,493.88,587.33,783.99],[440.00,523.25,659.25,783.99,987.77],[349.23,440.00,523.25,659.25,783.99]],
+];
+const BASS_SETS = [
+  [146.83,196.00,233.08,220.00],
+  [174.61,196.00,220.00,233.08],
+  [146.83,196.00,233.08,220.00],
+  [130.81,164.81,220.00,174.61],
+];
+
+// Drum patterns per mood
+const KICKS  = [[1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0],[1,0,0,0,0,0,0,1,1,0,0,0,0,0,1,0],[1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0],[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]];
+const SNARES = [[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0]];
+const HIHATS = [[1,0,1,1,0,1,1,0,1,0,1,1,0,1,1,0],[1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1],[1,0,1,1,0,1,1,0,1,0,1,1,0,1,1,0],[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0]];
+const CLAVES = [[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0],[0,0,1,0,0,1,0,0,1,0,0,1,0,0,0,0],[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+
+function initCtx() {
+  if (ctx) return;
+  ctx = new (window.AudioContext || window.webkitAudioContext)();
+  master = ctx.createGain();
+  master.gain.value = 0.001;
+  master.connect(ctx.destination);
+
+  // Reverb
+  const conv = ctx.createConvolver();
+  const len = ctx.sampleRate * 2.2;
+  const ir = ctx.createBuffer(2, len, ctx.sampleRate);
+  for (let c = 0; c < 2; c++) {
+    const d = ir.getChannelData(c);
+    for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.4);
+  }
+  conv.buffer = ir;
+  const rg = ctx.createGain(); rg.gain.value = 0.22;
+  conv.connect(rg); rg.connect(master);
+  reverb = conv;
+}
+
+function osc(freq, type, t, dur, vol, det=0) {
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  const rs = ctx.createGain(); rs.gain.value = 0.25;
+  o.type = type; o.frequency.value = freq; o.detune.value = det;
+  o.connect(g); g.connect(master);
+  o.connect(rs); rs.connect(reverb);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.linearRampToValueAtTime(vol, t + 0.03);
+  g.gain.exponentialRampToValueAtTime(vol * 0.55, t + dur * 0.55);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+
+function noise(t, dur, vol, cf) {
+  const buf = ctx.createBuffer(1, ctx.sampleRate * 0.09, ctx.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random()*2-1;
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  const f = ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=cf; f.Q.value=2.2;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(f); f.connect(g); g.connect(master);
+  src.start(t); src.stop(t + dur + 0.04);
+}
+
+function scheduleBar(barStart, barNum) {
+  const mood = moods[moodIdx];
+  const beat = 60 / mood.bpm;
+  const sixteenth = beat / 4;
+  const ci = barNum % 4;
+  const chords = CHORD_SETS[mood.chordSet];
+  const bass = BASS_SETS[mood.chordSet];
+
+  // Chord pad
+  chords[ci].forEach((fr, i) => {
+    const s = i * 0.02;
+    osc(fr, 'sine', barStart + s, beat * 3.8, 0.042);
+    osc(fr, 'triangle', barStart + s, beat * 3.8, 0.016, -4);
+  });
+  osc(chords[ci][0] / 2, 'sine', barStart, beat * 4, 0.055);
+
+  // Bass
+  osc(bass[ci], 'sine', barStart, beat * 0.65, 0.32);
+  osc(bass[ci], 'sine', barStart + beat * 1.5, beat * 0.38, 0.22);
+  osc(bass[ci] * 1.125, 'sine', barStart + beat * 2.5, beat * 0.45, 0.26);
+  osc(bass[ci], 'sine', barStart + beat * 3.0, beat * 0.55, 0.20);
+
+  // Percussion
+  for (let s = 0; s < 16; s++) {
+    const t = barStart + s * sixteenth;
+    if (KICKS[moodIdx][s])  noise(t, 0.18, 0.50, 80);
+    if (SNARES[moodIdx][s]) noise(t, 0.11, 0.28, 280);
+    if (HIHATS[moodIdx][s]) noise(t, 0.04, 0.08, 5800);
+    if (CLAVES[moodIdx][s]) noise(t, 0.06, 0.16, 1100);
+  }
+
+  // Melody — pentatonic float
+  if (barNum % 2 === 0) {
+    const root = chords[ci];
+    const mel = [root[0], root[1], root[2], root[4], root[2], root[1]];
+    mel.forEach((fr, i) => {
+      osc(fr, 'sine', barStart + beat * 0.25 + i * beat * 0.55, beat * 0.42, 0.025);
+    });
+  }
+
+  // Gospel organ stab on mood 1
+  if (moodIdx === 1 && barNum % 2 === 1) {
+    [1, 1.5, 2, 3].forEach((bOff, i) => {
+      osc(chords[ci][i % chords[ci].length], 'square', barStart + beat * bOff, beat * 0.25, 0.018);
+    });
+  }
+}
+
+const LOOKAHEAD = 0.12, SCHEDULE_AHEAD = 0.28;
+
+function scheduler() {
+  if (!isPlaying) return;
+  const beat = 60 / moods[moodIdx].bpm;
+  while (nextBarTime < ctx.currentTime + SCHEDULE_AHEAD) {
+    scheduleBar(nextBarTime, currentBar);
+    nextBarTime += beat * 4;
+    currentBar++;
+  }
+}
+
+function animViz() {
+  if (!isPlaying) return;
+  const bars = document.querySelectorAll('.vbar');
+  bars.forEach(b => {
+    const h = 4 + Math.random() * 40;
+    b.style.height = h + 'px';
+  });
+  setTimeout(animViz, 80);
+}
+
+function startElapsed() {
+  elapsed = 0;
+  clearInterval(elapsedInterval);
+  elapsedInterval = setInterval(() => {
+    elapsed++;
+    const m = Math.floor(elapsed / 60);
+    const s = elapsed % 60;
+    document.getElementById('time-elapsed').textContent = m + ':' + String(s).padStart(2,'0');
+    // fake progress (loops at 8 min)
+    document.getElementById('prog-fill').style.width = ((elapsed % 480) / 480 * 100) + '%';
+  }, 1000);
+}
+
+function startAudio() {
+  initCtx();
+  if (ctx.state === 'suspended') ctx.resume();
+  isPlaying = true;
+  currentBar = 0;
+  nextBarTime = ctx.currentTime + 0.1;
+  const vol = parseInt(document.getElementById('vol').value) / 100 * 0.72;
+  master.gain.cancelScheduledValues(ctx.currentTime);
+  master.gain.setValueAtTime(0.001, ctx.currentTime);
+  master.gain.linearRampToValueAtTime(vol, ctx.currentTime + 2.2);
+  beatLoopId = setInterval(scheduler, LOOKAHEAD * 1000);
+  document.getElementById('play-btn').textContent = '⏸';
+  document.getElementById('play-btn').classList.add('playing');
+  document.getElementById('viz').classList.remove('idle');
+  animViz();
+  startElapsed();
+  updateTrackDisplay();
+}
+
+function stopAudio() {
+  isPlaying = false;
+  clearInterval(beatLoopId);
+  clearInterval(elapsedInterval);
+  if (ctx) {
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.setValueAtTime(master.gain.value, ctx.currentTime);
+    master.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+  }
+  document.getElementById('play-btn').textContent = '▶';
+  document.getElementById('play-btn').classList.remove('playing');
+  document.getElementById('viz').classList.add('idle');
+  document.querySelectorAll('.vbar').forEach(b => b.style.height = '4px');
+}
+
+function togglePlay() { isPlaying ? stopAudio() : startAudio(); }
+
+function setVol(val) {
+  document.getElementById('vol-pct').textContent = val + '%';
+  if (ctx && master && isPlaying) {
+    const v = (val / 100) * 0.72;
+    master.gain.cancelScheduledValues(ctx.currentTime);
+    master.gain.setValueAtTime(v, ctx.currentTime);
+  }
+}
+
+function updateTrackDisplay() {
+  const m = moods[moodIdx];
+  document.getElementById('track-name').textContent = m.name;
+  document.getElementById('track-meta').textContent = m.meta;
+}
+
+function nextTrack() {
+  moodIdx = (moodIdx + 1) % moods.length;
+  if (isPlaying) { stopAudio(); setTimeout(startAudio, 400); }
+  else updateTrackDisplay();
+}
+
+function prevTrack() {
+  moodIdx = (moodIdx - 1 + moods.length) % moods.length;
+  if (isPlaying) { stopAudio(); setTimeout(startAudio, 400); }
+  else updateTrackDisplay();
+}
+
+updateTrackDisplay();
+</script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.root{font-family:system-ui,sans-serif;background:var(--color-background-secondary);padding:12px}
+.nav{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.nav-btn{padding:7px 16px;font-size:11px;font-weight:600;border-radius:50px;cursor:pointer;border:1px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .15s}
+.nav-btn.on{background:#009B9B;color:#fff;border-color:#009B9B}
+.preview{display:none}
+.preview.on{display:block}
+
+/* ── 1. EDITORIAL LIGHT ──────────────────── */
+.ed{background:#fff;min-height:480px}
+.ed-hero{display:flex;height:200px;overflow:hidden}
+.ed-photo{width:200px;flex-shrink:0;background:#e8f5f5;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:900;color:#009B9B;font-family:Georgia,serif}
+.ed-banner{flex:1;background:#009B9B;display:flex;flex-direction:column;justify-content:flex-end;padding:20px 24px}
+.ed-station{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#ffffffaa;margin-bottom:6px}
+.ed-name{font-size:30px;font-weight:900;color:#fff;line-height:1;font-family:Georgia,serif}
+.ed-tagline{font-size:11px;color:#E8624A;background:#fff;display:inline-block;padding:3px 10px;border-radius:2px;margin-top:8px;font-weight:700}
+.ed-body{display:grid;grid-template-columns:200px 1fr;border-top:3px solid #009B9B}
+.ed-sidebar{padding:20px;border-right:1px solid #e8e8e8}
+.ed-stat{margin-bottom:14px}
+.ed-stat-num{font-size:22px;font-weight:900;color:#0a0a0a;font-family:Georgia,serif}
+.ed-stat-label{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-top:1px}
+.ed-pill{display:inline-block;font-size:9px;padding:2px 8px;border-radius:2px;margin:2px 2px 2px 0;background:#e8f5f5;color:#009B9B;border:1px solid #009B9B33}
+.ed-pill-c{background:#fef0ec;color:#E8624A;border-color:#E8624A33}
+.ed-main{padding:20px 24px}
+.ed-track{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.ed-track:hover .ed-play{color:#009B9B}
+.ed-play{font-size:12px;color:#ccc;width:18px;text-align:center;flex-shrink:0}
+.ed-tnum{font-size:11px;color:#ccc;width:16px;text-align:center;flex-shrink:0}
+.ed-tname{font-size:12px;font-weight:600;color:#1a1a1a;flex:1}
+.ed-tname.active{color:#009B9B}
+.ed-tgenre{font-size:10px;color:#999}
+.ed-tdur{font-size:10px;color:#bbb;flex-shrink:0}
+.ed-follow{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:7px 16px;border-radius:2px;background:#009B9B;color:#fff;border:none;cursor:pointer;margin-top:12px}
+
+/* ── 2. CREAM JOURNAL ──────────────────── */
+.jn{background:#faf7f2;min-height:480px}
+.jn-header{background:#faf7f2;border-bottom:2px solid #d4a96a;padding:28px 32px;display:flex;gap:24px;align-items:center}
+.jn-photo{width:88px;height:88px;border-radius:50%;background:#e8d5b8;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;color:#8a5c2a;font-family:Georgia,serif;border:3px solid #d4a96a;flex-shrink:0}
+.jn-eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:#d4a96a;margin-bottom:5px}
+.jn-name{font-size:26px;font-weight:700;color:#2a1a08;font-family:Georgia,serif;line-height:1.1}
+.jn-tagline{font-size:11px;color:#8a5c2a;font-style:italic;margin:4px 0 10px}
+.jn-tags{display:flex;flex-wrap:wrap;gap:4px}
+.jn-tag{font-size:9px;padding:2px 8px;background:#fff;border:1px solid #d4a96a;color:#8a5c2a;border-radius:2px}
+.jn-body{display:grid;grid-template-columns:1fr 240px;gap:0}
+.jn-tracks{padding:20px 32px}
+.jn-track{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;background:#fff;border:1px solid #ede5d8;border-radius:4px;cursor:pointer}
+.jn-tnum{font-size:11px;color:#c4a882;width:18px;text-align:center;flex-shrink:0;font-family:Georgia,serif}
+.jn-tname{font-size:12px;font-weight:600;color:#2a1a08;flex:1}
+.jn-tname.active{color:#d4a96a}
+.jn-tdur{font-size:10px;color:#c4a882;flex-shrink:0;font-family:Georgia,serif}
+.jn-aside{background:#fff3e8;border-left:1px solid #d4a96a;padding:20px}
+.jn-aside-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#d4a96a;margin-bottom:10px}
+.jn-stat{margin-bottom:14px}
+.jn-stat-num{font-size:20px;font-weight:700;color:#2a1a08;font-family:Georgia,serif}
+.jn-stat-lbl{font-size:9px;color:#a07850;text-transform:uppercase;letter-spacing:.05em}
+.jn-follow{display:block;width:100%;font-size:11px;font-weight:700;padding:9px;background:#d4a96a;color:#fff;border:none;cursor:pointer;border-radius:2px;text-align:center;margin-top:10px;font-family:Georgia,serif}
+
+/* ── 3. CLEAN MINIMAL ──────────────────── */
+.mn{background:#fff;min-height:480px}
+.mn-top{height:6px;background:#009B9B}
+.mn-header{padding:32px 36px;display:flex;gap:28px;align-items:flex-start;border-bottom:1px solid #f0f0f0}
+.mn-photo{width:100px;height:100px;border-radius:8px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:#009B9B;flex-shrink:0}
+.mn-info{flex:1}
+.mn-station{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#009B9B;margin-bottom:6px}
+.mn-name{font-size:28px;font-weight:700;color:#111;letter-spacing:-.02em;margin-bottom:4px}
+.mn-title{font-size:12px;color:#E8624A;margin-bottom:12px}
+.mn-stats{display:flex;gap:24px;margin-bottom:14px}
+.mn-stat{text-align:center}
+.mn-stat-num{font-size:18px;font-weight:700;color:#111}
+.mn-stat-lbl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.05em}
+.mn-tags{display:flex;flex-wrap:wrap;gap:5px}
+.mn-tag{font-size:9px;padding:3px 10px;border:1px solid #e0e0e0;color:#555;border-radius:50px}
+.mn-tag-t{border-color:#009B9B33;color:#009B9B;background:#f0fafa}
+.mn-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.mn-follow{font-size:11px;font-weight:700;padding:8px 20px;background:#009B9B;color:#fff;border:none;border-radius:4px;cursor:pointer}
+.mn-share{font-size:11px;font-weight:600;padding:8px 20px;background:#fff;color:#555;border:1px solid #e0e0e0;border-radius:4px;cursor:pointer}
+.mn-tracks{padding:0 36px 28px}
+.mn-track{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f5f5f5;cursor:pointer}
+.mn-tnum{font-size:11px;color:#ddd;width:18px;text-align:center;flex-shrink:0}
+.mn-tname{font-size:13px;font-weight:500;color:#111;flex:1}
+.mn-tname.active{color:#009B9B}
+.mn-tgenre{font-size:10px;color:#bbb;flex-shrink:0}
+.mn-tdur{font-size:10px;color:#bbb;flex-shrink:0;width:32px;text-align:right}
+.mn-bar{height:3px;background:#009B9B;border-radius:2px;width:60%;margin-top:4px}
+
+/* ── 4. BOLD MAGAZINE ──────────────────── */
+.mg{background:#fff;min-height:480px}
+.mg-hero{display:grid;grid-template-columns:1fr 1fr;height:220px}
+.mg-left{background:#0a0a0a;padding:28px;display:flex;flex-direction:column;justify-content:space-between}
+.mg-station{font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:#009B9B;margin-bottom:auto}
+.mg-name{font-size:32px;font-weight:900;color:#fff;line-height:1;font-family:Georgia,serif;letter-spacing:-.02em}
+.mg-sub{font-size:11px;color:#E8624A;margin-top:6px;font-weight:700}
+.mg-right{background:#009B9B;display:flex;align-items:center;justify-content:center;font-size:56px;font-weight:900;color:#007777;font-family:Georgia,serif;position:relative;overflow:hidden}
+.mg-initials{position:relative;z-index:1;color:#ffffffcc;font-size:60px}
+.mg-circle{position:absolute;width:180px;height:180px;border-radius:50%;border:1px solid #ffffff22;top:-20px;right:-20px}
+.mg-circle2{position:absolute;width:120px;height:120px;border-radius:50%;border:1px solid #ffffff22;bottom:-30px;left:-10px}
+.mg-body{padding:20px 28px}
+.mg-stats{display:flex;gap:0;border:1px solid #f0f0f0;border-radius:6px;overflow:hidden;margin-bottom:16px}
+.mg-stat{flex:1;padding:12px;text-align:center;border-right:1px solid #f0f0f0}
+.mg-stat:last-child{border-right:none}
+.mg-stat-num{font-size:18px;font-weight:900;color:#0a0a0a}
+.mg-stat-lbl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.05em}
+.mg-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px}
+.mg-tag{font-size:9px;padding:3px 10px;background:#0a0a0a;color:#fff;border-radius:2px;font-weight:600}
+.mg-tag-c{background:#E8624A}
+.mg-track{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:4px;cursor:pointer;margin-bottom:4px}
+.mg-track:hover{background:#f8f8f8}
+.mg-track.active{background:#f0fafa;border-left:3px solid #009B9B;padding-left:9px}
+.mg-tnum{font-size:11px;color:#ccc;width:18px;text-align:center;flex-shrink:0;font-weight:700}
+.mg-tname{font-size:12px;font-weight:700;color:#111;flex:1}
+.mg-tname.active{color:#009B9B}
+.mg-tdur{font-size:10px;color:#bbb;flex-shrink:0}
+.mg-follow{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:8px 18px;background:#0a0a0a;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-bottom:14px}
+</style>
+
+<div class="root">
+  <div class="nav">
+    <button class="nav-btn on" onclick="show('ed')">1 · Editorial Light</button>
+    <button class="nav-btn" onclick="show('jn')">2 · Cream Journal</button>
+    <button class="nav-btn" onclick="show('mn')">3 · Clean Minimal</button>
+    <button class="nav-btn" onclick="show('mg')">4 · Bold Magazine</button>
+  </div>
+
+  <!-- 1. EDITORIAL LIGHT -->
+  <div class="preview ed on" id="p-ed">
+    <div class="ed-hero">
+      <div class="ed-photo">LD</div>
+      <div class="ed-banner">
+        <div class="ed-station">Voices &amp; Vibes Radio</div>
+        <div class="ed-name">Lady D</div>
+        <div class="ed-tagline">Healing Through Music &amp; Conversation</div>
+      </div>
+    </div>
+    <div class="ed-body">
+      <div class="ed-sidebar">
+        <div class="ed-stat"><div class="ed-stat-num">12.4k</div><div class="ed-stat-label">Plays</div></div>
+        <div class="ed-stat"><div class="ed-stat-num">843</div><div class="ed-stat-label">Followers</div></div>
+        <div class="ed-stat"><div class="ed-stat-num">14</div><div class="ed-stat-label">Tracks</div></div>
+        <div style="margin-top:12px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:6px">Genre</div>
+          <span class="ed-pill">Neo Soul</span><span class="ed-pill">Gospel</span><span class="ed-pill">R&amp;B</span>
+        </div>
+        <div style="margin-top:10px">
+          <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#999;margin-bottom:6px">Healing</div>
+          <span class="ed-pill ed-pill-c">Grief</span><span class="ed-pill ed-pill-c">Anxiety</span>
+        </div>
+        <button class="ed-follow">+ Follow</button>
+      </div>
+      <div class="ed-main">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#999;margin-bottom:10px">Tracks</div>
+        <div class="ed-track"><div class="ed-play">▶</div><div style="flex:1"><div class="ed-tname active">Rooted in Hope</div><div class="ed-tgenre">Neo Soul · 3:42</div></div></div>
+        <div class="ed-track"><div class="ed-tnum">2</div><div style="flex:1"><div class="ed-tname">Still Water Runs Deep</div><div class="ed-tgenre">Gospel · 4:18</div></div></div>
+        <div class="ed-track"><div class="ed-tnum">3</div><div style="flex:1"><div class="ed-tname">Breathe Again</div><div class="ed-tgenre">R&amp;B · 3:55</div></div></div>
+        <div class="ed-track"><div class="ed-tnum">4</div><div style="flex:1"><div class="ed-tname">Kaleidoscope</div><div class="ed-tgenre">Neo Soul · 4:01</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CREAM JOURNAL -->
+  <div class="preview jn" id="p-jn">
+    <div class="jn-header">
+      <div class="jn-photo">LD</div>
+      <div style="flex:1">
+        <div class="jn-eyebrow">Voices &amp; Vibes Radio · Healing Artist</div>
+        <div class="jn-name">Lady D</div>
+        <div class="jn-tagline">"Where healing meets harmony"</div>
+        <div class="jn-tags">
+          <span class="jn-tag">Neo Soul</span>
+          <span class="jn-tag">Gospel</span>
+          <span class="jn-tag">R&amp;B</span>
+          <span class="jn-tag" style="border-color:#d4a96a55">Grief</span>
+          <span class="jn-tag" style="border-color:#d4a96a55">Anxiety</span>
+        </div>
+      </div>
+    </div>
+    <div class="jn-body">
+      <div class="jn-tracks">
+        <div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#c4a882;margin-bottom:10px">Tracks</div>
+        <div class="jn-track"><div class="jn-tnum">I</div><div class="jn-tname active">Rooted in Hope</div><div class="jn-tdur">3:42</div></div>
+        <div class="jn-track"><div class="jn-tnum">II</div><div class="jn-tname">Still Water Runs Deep</div><div class="jn-tdur">4:18</div></div>
+        <div class="jn-track"><div class="jn-tnum">III</div><div class="jn-tname">Breathe Again</div><div class="jn-tdur">3:55</div></div>
+        <div class="jn-track"><div class="jn-tnum">IV</div><div class="jn-tname">Kaleidoscope</div><div class="jn-tdur">4:01</div></div>
+        <div class="jn-track"><div class="jn-tnum">V</div><div class="jn-tname">Morning Grace</div><div class="jn-tdur">5:12</div></div>
+      </div>
+      <div class="jn-aside">
+        <div class="jn-aside-label">At a glance</div>
+        <div class="jn-stat"><div class="jn-stat-num">12.4k</div><div class="jn-stat-lbl">Plays</div></div>
+        <div class="jn-stat"><div class="jn-stat-num">843</div><div class="jn-stat-lbl">Followers</div></div>
+        <div class="jn-stat"><div class="jn-stat-num">14</div><div class="jn-stat-lbl">Tracks</div></div>
+        <div style="margin-top:14px;font-size:10px;color:#a07850;line-height:1.6;font-family:Georgia,serif;font-style:italic">"Music that heals the soul and quiets the mind."</div>
+        <button class="jn-follow">+ Follow Artist</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CLEAN MINIMAL -->
+  <div class="preview mn" id="p-mn">
+    <div class="mn-top"></div>
+    <div class="mn-header">
+      <div class="mn-photo">LD</div>
+      <div class="mn-info">
+        <div class="mn-station">Voices &amp; Vibes Radio</div>
+        <div class="mn-name">Lady D</div>
+        <div class="mn-title">Host &amp; Healing Artist · Neo Soul · Gospel</div>
+        <div class="mn-stats">
+          <div class="mn-stat"><div class="mn-stat-num">12.4k</div><div class="mn-stat-lbl">Plays</div></div>
+          <div class="mn-stat"><div class="mn-stat-num">843</div><div class="mn-stat-lbl">Followers</div></div>
+          <div class="mn-stat"><div class="mn-stat-num">14</div><div class="mn-stat-lbl">Tracks</div></div>
+        </div>
+        <div class="mn-tags">
+          <span class="mn-tag mn-tag-t">Neo Soul</span>
+          <span class="mn-tag mn-tag-t">Gospel</span>
+          <span class="mn-tag">Grief</span>
+          <span class="mn-tag">Anxiety Relief</span>
+          <span class="mn-tag">Self-Love</span>
+        </div>
+      </div>
+      <div class="mn-actions">
+        <button class="mn-follow">+ Follow</button>
+        <button class="mn-share">Share</button>
+      </div>
+    </div>
+    <div class="mn-tracks">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#bbb;margin-bottom:8px;padding-top:4px">Now playing</div>
+      <div class="mn-track">
+        <div class="mn-tnum">▶</div>
+        <div style="flex:1"><div class="mn-tname active">Rooted in Hope</div><div class="mn-bar"></div></div>
+        <div class="mn-tgenre">Neo Soul</div>
+        <div class="mn-tdur">1:24</div>
+      </div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#bbb;margin:10px 0 8px">Tracks</div>
+      <div class="mn-track"><div class="mn-tnum">2</div><div class="mn-tname" style="flex:1">Still Water Runs Deep</div><div class="mn-tgenre">Gospel</div><div class="mn-tdur">4:18</div></div>
+      <div class="mn-track"><div class="mn-tnum">3</div><div class="mn-tname" style="flex:1">Breathe Again</div><div class="mn-tgenre">R&amp;B</div><div class="mn-tdur">3:55</div></div>
+      <div class="mn-track"><div class="mn-tnum">4</div><div class="mn-tname" style="flex:1">Kaleidoscope</div><div class="mn-tgenre">Neo Soul</div><div class="mn-tdur">4:01</div></div>
+    </div>
+  </div>
+
+  <!-- 4. BOLD MAGAZINE -->
+  <div class="preview mg" id="p-mg">
+    <div class="mg-hero">
+      <div class="mg-left">
+        <div class="mg-station">Voices &amp; Vibes Radio</div>
+        <div>
+          <div class="mg-name">Lady D</div>
+          <div class="mg-sub">Healing Through Music &amp; Conversation</div>
+        </div>
+      </div>
+      <div class="mg-right">
+        <div class="mg-circle"></div>
+        <div class="mg-circle2"></div>
+        <div class="mg-initials">LD</div>
+      </div>
+    </div>
+    <div class="mg-body">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <button class="mg-follow">+ Follow</button>
+        <div class="mg-tags">
+          <span class="mg-tag">Neo Soul</span>
+          <span class="mg-tag">Gospel</span>
+          <span class="mg-tag mg-tag-c">Grief</span>
+          <span class="mg-tag mg-tag-c">Anxiety</span>
+        </div>
+      </div>
+      <div class="mg-stats">
+        <div class="mg-stat"><div class="mg-stat-num">12.4k</div><div class="mg-stat-lbl">Plays</div></div>
+        <div class="mg-stat"><div class="mg-stat-num">843</div><div class="mg-stat-lbl">Followers</div></div>
+        <div class="mg-stat"><div class="mg-stat-num">14</div><div class="mg-stat-lbl">Tracks</div></div>
+        <div class="mg-stat"><div class="mg-stat-num">3</div><div class="mg-stat-lbl">Albums</div></div>
+      </div>
+      <div class="mg-track active"><div class="mg-tnum">▶</div><div class="mg-tname active" style="flex:1">Rooted in Hope</div><div class="mg-tdur">3:42</div></div>
+      <div class="mg-track"><div class="mg-tnum">2</div><div class="mg-tname" style="flex:1">Still Water Runs Deep</div><div class="mg-tdur">4:18</div></div>
+      <div class="mg-track"><div class="mg-tnum">3</div><div class="mg-tname" style="flex:1">Breathe Again</div><div class="mg-tdur">3:55</div></div>
+      <div class="mg-track"><div class="mg-tnum">4</div><div class="mg-tname" style="flex:1">Kaleidoscope</div><div class="mg-tdur">4:01</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.preview').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  event.target.classList.add('on');
+}
+</script>

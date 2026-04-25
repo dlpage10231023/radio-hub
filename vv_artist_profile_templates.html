@@ -1,0 +1,451 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.root{font-family:system-ui,sans-serif;background:#0d0d0d;color:#fff;min-height:580px}
+.tabs{display:flex;gap:0;background:#0a0a0a;border-bottom:1px solid #ffffff11;overflow-x:auto}
+.tab{flex:1;min-width:120px;padding:14px 8px;text-align:center;cursor:pointer;border:none;background:transparent;color:#ffffff44;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;transition:all .2s;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.active-midnight{color:#009B9B;border-bottom-color:#009B9B;background:#009B9B0a}
+.tab.active-sunlit{color:#c17b3a;border-bottom-color:#c17b3a;background:#c17b3a0a}
+.tab.active-neon{color:#E8624A;border-bottom-color:#E8624A;background:#E8624A0a}
+.tab.active-sacred{color:#c4864a;border-bottom-color:#c4864a;background:#c4864a0a}
+.preview{display:none}
+.preview.active{display:block}
+
+/* ── MIDNIGHT ──────────────────────── */
+.midnight{background:#0a0a0a;color:#fff;min-height:520px}
+.m-banner{height:160px;background:linear-gradient(135deg,#0a2a2a,#0a0a0a 55%,#2a0e08);position:relative;overflow:hidden}
+.m-glow{position:absolute;bottom:-40px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,#009B9B,transparent 70%);opacity:.2}
+.m-header{max-width:680px;margin:0 auto;padding:0 20px;position:relative;margin-top:-50px}
+.m-row{display:flex;gap:16px;align-items:flex-end}
+.m-photo{width:80px;height:80px;border-radius:12px;border:2.5px solid #009B9B;background:linear-gradient(135deg,#009B9B22,#E8624A22);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#009B9B;flex-shrink:0}
+.m-name{font-size:22px;font-weight:900;line-height:1.1}
+.m-tag{font-size:11px;color:#E8624A;margin:3px 0 8px}
+.pill{font-size:9px;padding:2px 8px;border-radius:50px;margin-right:4px;display:inline-block}
+.pt{background:#009B9B18;color:#009B9B;border:1px solid #009B9B33}
+.pc{background:#E8624A18;color:#E8624A;border:1px solid #E8624A33}
+.m-stats{display:flex;gap:12px;margin:10px 0;font-size:11px;color:#ffffff55}
+.m-btn{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:6px 16px;border-radius:50px;border:1.5px solid #009B9B;cursor:pointer}
+.m-follow{background:#009B9B;color:#fff}
+.m-share{background:transparent;color:#ffffffaa;margin-left:6px}
+.m-tabs{display:flex;border-bottom:1px solid #ffffff0d;margin:14px 0 0;max-width:680px;margin-left:auto;margin-right:auto;padding:0 20px}
+.m-tab{padding:10px 16px;font-size:11px;font-weight:700;cursor:pointer;color:#ffffff33;border-bottom:2px solid transparent}
+.m-tab.a{color:#009B9B;border-bottom-color:#009B9B}
+.track-list{max-width:680px;margin:0 auto;padding:10px 20px}
+.track{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;margin-bottom:4px}
+.track:hover,.track.ta{background:#009B9B11;border:1px solid #009B9B44}
+.track:not(.ta){border:1px solid transparent}
+.t-num{width:22px;text-align:center;font-size:11px;color:#ffffff33;flex-shrink:0}
+.t-cover{width:36px;height:36px;border-radius:6px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:11px;color:#ffffff33;flex-shrink:0;overflow:hidden}
+.t-info{flex:1;min-width:0}
+.t-title{font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-title.ta{color:#009B9B}
+.t-genre{font-size:10px;color:#ffffff33}
+.t-dur{font-size:10px;color:#ffffff33;flex-shrink:0}
+
+/* ── SUNLIT ────────────────────────── */
+.sunlit{background:#faf6f0;color:#2c1a08;min-height:520px;font-family:'Georgia',serif}
+.s-strip{height:4px;background:linear-gradient(90deg,#2a7a70,#c17b3a,#c45a38)}
+.s-hero{background:linear-gradient(160deg,#fff8ee,#f0e8dc);padding:24px 20px;position:relative}
+.s-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 0%,#e8a85c33,transparent 60%);pointer-events:none}
+.s-inner{max-width:680px;margin:0 auto;display:flex;gap:20px;align-items:center;position:relative;z-index:1}
+.s-photo{width:90px;height:90px;border-radius:50%;border:3px solid #c17b3a;box-shadow:0 0 0 5px #e8a85c44;background:#f0e8dc;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:#c17b3a;flex-shrink:0}
+.s-eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:#c17b3a;font-family:system-ui;margin-bottom:6px}
+.s-name{font-size:22px;font-weight:700;color:#2c1a08;line-height:1.1}
+.s-tagline{font-style:italic;font-size:12px;color:#c45a38;margin:4px 0 8px}
+.s-tags{margin-bottom:8px}
+.sp-teal{font-size:9px;padding:2px 8px;border-radius:50px;background:#2a7a7018;color:#2a7a70;border:1px solid #2a7a7044;margin-right:4px;display:inline-block;font-family:system-ui}
+.sp-gold{font-size:9px;padding:2px 8px;border-radius:50px;background:#c17b3a18;color:#c17b3a;border:1px solid #c17b3a44;margin-right:4px;display:inline-block;font-family:system-ui}
+.s-stats{display:flex;gap:16px;font-family:system-ui;font-size:11px;color:#8a6a48;margin-bottom:10px}
+.s-btn{font-size:11px;font-weight:600;padding:6px 14px;border-radius:50px;cursor:pointer;font-family:system-ui}
+.s-follow{background:#c17b3a;color:#fff;border:none}
+.s-share{background:transparent;border:1.5px solid #e8d8c4;color:#6b4c2a;margin-left:6px}
+.s-tabs{border-bottom:1px solid #e8d8c4;background:#fff8f2}
+.s-tab-row{max-width:680px;margin:0 auto;padding:0 20px;display:flex}
+.s-tab{padding:10px 14px;font-size:12px;cursor:pointer;color:#a07850;border-bottom:2px solid transparent;font-style:italic;background:none;border-top:none;border-left:none;border-right:none}
+.s-tab.a{color:#c17b3a;border-bottom-color:#c17b3a}
+.s-tracks{max-width:680px;margin:0 auto;padding:14px 20px}
+.s-track{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;margin-bottom:6px}
+.s-track.ta{background:#c17b3a14;border:1px solid #c17b3a44}
+.s-track:not(.ta){background:#fff8f2;border:1px solid #e8d8c4}
+.s-tnum{width:22px;text-align:center;font-size:11px;color:#a07850;flex-shrink:0}
+.s-tcover{width:36px;height:36px;border-radius:8px;background:#f0e8dc;border:1px solid #e8d8c4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-ttitle{font-size:12px;font-weight:700;color:#2c1a08;flex:1}
+.s-ttitle.ta{color:#c17b3a}
+.s-tdur{font-size:10px;color:#a07850;flex-shrink:0}
+
+/* ── NEON ──────────────────────────── */
+.neon{background:#050d14;color:#fff;min-height:520px;font-family:monospace}
+.n-scanline{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,#009B9B04 3px,#009B9B04 4px);pointer-events:none}
+.n-hero{background:#0a1520;padding:20px;position:relative;overflow:hidden}
+.n-corner-tl{position:absolute;top:0;left:0;width:40px;height:40px;border-top:2px solid #009B9B;border-left:2px solid #009B9B;opacity:.5}
+.n-corner-br{position:absolute;bottom:0;right:0;width:40px;height:40px;border-bottom:2px solid #E8624A;border-right:2px solid #E8624A;opacity:.5}
+.n-inner{max-width:680px;margin:0 auto;display:flex;gap:16px;align-items:center;position:relative;z-index:1}
+.n-photo-wrap{flex-shrink:0;position:relative}
+.n-ring{width:84px;height:84px;border-radius:50%;border:1px dashed #009B9B;display:flex;align-items:center;justify-content:center;animation:nspin 8s linear infinite}
+@keyframes nspin{to{transform:rotate(360deg)}}
+.n-photo{width:72px;height:72px;border-radius:50%;border:2.5px solid #009B9B;background:#0f1e2c;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#009B9B;position:absolute;top:6px;left:6px}
+.n-live{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background:#E8624A;color:#fff;font-size:8px;font-weight:700;padding:2px 8px;border-radius:50px;white-space:nowrap}
+.n-info{flex:1}
+.n-label{font-size:9px;letter-spacing:.1em;padding:2px 8px;border:1px solid #009B9B44;background:#009B9B22;color:#009B9B;display:inline-block;margin-bottom:8px;border-radius:2px}
+.n-name{font-size:22px;font-weight:900;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 40%,#009B9B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.n-tagline{font-size:11px;color:#E8624A;margin:4px 0 10px}
+.n-tags{margin-bottom:10px}
+.np-t{font-size:9px;padding:2px 8px;border:1px solid #009B9B;background:#009B9B18;color:#009B9B;margin-right:4px;border-radius:2px;display:inline-block}
+.np-c{font-size:9px;padding:2px 8px;border:1px solid #E8624A;background:#E8624A18;color:#E8624A;margin-right:4px;border-radius:2px;display:inline-block}
+.n-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:220px;margin-bottom:10px}
+.n-stat{padding:6px;background:#0f1e2c;border:1px solid #009B9B33;border-radius:4px;text-align:center}
+.n-stat-val{font-size:13px;font-weight:900;color:#009B9B}
+.n-stat-label{font-size:8px;color:#ffffff44;margin-top:1px}
+.n-btn{font-size:10px;font-weight:700;padding:6px 14px;border-radius:2px;cursor:pointer}
+.n-follow{background:#E8624A;color:#fff;border:2px solid #E8624A}
+.n-share{background:transparent;border:2px solid #009B9B44;color:#ffffffaa;margin-left:6px}
+.n-tabs{border-bottom:1px solid #009B9B33;background:#0a1520}
+.n-tab-row{max-width:680px;margin:0 auto;padding:0 16px;display:flex}
+.n-tab{padding:10px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;color:#ffffff22;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none}
+.n-tab.a{color:#009B9B;border-bottom-color:#009B9B;background:#009B9B0d}
+.n-tracks{max-width:680px;margin:0 auto;padding:10px 16px}
+.n-now{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #009B9B44;background:#009B9B0d;border-radius:4px;margin-bottom:10px}
+.n-bars{display:flex;align-items:flex-end;gap:1px;height:16px}
+.n-bar{width:3px;background:#009B9B;border-radius:1px}
+.n-track{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;border-radius:4px;margin-bottom:3px;border:1px solid transparent}
+.n-track.ta{background:#009B9B0d;border-color:#009B9B55}
+.n-track:hover{background:#ffffff05}
+.n-tnum{width:22px;text-align:center;font-size:10px;color:#ffffff22;flex-shrink:0}
+.n-tcover{width:34px;height:34px;background:#0f1e2c;border:1px solid #009B9B22;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.n-ttitle{flex:1;font-size:11px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.n-ttitle.ta{color:#009B9B}
+.n-tdur{font-size:10px;color:#ffffff33;flex-shrink:0}
+
+/* ── SACRED ────────────────────────── */
+.sacred{background:#1c1208;color:#f5e8d0;min-height:520px;font-family:'Georgia',serif}
+.e-strip{height:5px;background:linear-gradient(90deg,#4a7a3a,#c4864a,#4a7a3a)}
+.e-hero{background:#251a0c;padding:20px;position:relative;overflow:hidden}
+.e-dots{position:absolute;inset:0;background-image:radial-gradient(#c4864a11 1px,transparent 1px);background-size:20px 20px;pointer-events:none}
+.e-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:300px;height:80px;background:radial-gradient(ellipse,#c4864a44,transparent 70%)}
+.e-inner{max-width:680px;margin:0 auto;display:flex;gap:20px;align-items:center;position:relative;z-index:1}
+.e-photo-wrap{flex-shrink:0;position:relative;padding:8px}
+.e-corner{position:absolute;width:14px;height:14px}
+.e-tl{top:0;left:0;border-top:2px solid #c4864a;border-left:2px solid #c4864a}
+.e-tr{top:0;right:0;border-top:2px solid #c4864a;border-right:2px solid #c4864a}
+.e-bl{bottom:0;left:0;border-bottom:2px solid #c4864a;border-left:2px solid #c4864a}
+.e-br{bottom:0;right:0;border-bottom:2px solid #c4864a;border-right:2px solid #c4864a}
+.e-photo{width:76px;height:76px;border:1px solid #5a3e20;background:#2e2210;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#c4864a}
+.e-eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#c4864a;margin-bottom:6px;font-family:system-ui;display:flex;align-items:center;gap:6px}
+.e-name{font-size:22px;font-weight:700;color:#f5e8d0;line-height:1.1}
+.e-tagline{font-style:italic;font-size:12px;color:#e8a870;margin:3px 0 8px}
+.e-tags{margin-bottom:8px}
+.eg-t{font-size:9px;padding:2px 8px;background:#4a7a3a22;color:#4a7a3a;border:1px solid #4a7a3a55;margin-right:4px;display:inline-block;font-family:system-ui;border-radius:2px}
+.eg-g{font-size:9px;padding:2px 8px;background:#c4864a18;color:#c4864a;border:1px solid #c4864a44;margin-right:4px;display:inline-block;font-family:system-ui;border-radius:2px}
+.e-stats{display:flex;gap:16px;font-family:system-ui;font-size:11px;color:#8a6a48;margin-bottom:10px}
+.e-btn{font-size:11px;font-weight:600;padding:6px 14px;cursor:pointer;border-radius:2px;font-family:system-ui}
+.e-follow{background:#c4864a;color:#1c1208;border:none}
+.e-share{background:transparent;border:1.5px solid #5a3e20;color:#c4a882;margin-left:6px}
+.e-tabs{border-bottom:1px solid #5a3e20;background:#251a0c}
+.e-tab-row{max-width:680px;margin:0 auto;padding:0 20px;display:flex}
+.e-tab{padding:10px 14px;font-size:12px;font-style:italic;cursor:pointer;color:#8a6a48;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none}
+.e-tab.a{color:#e8a870;border-bottom-color:#c4864a}
+.e-tracks{max-width:680px;margin:0 auto;padding:14px 20px}
+.e-track{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;margin-bottom:6px;border-radius:4px}
+.e-track.ta{background:#c4864a0d;border:1px solid #c4864a44}
+.e-track:not(.ta){background:#251a0c;border:1px solid #5a3e20}
+.e-tnum{width:22px;text-align:center;font-size:12px;color:#8a6a48;flex-shrink:0}
+.e-tcover{width:36px;height:36px;border:1px solid #5a3e20;background:#2e2210;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.e-ttitle{flex:1;font-size:12px;font-weight:700;color:#f5e8d0}
+.e-ttitle.ta{color:#e8a870}
+.e-tdur{font-size:10px;color:#8a6a48;flex-shrink:0;font-family:system-ui}
+.e-divider{display:flex;align-items:center;gap:8px;padding:8px 0;max-width:680px;margin:0 auto}
+.e-dline{flex:1;height:1px;background:#5a3e20}
+</style>
+
+<div class="root">
+  <!-- Tab nav -->
+  <div class="tabs">
+    <button class="tab" id="tab-midnight" onclick="show('midnight')">🌑 Midnight Stage</button>
+    <button class="tab" id="tab-sunlit"   onclick="show('sunlit')">☀️ Sunlit Soul</button>
+    <button class="tab" id="tab-neon"     onclick="show('neon')">⚡ Neon Frequency</button>
+    <button class="tab" id="tab-sacred"   onclick="show('sacred')">🌿 Sacred Roots</button>
+  </div>
+
+  <!-- MIDNIGHT STAGE -->
+  <div class="preview midnight" id="preview-midnight">
+    <div class="m-banner"><div class="m-glow"></div></div>
+    <div class="m-header">
+      <div class="m-row">
+        <div class="m-photo">LD</div>
+        <div style="padding-bottom:4px">
+          <div class="m-name">Lady D <span style="font-size:14px;color:#009B9B;vertical-align:middle">✓</span></div>
+          <div class="m-tag">Where healing meets harmony</div>
+          <div>
+            <span class="pill pt">Neo Soul</span>
+            <span class="pill pt">Gospel</span>
+            <span class="pill pc">Grief</span>
+            <span class="pill pc">Anxiety Relief</span>
+          </div>
+        </div>
+      </div>
+      <div class="m-stats">
+        <span>▶ 12.4k plays</span>
+        <span>♡ 843 followers</span>
+        <span>🎵 14 tracks</span>
+      </div>
+      <button class="m-btn m-follow">♡ Follow</button>
+      <button class="m-btn m-share">Share</button>
+    </div>
+    <div class="m-tabs">
+      <div class="m-tab a">Tracks</div>
+      <div class="m-tab">Albums</div>
+      <div class="m-tab">About</div>
+    </div>
+    <div class="track-list">
+      <div class="track ta">
+        <div class="t-num">▶</div>
+        <div class="t-cover" style="background:#009B9B22;border:1px solid #009B9B44;font-size:14px">🎵</div>
+        <div class="t-info"><div class="t-title ta">Rooted in Hope</div><div class="t-genre">Neo Soul</div></div>
+        <span class="pill pc" style="font-size:9px">Grief</span>
+        <div class="t-dur">3:42</div>
+      </div>
+      <div class="track">
+        <div class="t-num">2</div>
+        <div class="t-cover">🎵</div>
+        <div class="t-info"><div class="t-title">Still Water Runs Deep</div><div class="t-genre">Gospel</div></div>
+        <span class="pill pc" style="font-size:9px">Spiritual</span>
+        <div class="t-dur">4:18</div>
+      </div>
+      <div class="track">
+        <div class="t-num">3</div>
+        <div class="t-cover">🎵</div>
+        <div class="t-info"><div class="t-title">Breathe Again</div><div class="t-genre">R&amp;B</div></div>
+        <span class="pill pc" style="font-size:9px">Anxiety</span>
+        <div class="t-dur">3:55</div>
+      </div>
+      <div class="track">
+        <div class="t-num">4</div>
+        <div class="t-cover">🎵</div>
+        <div class="t-info"><div class="t-title">Kaleidoscope</div><div class="t-genre">Neo Soul</div></div>
+        <span class="pill pt" style="font-size:9px">Self-Love</span>
+        <div class="t-dur">4:01</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUNLIT SOUL -->
+  <div class="preview sunlit" id="preview-sunlit">
+    <div class="s-strip"></div>
+    <div class="s-hero">
+      <div class="s-glow"></div>
+      <div class="s-inner">
+        <div class="s-photo">LD</div>
+        <div>
+          <div class="s-eyebrow">✦ Voices &amp; Vibes Healing Artist</div>
+          <div class="s-name">Lady D <span style="font-size:14px;color:#2a7a70;vertical-align:middle">✓</span></div>
+          <div class="s-tagline">"Where healing meets harmony"</div>
+          <div class="s-tags">
+            <span class="sp-teal">Neo Soul</span>
+            <span class="sp-teal">Gospel</span>
+            <span class="sp-gold">Grief</span>
+            <span class="sp-gold">Anxiety Relief</span>
+          </div>
+          <div class="s-stats">
+            <div><div style="font-size:15px;font-weight:700;color:#2c1a08">12.4k</div><div>plays</div></div>
+            <div><div style="font-size:15px;font-weight:700;color:#2c1a08">843</div><div>followers</div></div>
+            <div><div style="font-size:15px;font-weight:700;color:#2c1a08">14</div><div>tracks</div></div>
+          </div>
+          <button class="s-btn s-follow">♡ Follow</button>
+          <button class="s-btn s-share">Share</button>
+        </div>
+      </div>
+    </div>
+    <div class="s-tabs"><div class="s-tab-row">
+      <button class="s-tab a">Tracks</button>
+      <button class="s-tab">Albums</button>
+      <button class="s-tab">About</button>
+    </div></div>
+    <div class="s-tracks">
+      <div class="s-track ta">
+        <div class="s-tnum">♫</div>
+        <div class="s-tcover" style="background:#f0e8dc;border:1px solid #e8d8c4">🎵</div>
+        <div class="s-ttitle ta">Rooted in Hope</div>
+        <span class="sp-gold" style="margin-right:0">Grief</span>
+        <div class="s-tdur">3:42</div>
+      </div>
+      <div class="s-track">
+        <div class="s-tnum">2</div>
+        <div class="s-tcover">🎵</div>
+        <div class="s-ttitle">Still Water Runs Deep</div>
+        <span class="sp-gold" style="margin-right:0">Spiritual</span>
+        <div class="s-tdur">4:18</div>
+      </div>
+      <div class="s-track">
+        <div class="s-tnum">3</div>
+        <div class="s-tcover">🎵</div>
+        <div class="s-ttitle">Breathe Again</div>
+        <span class="sp-gold" style="margin-right:0">Anxiety</span>
+        <div class="s-tdur">3:55</div>
+      </div>
+      <div class="s-track">
+        <div class="s-tnum">4</div>
+        <div class="s-tcover">🎵</div>
+        <div class="s-ttitle">Kaleidoscope</div>
+        <span class="sp-teal" style="margin-right:0">Self-Love</span>
+        <div class="s-tdur">4:01</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEON FREQUENCY -->
+  <div class="preview" id="preview-neon" style="background:#050d14">
+    <div class="n-hero">
+      <div class="n-scanline"></div>
+      <div class="n-corner-tl"></div>
+      <div class="n-corner-br"></div>
+      <div class="n-inner">
+        <div class="n-photo-wrap">
+          <div class="n-ring">
+            <div class="n-photo">LD</div>
+          </div>
+          <div class="n-live">⚡ LIVE</div>
+        </div>
+        <div class="n-info">
+          <div class="n-label">HEALING ARTIST</div>
+          <div class="n-name">Lady D</div>
+          <div class="n-tagline">&gt;&gt; Where healing meets harmony</div>
+          <div class="n-tags">
+            <span class="np-t">NEO SOUL</span>
+            <span class="np-t">GOSPEL</span>
+            <span class="np-c">GRIEF</span>
+            <span class="np-c">ANXIETY</span>
+          </div>
+          <div class="n-stats">
+            <div class="n-stat"><div class="n-stat-val">12.4k</div><div class="n-stat-label">PLAYS</div></div>
+            <div class="n-stat"><div class="n-stat-val">843</div><div class="n-stat-label">FANS</div></div>
+            <div class="n-stat"><div class="n-stat-val">14</div><div class="n-stat-label">TRACKS</div></div>
+          </div>
+          <button class="n-btn n-follow">♡ FOLLOW</button>
+          <button class="n-btn n-share">SHARE</button>
+        </div>
+      </div>
+    </div>
+    <div class="n-tabs"><div class="n-tab-row">
+      <button class="n-tab a">TRACKS</button>
+      <button class="n-tab">ALBUMS</button>
+      <button class="n-tab">ABOUT</button>
+    </div></div>
+    <div class="n-tracks">
+      <div class="n-now">
+        <div class="n-bars">
+          <div class="n-bar" style="height:4px;animation:nb 0.4s infinite alternate"></div>
+          <div class="n-bar" style="height:10px;animation:nb 0.5s infinite alternate"></div>
+          <div class="n-bar" style="height:14px;animation:nb 0.35s infinite alternate"></div>
+          <div class="n-bar" style="height:8px;animation:nb 0.55s infinite alternate"></div>
+          <div class="n-bar" style="height:12px;animation:nb 0.42s infinite alternate"></div>
+        </div>
+        <span style="font-size:10px;color:#009B9B">NOW PLAYING: </span>
+        <span style="font-size:10px;color:#fff;flex:1">Rooted in Hope</span>
+        <div style="flex:1;max-width:120px;height:2px;background:#ffffff11;border-radius:1px">
+          <div style="width:38%;height:100%;background:#009B9B;border-radius:1px"></div>
+        </div>
+      </div>
+      <style>@keyframes nb{from{height:3px}to{height:16px}}</style>
+      <div class="n-track ta">
+        <div class="n-tnum"><div class="n-bars"><div class="n-bar" style="height:8px;animation:nb 0.4s infinite alternate"></div><div class="n-bar" style="height:13px;animation:nb 0.5s infinite alternate"></div><div class="n-bar" style="height:6px;animation:nb 0.35s infinite alternate"></div></div></div>
+        <div class="n-tcover" style="color:#009B9B;font-size:12px">♪</div>
+        <div class="n-ttitle ta">Rooted in Hope</div>
+        <span class="np-c" style="font-size:8px">GRIEF</span>
+        <div class="n-tdur">3:42</div>
+      </div>
+      <div class="n-track">
+        <div class="n-tnum" style="color:#ffffff22;font-size:10px">02</div>
+        <div class="n-tcover" style="color:#ffffff22;font-size:12px">♪</div>
+        <div class="n-ttitle">Still Water Runs Deep</div>
+        <span class="np-t" style="font-size:8px">GOSPEL</span>
+        <div class="n-tdur">4:18</div>
+      </div>
+      <div class="n-track">
+        <div class="n-tnum" style="color:#ffffff22;font-size:10px">03</div>
+        <div class="n-tcover" style="color:#ffffff22;font-size:12px">♪</div>
+        <div class="n-ttitle">Breathe Again</div>
+        <span class="np-c" style="font-size:8px">ANXIETY</span>
+        <div class="n-tdur">3:55</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SACRED ROOTS -->
+  <div class="preview sacred" id="preview-sacred">
+    <div class="e-strip"></div>
+    <div class="e-hero">
+      <div class="e-dots"></div>
+      <div class="e-glow"></div>
+      <div class="e-inner">
+        <div class="e-photo-wrap">
+          <div class="e-corner e-tl"></div>
+          <div class="e-corner e-tr"></div>
+          <div class="e-corner e-bl"></div>
+          <div class="e-corner e-br"></div>
+          <div class="e-photo">LD</div>
+        </div>
+        <div>
+          <div class="e-eyebrow"><span style="color:#4a7a3a;font-size:12px">✦</span> Healing Through Music</div>
+          <div class="e-name">Lady D</div>
+          <div class="e-tagline">Where healing meets harmony</div>
+          <div class="e-tags">
+            <span class="eg-t">Neo Soul</span>
+            <span class="eg-t">Gospel</span>
+            <span class="eg-g">Grief</span>
+            <span class="eg-g">Anxiety</span>
+          </div>
+          <div class="e-stats">
+            <div><div style="font-size:15px;font-weight:700;color:#e8a870;font-family:Georgia">12.4k</div><div>plays</div></div>
+            <div><div style="font-size:15px;font-weight:700;color:#e8a870;font-family:Georgia">843</div><div>followers</div></div>
+            <div><div style="font-size:15px;font-weight:700;color:#e8a870;font-family:Georgia">14</div><div>tracks</div></div>
+          </div>
+          <button class="e-btn e-follow">♡ Follow</button>
+          <button class="e-btn e-share">Share</button>
+        </div>
+      </div>
+    </div>
+    <div class="e-tabs"><div class="e-tab-row">
+      <button class="e-tab a">Tracks</button>
+      <button class="e-tab">Albums</button>
+      <button class="e-tab">About</button>
+    </div></div>
+    <div class="e-tracks">
+      <div class="e-divider"><div class="e-dline"></div><span style="color:#c4864a;font-size:14px">✦</span><div class="e-dline"></div></div>
+      <div class="e-track ta">
+        <div class="e-tnum">♫</div>
+        <div class="e-tcover" style="font-size:14px;color:#c4864a">🎵</div>
+        <div class="e-ttitle ta">Rooted in Hope</div>
+        <span class="eg-g" style="margin-right:0">Grief</span>
+        <div class="e-tdur">3:42</div>
+      </div>
+      <div class="e-track">
+        <div class="e-tnum">2</div>
+        <div class="e-tcover" style="font-size:14px;color:#8a6a48">🎵</div>
+        <div class="e-ttitle">Still Water Runs Deep</div>
+        <span class="eg-t" style="margin-right:0">Gospel</span>
+        <div class="e-tdur">4:18</div>
+      </div>
+      <div class="e-track">
+        <div class="e-tnum">3</div>
+        <div class="e-tcover" style="font-size:14px;color:#8a6a48">🎵</div>
+        <div class="e-ttitle">Breathe Again</div>
+        <span class="eg-g" style="margin-right:0">Anxiety</span>
+        <div class="e-tdur">3:55</div>
+      </div>
+      <div class="e-divider"><div class="e-dline"></div><span style="color:#c4864a;font-size:14px">✦</span><div class="e-dline"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TEMPLATES = ['midnight','sunlit','neon','sacred'];
+function show(id){
+  TEMPLATES.forEach(t=>{
+    document.getElementById('preview-'+t).classList.toggle('active', t===id);
+    const tab = document.getElementById('tab-'+t);
+    tab.className = 'tab';
+    if(t===id) tab.classList.add('active-'+t);
+  });
+}
+show('midnight');
+</script>

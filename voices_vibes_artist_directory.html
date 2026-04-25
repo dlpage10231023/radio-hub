@@ -1,0 +1,215 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;font-family:'Segoe UI',system-ui,sans-serif;color:#fff}
+.page{background:#0a0a0a;min-height:600px;padding-bottom:40px}
+.hero{padding:40px 16px 32px;text-align:center;border-bottom:1px solid #ffffff0d;position:relative;overflow:hidden}
+.ring1{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.5);width:340px;height:340px;border-radius:50%;border:1px solid #009B9B;opacity:.05;pointer-events:none}
+.ring2{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;border:1px solid #009B9B;opacity:.1;pointer-events:none}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#009B9B;font-weight:600;margin-bottom:12px}
+.dot{width:6px;height:6px;border-radius:50%;background:#009B9B;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+h1{font-size:clamp(28px,5vw,44px);font-weight:900;line-height:1.1;background:linear-gradient(135deg,#fff 30%,#009B9B 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.subtitle{font-size:13px;color:#ffffff66;margin-bottom:20px}
+.search-wrap{position:relative;max-width:380px;margin:0 auto}
+.search-wrap input{width:100%;padding:10px 16px 10px 38px;border-radius:50px;background:#ffffff0d;border:1px solid #009B9B44;color:#fff;font-size:13px;outline:none}
+.search-wrap input::placeholder{color:#ffffff44}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#009B9B;font-size:14px}
+.content{max-width:900px;margin:0 auto;padding:0 12px}
+.spotlight{border-radius:16px;border:1px solid #009B9B33;background:linear-gradient(135deg,#0a2a2a,#0a0a0a 60%,#2a0e08);padding:20px;display:flex;gap:16px;align-items:flex-start;margin:24px 0 20px;position:relative;overflow:hidden}
+.spotlight-glow{position:absolute;top:-40px;left:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,#009B9B,transparent 70%);opacity:.15;pointer-events:none}
+.sp-photo{width:90px;height:90px;border-radius:12px;border:2px solid #009B9B;background:linear-gradient(135deg,#009B9B22,#E8624A22);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#009B9B;flex-shrink:0}
+.sp-badge{display:inline-block;font-size:9px;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:50px;background:#009B9B22;color:#009B9B;border:1px solid #009B9B44;font-weight:700;margin-bottom:8px}
+.sp-name{font-size:22px;font-weight:800;color:#fff;line-height:1.1}
+.sp-tag{font-size:12px;color:#E8624A;margin:4px 0 8px}
+.sp-bio{font-size:12px;color:#ffffff88;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.tag-teal{font-size:10px;padding:2px 8px;border-radius:50px;background:#009B9B18;color:#009B9B;border:1px solid #009B9B33}
+.tag-coral{font-size:10px;padding:2px 8px;border-radius:50px;background:#E8624A18;color:#E8624A;border:1px solid #E8624A33}
+.stats-row{display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap}
+.stat{font-size:11px;color:#ffffff55;display:flex;align-items:center;gap:4px}
+.play-btn{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;padding:6px 14px;border-radius:50px;background:#009B9B;color:#fff;border:none;cursor:pointer}
+.play-btn:hover{background:#00b3b3}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.count{font-size:12px;color:#ffffff55}
+.sort-sel{font-size:11px;padding:5px 10px;border-radius:50px;background:#ffffff0d;border:1px solid #ffffff22;color:#ffffffcc;outline:none}
+.filter-btn{font-size:11px;padding:5px 12px;border-radius:50px;background:#009B9B;border:1px solid #009B9B;color:#fff;cursor:pointer}
+.filters{background:#ffffff06;border:1px solid #ffffff11;border-radius:12px;padding:14px;margin-bottom:16px}
+.filter-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#ffffff44;margin-bottom:6px}
+.pill-row{display:flex;flex-wrap:wrap;gap:5px}
+.pill{font-size:10px;padding:3px 10px;border-radius:50px;cursor:pointer;border:1px solid #ffffff22;background:#ffffff0d;color:#ffffffaa}
+.pill.active-teal{background:#009B9B;border-color:#009B9B;color:#fff}
+.pill.active-coral{background:#E8624A;border-color:#E8624A;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.card{border-radius:12px;overflow:hidden;background:#111;border:1px solid #ffffff11;cursor:pointer;transition:border .2s,transform .2s;text-decoration:none;display:block}
+.card:hover{border-color:#009B9B55;transform:translateY(-2px)}
+.card-img{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#009B9B;position:relative;overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:cover}
+.plan-badge{position:absolute;top:6px;left:6px;font-size:9px;font-weight:700;padding:2px 7px;border-radius:50px}
+.card-body{padding:10px}
+.card-name{font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-tagline{font-size:10px;color:#E8624A;margin:2px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-tags{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:8px}
+.card-stats{display:flex;gap:8px;padding-top:6px;border-top:1px solid #ffffff0d}
+.card-stat{font-size:9px;color:#ffffff44;display:flex;align-items:center;gap:2px}
+.cta{border-radius:16px;border:1px solid #009B9B33;background:linear-gradient(135deg,#009B9B18,#E8624A18);padding:28px;text-align:center;margin-top:32px}
+.cta h3{font-size:18px;font-weight:800;margin-bottom:6px}
+.cta p{font-size:12px;color:#ffffff66;margin-bottom:16px}
+.cta-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:10px 22px;border-radius:50px;background:#009B9B;color:#fff;border:none;cursor:pointer}
+</style>
+
+<div class="page">
+  <div class="hero">
+    <div class="ring1"></div>
+    <div class="ring2"></div>
+    <div style="position:relative;z-index:1">
+      <div class="eyebrow"><div class="dot"></div> Voices &amp; Vibes Radio</div>
+      <h1>Healing Artists</h1>
+      <p class="subtitle">Music crafted to restore, uplift, and transform. Discover artists whose sound is their medicine.</p>
+      <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" id="searchInput" placeholder="Search artists, genres, healing focus…" oninput="filterArtists()">
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Spotlight -->
+    <div class="spotlight">
+      <div class="spotlight-glow"></div>
+      <div class="sp-photo">LD</div>
+      <div>
+        <div class="sp-badge">✦ Artist Spotlight</div>
+        <div class="sp-name">Lady D</div>
+        <div class="sp-tag">Where healing meets harmony</div>
+        <div class="sp-bio">Licensed counselor and singer-songwriter weaving therapeutic lyricism with neo soul and gospel roots. Every track is a guided session for the soul.</div>
+        <div class="tag-row">
+          <span class="tag-coral">Grief</span>
+          <span class="tag-coral">Anxiety Relief</span>
+          <span class="tag-coral">Spiritual Growth</span>
+        </div>
+        <div class="stats-row">
+          <span class="stat">▶ 12,400 plays</span>
+          <span class="stat">♡ 843 followers</span>
+          <button class="play-btn">🎧 Play — Rooted in Hope</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="bar">
+      <span class="count" id="countLabel">10 artists</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <select class="sort-sel" onchange="filterArtists()">
+          <option>Featured</option>
+          <option>Most Played</option>
+          <option>Newest</option>
+          <option>A – Z</option>
+        </select>
+        <button class="filter-btn" onclick="toggleFilters()">&#9776; Filters</button>
+      </div>
+    </div>
+
+    <!-- Filters panel -->
+    <div class="filters" id="filterPanel" style="display:none">
+      <div class="filter-label">Genre</div>
+      <div class="pill-row" id="genrePills">
+        <span class="pill active-teal" onclick="setPill(this,'genre')">All</span>
+        <span class="pill" onclick="setPill(this,'genre')">Gospel</span>
+        <span class="pill" onclick="setPill(this,'genre')">R&amp;B</span>
+        <span class="pill" onclick="setPill(this,'genre')">Neo Soul</span>
+        <span class="pill" onclick="setPill(this,'genre')">Jazz</span>
+        <span class="pill" onclick="setPill(this,'genre')">Afrobeats</span>
+        <span class="pill" onclick="setPill(this,'genre')">Hip-Hop</span>
+      </div>
+      <div class="filter-label" style="margin-top:10px">Healing Focus</div>
+      <div class="pill-row" id="healingPills">
+        <span class="pill active-coral" onclick="setPill(this,'healing')">All</span>
+        <span class="pill" onclick="setPill(this,'healing')">Grief</span>
+        <span class="pill" onclick="setPill(this,'healing')">Anxiety</span>
+        <span class="pill" onclick="setPill(this,'healing')">Meditation</span>
+        <span class="pill" onclick="setPill(this,'healing')">Trauma</span>
+        <span class="pill" onclick="setPill(this,'healing')">Self-Love</span>
+      </div>
+    </div>
+
+    <!-- Artist grid -->
+    <div class="grid" id="artistGrid"></div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <h3>Are you a healing artist?</h3>
+      <p>Join Voices &amp; Vibes Radio and share your music with listeners who are ready to heal.</p>
+      <button class="cta-btn">🎵 Apply for Your Artist Page</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ARTISTS = [
+  {name:"Soulful Sage",slug:"soulful-sage",tagline:"Meditation in every note",genres:["Jazz","Neo Soul"],healing:["Meditation","Stress Relief"],plan:"spotlight",plays:9200,followers:640,tracks:14,city:"Atlanta",initials:"SS",bg:"linear-gradient(135deg,#009B9B22,#1a2a1a)"},
+  {name:"Grace Melody",slug:"grace-melody",tagline:"Gospel roots, healing fruits",genres:["Gospel"],healing:["Grief","Spiritual Growth"],plan:"pro",plays:7100,followers:510,tracks:8,city:"Houston",initials:"GM",bg:"linear-gradient(135deg,#E8624A22,#1a1a2a)"},
+  {name:"Kosi Beats",slug:"kosi-beats",tagline:"Afrobeats for the wounded",genres:["Afrobeats"],healing:["Anxiety","Self-Love"],plan:"free",plays:5800,followers:390,tracks:22,city:"Dallas",initials:"KB",bg:"linear-gradient(135deg,#009B9B18,#2a1a0a)"},
+  {name:"Miriam Keys",slug:"miriam-keys",tagline:"Piano therapy sessions",genres:["Jazz","Instrumental"],healing:["Trauma","Depression"],plan:"pro",plays:4300,followers:280,tracks:6,city:"San Antonio",initials:"MK",bg:"linear-gradient(135deg,#1a0a2a,#009B9B18)"},
+  {name:"D-Flow",slug:"d-flow",tagline:"Hip-Hop heals too",genres:["Hip-Hop"],healing:["Addiction Recovery","Self-Love"],plan:"free",plays:3900,followers:210,tracks:18,city:"Houston",initials:"DF",bg:"linear-gradient(135deg,#E8624A18,#0a1a2a)"},
+  {name:"Esperanza Sun",slug:"esperanza-sun",tagline:"Healing in two languages",genres:["Latin","R&B"],healing:["Grief","Anxiety"],plan:"free",plays:3200,followers:175,tracks:11,city:"El Paso",initials:"ES",bg:"linear-gradient(135deg,#009B9B22,#E8624A18)"},
+  {name:"Brother Reed",slug:"brother-reed",tagline:"Ancient sounds, modern wounds",genres:["Gospel","Jazz"],healing:["Spiritual Growth","Trauma"],plan:"pro",plays:2800,followers:155,tracks:9,city:"Fort Worth",initials:"BR",bg:"linear-gradient(135deg,#1a2a0a,#009B9B18)"},
+  {name:"Nova Stillwater",slug:"nova-stillwater",tagline:"Ambient healing waves",genres:["Instrumental"],healing:["Stress Relief","Meditation"],plan:"free",plays:2100,followers:98,tracks:7,city:"Austin",initials:"NS",bg:"linear-gradient(135deg,#0a0a2a,#009B9B22)"},
+  {name:"Asha Bloom",slug:"asha-bloom",tagline:"R&B for the broken open",genres:["R&B","Neo Soul"],healing:["Depression","Self-Love"],plan:"free",plays:1700,followers:80,tracks:5,city:"Beaumont",initials:"AB",bg:"linear-gradient(135deg,#E8624A18,#1a0a0a)"},
+  {name:"Lion Roars",slug:"lion-roars",tagline:"Spoken word as medicine",genres:["Spoken Word"],healing:["Addiction Recovery","Grief"],plan:"free",plays:1200,followers:60,tracks:12,city:"Galveston",initials:"LR",bg:"linear-gradient(135deg,#2a1a0a,#009B9B18)"},
+];
+
+let filtersVisible = false;
+let genreFilter = "All", healingFilter = "All";
+
+function toggleFilters(){
+  filtersVisible = !filtersVisible;
+  document.getElementById('filterPanel').style.display = filtersVisible ? 'block' : 'none';
+}
+
+function setPill(el, type){
+  const groupId = type === 'genre' ? 'genrePills' : 'healingPills';
+  const activeClass = type === 'genre' ? 'active-teal' : 'active-coral';
+  document.querySelectorAll('#'+groupId+' .pill').forEach(p => p.classList.remove(activeClass));
+  el.classList.add(activeClass);
+  if(type==='genre') genreFilter = el.textContent;
+  else healingFilter = el.textContent;
+  filterArtists();
+}
+
+function filterArtists(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let list = ARTISTS.filter(a => {
+    const matchSearch = !q || a.name.toLowerCase().includes(q) || a.tagline.toLowerCase().includes(q) ||
+      a.genres.some(g=>g.toLowerCase().includes(q)) || a.healing.some(h=>h.toLowerCase().includes(q));
+    const matchGenre = genreFilter==='All' || a.genres.includes(genreFilter);
+    const matchHealing = healingFilter==='All' || a.healing.includes(healingFilter);
+    return matchSearch && matchGenre && matchHealing;
+  });
+  document.getElementById('countLabel').textContent = list.length + ' artist' + (list.length!==1?'s':'');
+  const grid = document.getElementById('artistGrid');
+  grid.innerHTML = list.map(a => {
+    const planColor = a.plan==='spotlight'?'#E8624A':a.plan==='pro'?'#009B9B':null;
+    const badge = planColor ? `<div class="plan-badge" style="background:${planColor};color:#fff">${a.plan==='spotlight'?'Spotlight':'Pro'}</div>` : '';
+    const genreTags = a.genres.slice(0,2).map(g=>`<span class="tag-teal" style="font-size:9px;padding:1px 6px">${g}</span>`).join('');
+    const healTag = a.healing.slice(0,1).map(h=>`<span class="tag-coral" style="font-size:9px;padding:1px 6px">${h}</span>`).join('');
+    return `<div class="card">
+      <div class="card-img" style="background:${a.bg}">
+        <span>${a.initials}</span>${badge}
+      </div>
+      <div class="card-body">
+        <div class="card-name">${a.name}</div>
+        <div class="card-tagline">${a.tagline}</div>
+        <div class="card-tags">${genreTags}${healTag}</div>
+        <div class="card-stats">
+          <span class="card-stat">🎵 ${a.tracks}</span>
+          <span class="card-stat">♡ ${a.followers}</span>
+          <span class="card-stat">▶ ${(a.plays/1000).toFixed(1)}k</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+filterArtists();
+</script>

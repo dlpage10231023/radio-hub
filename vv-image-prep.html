@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voices & Vibes — Image Prep Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#009B9B;--teal-d:#007A7A;--teal-l:#00C4C4;
+  --coral:#E8624A;--black:#0a0a0a;--dark:#111;
+  --card:#1a1a1a;--raised:#1e2a2a;--border:#0d2e2e;
+  --cream:#e8f5f5;--muted:#5a9090;
+}
+body{background:var(--black);color:var(--cream);font-family:'Montserrat',sans-serif;
+  min-height:100vh;padding:2rem 1rem 3rem;overflow-x:hidden}
+
+.header{text-align:center;margin-bottom:2rem}
+.logo{font-family:'Dancing Script',cursive;font-size:1.8rem;font-weight:700;
+  background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{font-size:10px;letter-spacing:0.25em;text-transform:uppercase;color:var(--muted);margin-top:0.25rem}
+
+.main{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;max-width:960px;margin:0 auto}
+
+.panel{background:var(--card);border:1px solid rgba(0,155,155,0.2);padding:1.5rem}
+.panel-title{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:1rem;padding-bottom:0.5rem;
+  border-bottom:1px solid rgba(0,155,155,0.15);
+  display:flex;align-items:center;gap:0.5rem}
+.panel-title::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0}
+
+/* DROP ZONE */
+.drop-zone{
+  border:2px dashed rgba(0,155,155,0.35);
+  background:rgba(0,155,155,0.03);
+  padding:2.5rem 1rem;text-align:center;cursor:pointer;
+  transition:all 0.2s;margin-bottom:1rem;
+}
+.drop-zone:hover,.drop-zone.over{
+  border-color:var(--teal);background:rgba(0,155,155,0.08);
+}
+.drop-icon{font-size:2.5rem;margin-bottom:0.75rem;display:block}
+.drop-text{font-size:12px;color:var(--muted);margin-bottom:0.5rem}
+.drop-sub{font-size:10px;color:rgba(90,144,144,0.6)}
+.upload-btn{
+  background:var(--teal);color:var(--black);border:none;cursor:pointer;
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;padding:10px 24px;
+  margin-top:0.75rem;display:inline-block;transition:background 0.2s;
+}
+.upload-btn:hover{background:var(--teal-l)}
+
+/* CONTROLS */
+.ctrl-group{margin-bottom:1.25rem}
+.ctrl-label{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:0.5rem;display:flex;justify-content:space-between;align-items:center}
+.ctrl-val{color:var(--teal);font-weight:700}
+input[type=range]{width:100%;accent-color:var(--teal);height:4px;cursor:pointer}
+.ctrl-row{display:flex;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap}
+.preset-btn{
+  background:var(--raised);border:1px solid rgba(0,155,155,0.2);
+  color:var(--muted);font-family:'Montserrat',sans-serif;font-size:10px;
+  font-weight:600;letter-spacing:0.08em;text-transform:uppercase;
+  padding:6px 12px;cursor:pointer;transition:all 0.15s;
+}
+.preset-btn:hover{border-color:var(--teal);color:var(--teal)}
+.preset-btn.active{background:var(--teal);color:var(--black);border-color:var(--teal)}
+.preset-btn.coral{border-color:rgba(232,98,74,0.3)}
+.preset-btn.coral:hover,.preset-btn.coral.active{background:var(--coral);color:var(--black);border-color:var(--coral)}
+
+/* PREVIEW */
+.preview-wrap{position:relative}
+.preview-frame{
+  width:100%;position:relative;overflow:hidden;
+  background:#0a0a0a;border:2px solid rgba(0,155,155,0.3);
+}
+.preview-frame canvas{display:block;width:100%}
+.frame-label{
+  position:absolute;top:8px;left:8px;
+  background:rgba(0,155,155,0.85);color:var(--black);
+  font-size:9px;font-weight:700;letter-spacing:0.15em;
+  text-transform:uppercase;padding:3px 8px;
+}
+
+/* COMPARE */
+.compare-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:1rem}
+.cmp{text-align:center}
+.cmp-frame{width:100%;aspect-ratio:1/1;overflow:hidden;border:2px solid #333;position:relative;background:#0a0a0a}
+.cmp-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.cmp-label{font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  margin-top:4px;padding:3px 0}
+.cmp-code{font-size:8px;color:var(--muted);font-family:monospace;margin-top:2px}
+.cmp-frame.bad{border-color:var(--coral)}
+.cmp-frame.good{border-color:var(--teal);box-shadow:0 0 12px rgba(0,155,155,0.4)}
+.cmp-label.bad{color:var(--coral)}
+.cmp-label.good{color:var(--teal)}
+
+/* OUTPUT */
+.output-section{margin-top:1rem}
+.download-btn{
+  width:100%;background:var(--teal);color:var(--black);border:none;cursor:pointer;
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;padding:12px;
+  margin-bottom:0.5rem;transition:background 0.2s;display:block;
+}
+.download-btn:hover{background:var(--teal-l)}
+.download-btn.coral{background:var(--coral)}
+.download-btn.coral:hover{background:#F07A62}
+.download-btn:disabled{background:var(--raised);color:var(--muted);cursor:not-allowed}
+
+.info-box{
+  background:var(--raised);border:1px solid rgba(0,155,155,0.15);
+  padding:0.75rem;font-size:10px;color:var(--muted);line-height:1.7;
+  margin-top:0.75rem;
+}
+.info-box strong{color:var(--teal)}
+
+.tip{
+  background:rgba(0,155,155,0.05);border-left:3px solid var(--teal);
+  padding:0.75rem 1rem;font-size:10px;color:var(--muted);
+  line-height:1.7;margin-bottom:1rem;
+}
+.tip strong{color:var(--teal-l)}
+
+/* STATUS */
+.status{
+  text-align:center;padding:0.75rem;margin-top:0.5rem;
+  font-size:11px;font-weight:600;letter-spacing:0.1em;
+  background:rgba(0,155,155,0.08);border:1px solid rgba(0,155,155,0.2);
+  color:var(--teal);display:none;
+}
+
+@media(max-width:700px){.main{grid-template-columns:1fr}.compare-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">Voices & Vibes Radio</div>
+  <div class="subtitle">🖼️ Artist Image Prep Tool — Crop, Scale & Export</div>
+</div>
+
+<div class="main">
+
+  <!-- LEFT: UPLOAD + CONTROLS -->
+  <div>
+    <div class="panel">
+      <div class="panel-title">Upload Your Photo</div>
+
+      <div class="tip">
+        <strong>How it works:</strong> Upload any photo, use the sliders to position and scale it perfectly, then download the ready-to-upload version for Lovable.
+      </div>
+
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileIn').click()"
+        ondragover="e=>{e.preventDefault();this.classList.add('over')}"
+        ondragleave="this.classList.remove('over')"
+        ondrop="handleDrop(event)">
+        <span class="drop-icon">🖼️</span>
+        <div class="drop-text">Drop your artist photo here</div>
+        <div class="drop-sub">JPG, PNG, WebP — any size</div>
+        <button class="upload-btn" onclick="event.stopPropagation();document.getElementById('fileIn').click()">Choose Photo</button>
+      </div>
+      <input type="file" id="fileIn" accept="image/*" style="display:none" onchange="loadFile(this)">
+
+      <!-- OUTPUT SIZE -->
+      <div class="panel-title" style="margin-top:1rem">Output Size</div>
+      <div class="ctrl-row">
+        <button class="preset-btn active" onclick="setSize(500,500,this)">500×500</button>
+        <button class="preset-btn" onclick="setSize(600,600,this)">600×600</button>
+        <button class="preset-btn" onclick="setSize(800,800,this)">800×800</button>
+        <button class="preset-btn" onclick="setSize(400,600,this)">400×600</button>
+      </div>
+
+      <!-- POSITION -->
+      <div class="panel-title" style="margin-top:1rem">Position & Scale</div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Vertical Position (Y) <span class="ctrl-val" id="yVal">0%</span></div>
+        <input type="range" id="yPos" min="-100" max="100" value="0" oninput="updatePreview()">
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px">
+          <span>Show Top</span><span>Show Bottom</span>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Horizontal Position (X) <span class="ctrl-val" id="xVal">0%</span></div>
+        <input type="range" id="xPos" min="-100" max="100" value="0" oninput="updatePreview()">
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px">
+          <span>← Left</span><span>Right →</span>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Scale / Zoom <span class="ctrl-val" id="scaleVal">100%</span></div>
+        <input type="range" id="scaleR" min="50" max="200" value="100" oninput="updatePreview()">
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:2px">
+          <span>Zoom Out</span><span>Zoom In</span>
+        </div>
+      </div>
+
+      <!-- QUICK PRESETS -->
+      <div class="panel-title">Quick Presets</div>
+      <div class="ctrl-row">
+        <button class="preset-btn" onclick="applyPreset('top')">👤 Show Face</button>
+        <button class="preset-btn" onclick="applyPreset('center')">⬛ Center</button>
+        <button class="preset-btn" onclick="applyPreset('full')">🔍 Fit Full</button>
+        <button class="preset-btn coral" onclick="applyPreset('reset')">↺ Reset</button>
+      </div>
+
+      <!-- DOWNLOAD -->
+      <div class="output-section">
+        <button class="download-btn" id="dlSquare" onclick="downloadImage('square')" disabled>
+          ⬇ Download Square (for Artist Player)
+        </button>
+        <button class="download-btn coral" id="dlOrig" onclick="downloadImage('original')" disabled>
+          ⬇ Download Original Size
+        </button>
+        <div class="status" id="statusMsg">✅ Image saved to Downloads!</div>
+        <div class="info-box">
+          <strong>Square download</strong> = perfect for the Artist Player album art.<br>
+          <strong>Original download</strong> = full photo, no cropping.<br>
+          Upload the square version to Lovable for a perfect fit every time.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: LIVE PREVIEW + COMPARE -->
+  <div style="display:flex;flex-direction:column;gap:1rem">
+
+    <!-- LIVE PREVIEW -->
+    <div class="panel">
+      <div class="panel-title">Live Preview — Artist Player Frame</div>
+      <div class="preview-wrap">
+        <div class="preview-frame" id="previewFrame">
+          <canvas id="previewCanvas" width="500" height="500"></canvas>
+          <div class="frame-label">Artist Spotlight</div>
+        </div>
+        <div style="margin-top:0.5rem;font-size:9px;color:var(--muted);text-align:center;letter-spacing:0.08em">
+          This is exactly how it will look in the Artist Player
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPARE -->
+    <div class="panel">
+      <div class="panel-title">Object-Position Comparison</div>
+      <div class="compare-grid" id="compareGrid">
+        <div class="cmp">
+          <div class="cmp-frame bad" id="cmpCenter">
+            <img id="cmpCenterImg" style="object-position:center center">
+          </div>
+          <div class="cmp-label bad">❌ Wrong</div>
+          <div class="cmp-code">center center</div>
+        </div>
+        <div class="cmp">
+          <div class="cmp-frame bad" id="cmpMiddle">
+            <img id="cmpMiddleImg" style="object-position:50% 30%">
+          </div>
+          <div class="cmp-label bad">❌ Still off</div>
+          <div class="cmp-code">50% 30%</div>
+        </div>
+        <div class="cmp">
+          <div class="cmp-frame good" id="cmpTop">
+            <img id="cmpTopImg" style="object-position:top">
+          </div>
+          <div class="cmp-label good">✅ Correct</div>
+          <div class="cmp-code">object-top</div>
+        </div>
+      </div>
+      <div class="tip" style="margin-bottom:0">
+        <strong>Tell Lovable:</strong> Add Tailwind class <strong style="color:#00C4C4">object-top</strong> to the img element. Keep <strong style="color:#00C4C4">object-cover</strong>.
+      </div>
+    </div>
+
+    <!-- LOVABLE CODE -->
+    <div class="panel">
+      <div class="panel-title">Copy This Code for Lovable</div>
+      <div style="background:#0a0a0a;border:1px solid rgba(0,155,155,0.2);padding:1rem;font-family:monospace;font-size:11px;line-height:1.8;color:#e8f5f5">
+        <span style="color:#5a9090">// In ArtistPlayer.tsx — img element:</span><br>
+        &lt;img<br>
+        &nbsp;&nbsp;<span style="color:#009B9B">src</span>={albumArt}<br>
+        &nbsp;&nbsp;<span style="color:#009B9B">alt</span>="Album Art"<br>
+        &nbsp;&nbsp;<span style="color:#009B9B">className</span>="<span style="color:#E8624A">w-full h-full object-cover object-top</span>"<br>
+        /&gt;<br><br>
+        <span style="color:#5a9090">// OR inline style:</span><br>
+        style={{<br>
+        &nbsp;&nbsp;<span style="color:#009B9B">objectFit</span>: '<span style="color:#E8624A">cover</span>',<br>
+        &nbsp;&nbsp;<span style="color:#009B9B">objectPosition</span>: '<span style="color:#E8624A">top</span>'<br>
+        }}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let img = null;
+let outW = 500, outH = 500;
+
+function loadFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  readImage(file);
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('dropZone').classList.remove('over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) readImage(file);
+}
+
+function readImage(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    img = new Image();
+    img.onload = () => {
+      // Update compare images
+      const src = ev.target.result;
+      ['cmpCenterImg','cmpMiddleImg','cmpTopImg'].forEach(id => {
+        document.getElementById(id).src = src;
+      });
+      applyPreset('top');
+      document.getElementById('dlSquare').disabled = false;
+      document.getElementById('dlOrig').disabled = false;
+      document.getElementById('dropZone').style.borderColor = 'var(--teal)';
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function setSize(w, h, btn) {
+  outW = w; outH = h;
+  document.querySelectorAll('.ctrl-row .preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updatePreview();
+}
+
+function applyPreset(type) {
+  const yPos = document.getElementById('yPos');
+  const xPos = document.getElementById('xPos');
+  const scaleR = document.getElementById('scaleR');
+  if (type === 'top')    { yPos.value = -60; xPos.value = 0; scaleR.value = 110; }
+  if (type === 'center') { yPos.value = 0;   xPos.value = 0; scaleR.value = 100; }
+  if (type === 'full')   { yPos.value = 0;   xPos.value = 0; scaleR.value = 75; }
+  if (type === 'reset')  { yPos.value = 0;   xPos.value = 0; scaleR.value = 100; }
+  updatePreview();
+}
+
+function updatePreview() {
+  const canvas = document.getElementById('previewCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = outW;
+  canvas.height = outH;
+
+  // Dark background
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fillRect(0, 0, outW, outH);
+
+  if (!img) {
+    // Placeholder
+    ctx.fillStyle = '#1a2a2a';
+    ctx.fillRect(0, 0, outW, outH);
+    ctx.fillStyle = '#5a9090';
+    ctx.font = '14px Montserrat,sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Upload a photo to preview', outW/2, outH/2 - 10);
+    ctx.font = '11px Montserrat,sans-serif';
+    ctx.fillStyle = '#3a6060';
+    ctx.fillText('Drag & drop or click Choose Photo', outW/2, outH/2 + 15);
+    return;
+  }
+
+  const yVal = parseInt(document.getElementById('yPos').value);
+  const xVal = parseInt(document.getElementById('xPos').value);
+  const scale = parseInt(document.getElementById('scaleR').value) / 100;
+
+  // Update labels
+  document.getElementById('yVal').textContent = yVal + '%';
+  document.getElementById('xVal').textContent = xVal + '%';
+  document.getElementById('scaleVal').textContent = Math.round(scale*100) + '%';
+
+  // Calculate draw dimensions (cover logic)
+  const imgRatio = img.width / img.height;
+  const canRatio = outW / outH;
+  let dw, dh;
+  if (imgRatio > canRatio) { dh = outH * scale; dw = dh * imgRatio; }
+  else { dw = outW * scale; dh = dw / imgRatio; }
+
+  // Position with offset
+  let dx = (outW - dw) / 2 + (xVal / 100) * outW * 0.5;
+  let dy = (outH - dh) / 2 + (yVal / 100) * outH * 0.5;
+
+  ctx.drawImage(img, dx, dy, dw, dh);
+
+  // Overlay gradient at bottom (like the player)
+  const grad = ctx.createLinearGradient(0, outH*0.6, 0, outH);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.65)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, outW, outH);
+
+  // "Now Playing" badge simulation
+  ctx.fillStyle = 'rgba(232,98,74,0.9)';
+  ctx.fillRect(8, 8, 90, 20);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 9px Montserrat,sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('● NOW PLAYING', 12, 21);
+
+  // Watermark
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.font = '10px Montserrat,sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('Voices & Vibes Radio', outW - 8, outH - 8);
+}
+
+function downloadImage(type) {
+  if (!img) return;
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  if (type === 'square') {
+    canvas.width = outW;
+    canvas.height = outH;
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0,0,outW,outH);
+
+    const yVal = parseInt(document.getElementById('yPos').value);
+    const xVal = parseInt(document.getElementById('xPos').value);
+    const scale = parseInt(document.getElementById('scaleR').value) / 100;
+    const imgRatio = img.width / img.height;
+    const canRatio = outW / outH;
+    let dw, dh;
+    if (imgRatio > canRatio) { dh = outH * scale; dw = dh * imgRatio; }
+    else { dw = outW * scale; dh = dw / imgRatio; }
+    let dx = (outW - dw) / 2 + (xVal / 100) * outW * 0.5;
+    let dy = (outH - dh) / 2 + (yVal / 100) * outH * 0.5;
+    ctx.drawImage(img, dx, dy, dw, dh);
+  } else {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+  }
+
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = type === 'square' ? `vv-artist-${outW}x${outH}.jpg` : 'vv-artist-original.jpg';
+    a.click();
+    URL.revokeObjectURL(url);
+    const s = document.getElementById('statusMsg');
+    s.style.display = 'block';
+    setTimeout(() => s.style.display = 'none', 3000);
+  }, 'image/jpeg', 0.95);
+}
+
+// Initial preview
+updatePreview();
+</script>
+</body>
+</html>

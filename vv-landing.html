@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voices & Vibes Radio — Studio Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;700;900&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#009B9B;--teal-d:#007A7A;--teal-l:#00C4C4;
+  --coral:#E8624A;--coral-l:#F07A62;
+  --black:#0a0a0a;--dark:#111;--card:#1a1a1a;--raised:#1e2a2a;
+  --border:rgba(0,155,155,0.2);--cream:#e8f5f5;--muted:#8ab8b8;
+}
+html,body{background:var(--black);color:var(--cream);font-family:'Montserrat',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 40% at 20% 20%,rgba(0,155,155,0.07) 0%,transparent 60%),
+  radial-gradient(ellipse 40% 30% at 80% 80%,rgba(232,98,74,0.05) 0%,transparent 60%)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.03) 3px,rgba(0,0,0,0.03) 4px)}
+
+/* ── HEADER ── */
+header{position:relative;z-index:2;text-align:center;padding:60px 5vw 50px}
+.live-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(232,98,74,0.12);border:1px solid rgba(232,98,74,0.35);
+  color:var(--coral);font-size:10px;font-weight:700;letter-spacing:0.22em;
+  text-transform:uppercase;padding:6px 16px;margin-bottom:1.5rem;
+}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--coral);animation:blink 1.3s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.logo{
+  font-family:'Dancing Script',cursive;font-size:clamp(2.5rem,7vw,5rem);font-weight:700;
+  background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;margin-bottom:0.5rem;line-height:1.1;
+}
+.logo-sub{
+  font-family:'Montserrat',sans-serif;font-size:clamp(0.8rem,2vw,1rem);
+  font-weight:900;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--cream);margin-bottom:1rem;
+}
+.tagline{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(1rem,2.5vw,1.3rem);color:var(--muted);
+  margin-bottom:0.5rem;
+}
+.sub-tagline{
+  font-size:11px;letter-spacing:0.25em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:2rem;
+}
+.header-divider{
+  width:80px;height:2px;
+  background:linear-gradient(to right,var(--teal),var(--coral));
+  margin:0 auto;
+}
+
+/* ── TICKER ── */
+.ticker{
+  background:var(--teal);color:var(--black);padding:10px 0;
+  overflow:hidden;white-space:nowrap;position:relative;z-index:2;
+}
+.ticker-inner{
+  display:inline-block;animation:ticker 25s linear infinite;
+  font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
+}
+.ticker-inner span{margin:0 2.5rem}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── MAIN ── */
+.container{max-width:1200px;margin:0 auto;padding:60px 5vw;position:relative;z-index:2}
+
+/* ── SECTION LABEL ── */
+.section-label{
+  font-size:10px;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.75rem;
+  display:flex;align-items:center;gap:0.75rem;
+}
+.section-label::before{content:'';display:block;width:20px;height:2px;background:var(--teal)}
+.section-title{
+  font-family:'Dancing Script',cursive;font-size:clamp(1.8rem,4vw,3rem);
+  font-weight:700;color:var(--cream);margin-bottom:0.5rem;
+}
+.section-desc{font-size:14px;color:var(--muted);max-width:600px;line-height:1.8;margin-bottom:3rem}
+
+/* ── APPS GRID ── */
+.apps-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+  gap:2px;margin-bottom:60px;
+}
+.app-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:2rem;cursor:pointer;text-decoration:none;color:inherit;
+  display:block;position:relative;overflow:hidden;
+  transition:all 0.25s;border-top:3px solid transparent;
+}
+.app-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,155,155,0.06),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.app-card:hover{
+  background:#1e2a2a;border-top-color:var(--teal);
+  transform:translateY(-4px);
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+.app-card:hover::before{opacity:1}
+.app-card.coral-card:hover{border-top-color:var(--coral)}
+.app-card.coral-card::before{
+  background:linear-gradient(135deg,rgba(232,98,74,0.06),transparent)
+}
+.app-icon{font-size:2.5rem;margin-bottom:1rem;display:block}
+.app-title{
+  font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;
+  color:var(--teal);letter-spacing:0.05em;
+}
+.app-card.coral-card .app-title{color:var(--coral)}
+.app-subtitle{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:0.9rem;color:var(--muted);margin-bottom:0.75rem;
+}
+.app-description{
+  font-size:13px;color:rgba(232,245,245,0.7);
+  line-height:1.7;margin-bottom:1.25rem;
+}
+.app-features{list-style:none;font-size:12px;margin-bottom:1.25rem}
+.app-features li{
+  padding:5px 0 5px 20px;position:relative;
+  color:var(--muted);border-bottom:1px solid rgba(0,155,155,0.06);
+}
+.app-features li:last-child{border-bottom:none}
+.app-features li::before{
+  content:'✓';position:absolute;left:0;
+  color:var(--teal);font-weight:700;
+}
+.app-card.coral-card .app-features li::before{color:var(--coral)}
+.badge{
+  display:inline-block;font-size:9px;font-weight:700;
+  letter-spacing:0.18em;text-transform:uppercase;
+  padding:5px 14px;margin-bottom:1rem;
+}
+.badge.teal{background:rgba(0,155,155,0.12);border:1px solid rgba(0,155,155,0.3);color:var(--teal)}
+.badge.coral{background:rgba(232,98,74,0.12);border:1px solid rgba(232,98,74,0.3);color:var(--coral)}
+.badge.amber{background:rgba(212,168,48,0.12);border:1px solid rgba(212,168,48,0.3);color:#d4a830}
+.launch-btn{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:var(--teal);color:var(--black);
+  font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:10px 20px;border:none;cursor:pointer;
+  text-decoration:none;transition:background 0.2s,transform 0.15s;
+  margin-top:0.5rem;
+}
+.launch-btn:hover{background:var(--teal-l);transform:translateX(3px)}
+.app-card.coral-card .launch-btn{background:var(--coral)}
+.app-card.coral-card .launch-btn:hover{background:var(--coral-l)}
+
+/* ── WHY VV SECTION ── */
+.why-section{margin-bottom:60px}
+.why-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:2px;
+}
+.why-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:1.5rem;
+}
+.why-icon{font-size:1.8rem;margin-bottom:0.75rem;display:block}
+.why-title{
+  font-size:13px;font-weight:700;color:var(--teal);
+  letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;
+}
+.why-desc{font-size:12px;color:var(--muted);line-height:1.7}
+
+/* ── DOCS SECTION ── */
+.docs-section{
+  background:var(--card);border:1px solid var(--border);
+  padding:3rem;text-align:center;margin-bottom:60px;
+}
+.docs-section h2{
+  font-family:'Dancing Script',cursive;font-size:2rem;
+  color:var(--teal);margin-bottom:0.5rem;
+}
+.docs-section p{font-size:13px;color:var(--muted);margin-bottom:2rem}
+.docs-links{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:0.75rem;
+}
+.doc-link{
+  background:rgba(0,155,155,0.06);border:1px solid rgba(0,155,155,0.25);
+  padding:10px 20px;text-decoration:none;color:var(--teal);
+  font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  transition:all 0.2s;
+}
+.doc-link:hover{background:rgba(0,155,155,0.15);transform:scale(1.03)}
+
+/* ── PLANS SECTION ── */
+.plans-section{margin-bottom:60px}
+.plans-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:2px;
+}
+.plan-card{
+  background:var(--card);border:1px solid var(--border);
+  padding:2rem;text-align:center;position:relative;
+}
+.plan-card.featured{
+  border-color:rgba(0,155,155,0.5);
+  background:rgba(0,155,155,0.06);
+}
+.plan-card.featured::before{
+  content:'MOST POPULAR';
+  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  background:var(--teal);color:var(--black);
+  font-size:9px;font-weight:700;letter-spacing:0.15em;
+  padding:3px 14px;
+}
+.plan-name{
+  font-size:11px;font-weight:700;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;
+}
+.plan-price{
+  font-family:'Montserrat',sans-serif;font-size:2.5rem;
+  font-weight:900;color:var(--teal);line-height:1;margin-bottom:0.25rem;
+}
+.plan-price span{font-size:1rem;font-weight:400;color:var(--muted)}
+.plan-desc{font-size:11px;color:var(--muted);margin-bottom:1.5rem;line-height:1.6}
+.plan-features{list-style:none;text-align:left;margin-bottom:1.5rem}
+.plan-features li{
+  font-size:11px;color:var(--cream);padding:5px 0 5px 18px;
+  position:relative;border-bottom:1px solid rgba(0,155,155,0.06);
+}
+.plan-features li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
+.plan-features li.locked{color:var(--muted)}
+.plan-features li.locked::before{content:'✕';color:rgba(232,98,74,0.4)}
+.plan-btn{
+  width:100%;background:rgba(0,155,155,0.1);border:1px solid rgba(0,155,155,0.3);
+  color:var(--teal);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;padding:10px;cursor:pointer;
+  transition:all 0.2s;
+}
+.plan-btn:hover{background:var(--teal);color:var(--black)}
+.plan-card.featured .plan-btn{background:var(--teal);color:var(--black)}
+.plan-card.featured .plan-btn:hover{background:var(--teal-l)}
+
+/* ── FOOTER ── */
+footer{
+  background:#060606;border-top:1px solid var(--border);
+  padding:3rem 5vw;text-align:center;position:relative;z-index:2;
+}
+.footer-logo{
+  font-family:'Dancing Script',cursive;font-size:1.8rem;font-weight:700;
+  background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;margin-bottom:0.5rem;
+}
+.footer-tagline{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem}
+.footer-links{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.footer-links a{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--teal)}
+.footer-copy{font-size:10px;color:rgba(138,184,184,0.35);letter-spacing:0.05em}
+
+@media(max-width:768px){
+  .apps-grid,.plans-grid,.why-grid{grid-template-columns:1fr}
+  .docs-links{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="live-badge"><span class="live-dot"></span> Live · Houston, TX · Est. Jan 2026</div>
+  <span class="logo">Voices & Vibes</span>
+  <div class="logo-sub">Radio · Studio · Platform</div>
+  <div class="tagline">Where Healing Meets Music</div>
+  <div class="sub-tagline">Create · Record · Share · Heal</div>
+  <div class="header-divider"></div>
+</header>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>🎙️ Now Streaming 24/7</span>
+    <span>Voices & Vibes Radio — Houston, TX</span>
+    <span>Healing Conversations & Restorative Jazz</span>
+    <span>🕊️ Gospel Sunday — Church Spotlights Worldwide</span>
+    <span>Hosted by Doreatha Page · LPC, NCC</span>
+    <span>voicesandvibesradio.com</span>
+    <span>🎙️ Now Streaming 24/7</span>
+    <span>Voices & Vibes Radio — Houston, TX</span>
+    <span>Healing Conversations & Restorative Jazz</span>
+    <span>🕊️ Gospel Sunday — Church Spotlights Worldwide</span>
+    <span>Hosted by Doreatha Page · LPC, NCC</span>
+    <span>voicesandvibesradio.com</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- STUDIO SUITE -->
+  <div class="section-label">Studio Suite</div>
+  <div class="section-title">Three Powerful Studios</div>
+  <p class="section-desc">Professional music production tools built for healing artists, radio creators, and adult learners. All run in your browser — no downloads, no installation.</p>
+
+  <div class="apps-grid">
+
+    <!-- VOICES & VIBES PRO -->
+    <a href="voices-vibes-studio-pro.html" class="app-card">
+      <span class="badge teal">Pro Version</span>
+      <span class="app-icon">🎙️</span>
+      <h2 class="app-title">Voices & Vibes Pro</h2>
+      <div class="app-subtitle">Professional Mixer Edition</div>
+      <p class="app-description">Full production studio with 4 complete drum kits, piano roll, effects rack, and professional recording. Built for serious healing artists.</p>
+      <ul class="app-features">
+        <li>4 drum kits — Afrobeats, Trap, Hip-Hop, Latin</li>
+        <li>Velocity control (4 levels) + swing knob</li>
+        <li>Piano roll with 5 instrument sounds</li>
+        <li>Reverb, delay, EQ, compressor</li>
+        <li>Record session → download audio file</li>
+        <li>6-slot quick save system</li>
+        <li>16 preset patterns (4 per kit)</li>
+        <li>Oscilloscope + frequency monitor</li>
+      </ul>
+      <a href="voices-vibes-studio-pro.html" class="launch-btn">Launch Studio →</a>
+    </a>
+
+    <!-- RADIO PROMO PRODUCER -->
+    <a href="radio-promo-complete.html" class="app-card coral-card">
+      <span class="badge coral">Broadcast Ready</span>
+      <span class="app-icon">📻</span>
+      <h2 class="app-title">Radio Promo Producer</h2>
+      <div class="app-subtitle">Fast Workflow Edition</div>
+      <p class="app-description">Purpose-built for radio station IDs, bumpers, and promotional content. Fast, professional, and broadcast-ready out of the box.</p>
+      <ul class="app-features">
+        <li>Premium woodblock & percussion sounds</li>
+        <li>6 broadcast-ready presets</li>
+        <li>16-step sequencer</li>
+        <li>Instant WAV export</li>
+        <li>Station ID templates</li>
+        <li>Quick workflow — promo in minutes</li>
+        <li>Radio-optimized sound design</li>
+        <li>Voices & Vibes branded output</li>
+      </ul>
+      <a href="radio-promo-complete.html" class="launch-btn">Launch Studio →</a>
+    </a>
+
+    <!-- ADULT EDUCATION STUDIO -->
+    <a href="index.html" class="app-card">
+      <span class="badge amber">Educational</span>
+      <span class="app-icon">🎓</span>
+      <h2 class="app-title">Adult Music Education</h2>
+      <div class="app-subtitle">Learn Through Healing</div>
+      <p class="app-description">Discover music production as a healing practice. Perfect for adult beginners finding their sound for the first time through therapeutic creative expression.</p>
+      <ul class="app-features">
+        <li>Guided beat-making lessons</li>
+        <li>4 drum kits with cultural context</li>
+        <li>16 preset patterns to learn from</li>
+        <li>Piano & melody recorder</li>
+        <li>Song arranger & basic mixer</li>
+        <li>Healing music history education</li>
+        <li>African, Atlanta, Bronx, Caribbean roots</li>
+        <li>Progress-based challenges</li>
+      </ul>
+      <a href="index.html" class="launch-btn">Launch Studio →</a>
+    </a>
+
+  </div>
+
+  <!-- WHY VV -->
+  <div class="why-section">
+    <div class="section-label">Why Voices & Vibes</div>
+    <div class="section-title">Built Different</div>
+    <p class="section-desc">The only platform that combines healing radio, music creation, and artist community in one place.</p>
+
+    <div class="why-grid">
+      <div class="why-card">
+        <span class="why-icon">🌿</span>
+        <div class="why-title">Healing First</div>
+        <p class="why-desc">Every tool is designed around therapeutic creative expression — not just music production.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">🎙️</span>
+        <div class="why-title">Radio Integration</div>
+        <p class="why-desc">Make music here, get featured on Voices & Vibes Radio — streaming 24/7 worldwide.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">🥁</span>
+        <div class="why-title">Production Ready</div>
+        <p class="why-desc">Professional drum kits, effects, and recording — all running in your browser, free.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">🕊️</span>
+        <div class="why-title">Faith & Gospel</div>
+        <p class="why-desc">Dedicated Gospel Sunday spotlights featuring churches and faith-based artists worldwide.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">🌍</span>
+        <div class="why-title">Cultural Roots</div>
+        <p class="why-desc">African, Atlanta, Bronx, and Caribbean musical heritage woven into every kit and lesson.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-icon">🚀</span>
+        <div class="why-title">No Download Needed</div>
+        <p class="why-desc">Everything runs in Chrome. No app, no installation, no account required to create.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLANS -->
+  <div class="plans-section">
+    <div class="section-label">Artist Plans</div>
+    <div class="section-title">Share Your Music</div>
+    <p class="section-desc">Create for free forever. Choose a plan when you're ready to share your music with the world.</p>
+
+    <div class="plans-grid">
+
+      <div class="plan-card">
+        <div class="plan-name">Creator</div>
+        <div class="plan-price">$0<span>/mo</span></div>
+        <div class="plan-desc">Make music, download beats, come back anytime</div>
+        <ul class="plan-features">
+          <li>Full Studio Pro access</li>
+          <li>All 4 drum kits</li>
+          <li>Record & download beats</li>
+          <li>No account needed</li>
+          <li class="locked">Artist profile page</li>
+          <li class="locked">Track hosting</li>
+          <li class="locked">Radio spotlight</li>
+        </ul>
+        <button class="plan-btn">Start Creating</button>
+      </div>
+
+      <div class="plan-card featured">
+        <div class="plan-name">Artist</div>
+        <div class="plan-price">$19<span>/mo</span></div>
+        <div class="plan-desc">Your own profile page and music hosting</div>
+        <ul class="plan-features">
+          <li>Everything in Creator</li>
+          <li>Artist profile page</li>
+          <li>Upload 5 tracks</li>
+          <li>Artist directory listing</li>
+          <li>voicesandvibesradio.com/artists/you</li>
+          <li class="locked">Spotlight eligible</li>
+          <li class="locked">Radio airplay</li>
+        </ul>
+        <button class="plan-btn">Get Started</button>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-name">Spotlight</div>
+        <div class="plan-price">$39<span>/mo</span></div>
+        <div class="plan-desc">Get featured and heard worldwide</div>
+        <ul class="plan-features">
+          <li>Everything in Artist</li>
+          <li>Homepage spotlight eligible</li>
+          <li>10 tracks hosted</li>
+          <li>Healing Artist badge</li>
+          <li>Unlimited uploads</li>
+          <li class="locked">Guaranteed airplay</li>
+          <li class="locked">Gospel Sunday feature</li>
+        </ul>
+        <button class="plan-btn">Go Spotlight</button>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-name">On Air</div>
+        <div class="plan-price">$59<span>/mo</span></div>
+        <div class="plan-desc">Full radio integration and guaranteed airplay</div>
+        <ul class="plan-features">
+          <li>Everything in Spotlight</li>
+          <li>Guaranteed radio airplay</li>
+          <li>Gospel Sunday feature</li>
+          <li>Unlimited tracks</li>
+          <li>Priority spotlight</li>
+          <li>Direct booking button</li>
+          <li>VIP healing artist status</li>
+        </ul>
+        <button class="plan-btn">Go On Air</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- DOCS -->
+  <div class="docs-section">
+    <h2>Complete Documentation</h2>
+    <p>Everything you need to get started and master the tools</p>
+    <div class="docs-links">
+      <a href="VoicesVibes_Complete_Guide.pdf" class="doc-link">📖 Complete Guide</a>
+      <a href="BEATS_STUDIO_COMPLETE.md" class="doc-link">🥁 Beats Guide</a>
+      <a href="SONG_ARRANGER_GUIDE.md" class="doc-link">🎵 Arranger Guide</a>
+      <a href="MIXER_WORKING.md" class="doc-link">🎚️ Mixer Guide</a>
+      <a href="RADIO_COMPLETE_README.md" class="doc-link">📻 Radio Promo Guide</a>
+      <a href="DEPLOYMENT_GUIDE.md" class="doc-link">🚀 Deployment Guide</a>
+      <a href="TROUBLESHOOTING_GUIDE.md" class="doc-link">🔧 Troubleshooting</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Voices & Vibes Radio</span>
+  <div class="footer-tagline">Where Healing Meets Music · Create · Share · Heal</div>
+  <div class="footer-links">
+    <a href="voices-vibes.html">Home</a>
+    <a href="voices-vibes-studio-pro.html">Studio Pro</a>
+    <a href="vv-artist-player-v8.html">Artist Player</a>
+    <a href="vv-promo.html">Promo</a>
+    <a href="https://hello.citrus3.com:2020/public/voicesandvibes" target="_blank">Listen Live</a>
+  </div>
+  <div class="footer-copy">© 2026 Voices & Vibes Radio · Houston, TX · Hosted by Doreatha Page · LPC, NCC · voicesandvibesradio.com</div>
+</footer>
+
+</body>
+</html>

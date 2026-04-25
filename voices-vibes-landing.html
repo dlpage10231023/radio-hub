@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voices & Vibes - Where Your Voice Meets The Beat ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&family=Dancing+Script:wght@700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #009B9B;
+            --primary-coral: #E8624A;
+            --dark-bg: #0a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --border-glow: rgba(0, 155, 155, 0.3);
+            --text-light: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0f1419 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 155, 155, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle, rgba(232, 98, 74, 0.1) 0%, transparent 50%);
+            animation: pulse 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(10%, 10%) scale(1.1); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Header */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            position: relative;
+        }
+
+        .logo-section {
+            margin-bottom: 20px;
+        }
+
+        .main-logo {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-teal), var(--primary-coral), #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: gradient-shift 6s ease infinite;
+            text-shadow: 0 0 30px rgba(0, 155, 155, 0.3);
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(20deg); }
+        }
+
+        .tagline {
+            font-size: 1.8em;
+            font-weight: 300;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            color: var(--primary-coral);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        .hero-description {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+
+        /* Apps Grid */
+        .apps-section {
+            margin: 60px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 50px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--primary-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .app-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-glow);
+            border-radius: 25px;
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(0, 155, 155, 0.1), 
+                rgba(232, 98, 74, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 0;
+        }
+
+        .app-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: var(--primary-teal);
+            box-shadow: 0 30px 60px rgba(0, 155, 155, 0.4),
+                        0 0 80px rgba(232, 98, 74, 0.2);
+        }
+
+        .app-card:hover::before {
+            opacity: 1;
+        }
+
+        .app-card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .app-card:nth-child(1) .app-icon { animation-delay: 0s; }
+        .app-card:nth-child(2) .app-icon { animation-delay: 0.5s; }
+        .app-card:nth-child(3) .app-icon { animation-delay: 1s; }
+
+        .app-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-teal);
+        }
+
+        .app-subtitle {
+            font-size: 1em;
+            color: var(--primary-coral);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .app-description {
+            font-size: 1em;
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .app-features {
+            list-style: none;
+            margin: 20px 0;
+            padding: 0;
+        }
+
+        .app-features li {
+            padding: 8px 0 8px 30px;
+            position: relative;
+            font-size: 0.95em;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .app-features li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-teal), var(--primary-coral));
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(0, 155, 155, 0.3);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-teal), var(--primary-coral));
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 155, 155, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0, 155, 155, 0.6);
+        }
+
+        /* Feature Highlights */
+        .highlights-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-glow);
+            border-radius: 25px;
+            padding: 50px;
+            margin: 60px 0;
+            text-align: center;
+        }
+
+        .highlights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .highlight-item {
+            padding: 20px;
+        }
+
+        .highlight-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .highlight-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-teal);
+        }
+
+        .highlight-text {
+            font-size: 0.95em;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Documentation Section */
+        .docs-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border-glow);
+            border-radius: 25px;
+            padding: 50px;
+            margin: 60px 0;
+            text-align: center;
+        }
+
+        .docs-title {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-teal);
+        }
+
+        .docs-subtitle {
+            font-size: 1.1em;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        .docs-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .doc-link {
+            background: rgba(0, 155, 155, 0.1);
+            border: 2px solid rgba(0, 155, 155, 0.3);
+            padding: 12px 25px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: var(--primary-teal);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .doc-link:hover {
+            background: rgba(0, 155, 155, 0.2);
+            border-color: var(--primary-teal);
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 155, 155, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 60px 20px 40px;
+            color: var(--text-muted);
+        }
+
+        .footer-tagline {
+            font-size: 1.5em;
+            font-style: italic;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-teal), var(--primary-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-info {
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-logo {
+                font-size: 3em;
+            }
+
+            .tagline {
+                font-size: 1.3em;
+            }
+
+            .apps-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .app-card {
+                padding: 30px;
+            }
+
+            .highlights-section,
+            .docs-section {
+                padding: 30px 20px;
+            }
+
+            .highlights-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        /* Loading animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .app-card,
+        .highlights-section,
+        .docs-section {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .app-card:nth-child(1) { animation-delay: 0.1s; }
+        .app-card:nth-child(2) { animation-delay: 0.2s; }
+        .app-card:nth-child(3) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Header -->
+        <header>
+            <div class="logo-section">
+                <h1 class="main-logo">Voices & Vibes</h1>
+                <p class="tagline">Where Your Voice Meets The Beat ✨</p>
+                <p class="subtitle">Professional Radio Production Studio</p>
+            </div>
+            <div class="hero-description">
+                <p>Where <strong>Healing Meets Energy</strong>, <strong>Live Moments Shine</strong>, and your creative vision comes to life. Professional-grade tools for radio broadcasting, voice recording, and beat production—designed for adult professionals and aspiring producers.</p>
+            </div>
+        </header>
+
+        <!-- Apps Section -->
+        <section class="apps-section">
+            <h2 class="section-title">🎙️ Choose Your Studio</h2>
+            
+            <div class="apps-grid">
+                <!-- Voices & Vibes Pro -->
+                <a href="voices-vibes-studio-pro.html" class="app-card">
+                    <span class="app-icon">🎙️</span>
+                    <h3 class="app-title">Voices & Vibes Pro</h3>
+                    <p class="app-subtitle">Professional Promo Producer</p>
+                    <p class="app-description">
+                        The complete solution for radio production: advanced beat creation + professional voice recording + instant mixing. Create broadcast-ready promos in minutes.
+                    </p>
+                    <ul class="app-features">
+                        <li>4 Complete Drum Kits (Afrobeats, Trap, Hip-Hop, Latin)</li>
+                        <li>16 Professional Preset Patterns</li>
+                        <li>Advanced Velocity & Swing Controls</li>
+                        <li>Professional Voice Recording</li>
+                        <li>Real-Time Waveform Display</li>
+                        <li>Beat + Voice Mixing Controls</li>
+                        <li>6-Slot Quick Save System</li>
+                        <li>Export Broadcast-Ready WAV (44.1kHz, 16-bit)</li>
+                    </ul>
+                    <span class="badge">⭐ Pro Mixer Edition</span>
+                    <div class="cta-button">Launch Pro Studio →</div>
+                </a>
+
+                <!-- Radio Station Promo Producer -->
+                <a href="radio-promo-complete.html" class="app-card">
+                    <span class="app-icon">📻</span>
+                    <h3 class="app-title">Radio Station Promo Producer</h3>
+                    <p class="app-subtitle">Professional Woodblock & Percussion</p>
+                    <p class="app-description">
+                        Fast, focused, professional. Create classic radio bumpers, station IDs, and promos with premium woodblock sounds optimized for broadcast quality.
+                    </p>
+                    <ul class="app-features">
+                        <li>8 Premium Woodblock & Percussion Sounds</li>
+                        <li>6 Broadcast-Ready Presets</li>
+                        <li>16-Step Professional Sequencer</li>
+                        <li>Quick BPM Control (60-200)</li>
+                        <li>Instant WAV Export</li>
+                        <li>Save/Load Projects</li>
+                        <li>Perfect for Station IDs, Bumpers, Transitions</li>
+                        <li>Classic Radio Sound</li>
+                    </ul>
+                    <span class="badge">⚡ Fast Workflow</span>
+                    <div class="cta-button">Launch Promo Studio →</div>
+                </a>
+
+                <!-- Professional Music Studio -->
+                <a href="index.html" class="app-card">
+                    <span class="app-icon">🎓</span>
+                    <h3 class="app-title">Professional Music Studio</h3>
+                    <p class="app-subtitle">Complete Production Platform</p>
+                    <p class="app-description">
+                        Full-featured music production platform with professional training, advanced techniques, and team collaboration. Master complete song creation from concept to broadcast.
+                    </p>
+                    <ul class="app-features">
+                        <li>4 Drum Kits + Advanced Beat Production</li>
+                        <li>Piano/Melody Recording (88 Keys)</li>
+                        <li>Multi-Track Song Arranger (16-Slot Timeline)</li>
+                        <li>Professional 8-Channel Mixer</li>
+                        <li>12 Professional Training Modules</li>
+                        <li>12 Advanced Production Challenges</li>
+                        <li>Achievement System & Skill Progression</li>
+                        <li>Collaborative Jam Room (Real-Time)</li>
+                    </ul>
+                    <span class="badge">💼 Professional Training</span>
+                    <div class="cta-button">Launch Full Studio →</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Feature Highlights -->
+        <section class="highlights-section">
+            <h2 class="section-title">✨ Why Voices & Vibes?</h2>
+            <div class="highlights-grid">
+                <div class="highlight-item">
+                    <span class="highlight-icon">🚀</span>
+                    <h3 class="highlight-title">No Installation</h3>
+                    <p class="highlight-text">Run directly in your browser. No downloads, no setup. Just click and create.</p>
+                </div>
+                <div class="highlight-item">
+                    <span class="highlight-icon">🎚️</span>
+                    <h3 class="highlight-title">Broadcast Quality</h3>
+                    <p class="highlight-text">Export at 44.1kHz, 16-bit WAV. Professional audio ready for immediate air use.</p>
+                </div>
+                <div class="highlight-item">
+                    <span class="highlight-icon">📱</span>
+                    <h3 class="highlight-title">Works Anywhere</h3>
+                    <p class="highlight-text">Desktop, tablet, or mobile. Online or offline. Access from any device.</p>
+                </div>
+                <div class="highlight-item">
+                    <span class="highlight-icon">💾</span>
+                    <h3 class="highlight-title">Auto-Save</h3>
+                    <p class="highlight-text">Projects save automatically in your browser. Never lose your work.</p>
+                </div>
+                <div class="highlight-item">
+                    <span class="highlight-icon">⚡</span>
+                    <h3 class="highlight-title">Lightning Fast</h3>
+                    <p class="highlight-text">Create a complete promo in under 5 minutes. From idea to export.</p>
+                </div>
+                <div class="highlight-item">
+                    <span class="highlight-icon">🎨</span>
+                    <h3 class="highlight-title">Beautiful Design</h3>
+                    <p class="highlight-text">Stunning teal/coral interface. Professional tools that inspire creativity.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentation -->
+        <section class="docs-section">
+            <h2 class="docs-title">📚 Complete Documentation</h2>
+            <p class="docs-subtitle">Everything you need to master the tools—tutorials, guides, and references</p>
+            <div class="docs-grid">
+                <a href="COMPLETE_INSTRUCTIONS_PDF.md" class="doc-link">📖 Complete Manual</a>
+                <a href="BEATS_STUDIO_COMPLETE.md" class="doc-link">🥁 Beats Guide</a>
+                <a href="PRO_MIXER_GUIDE.md" class="doc-link">🎚️ Pro Mixer Guide</a>
+                <a href="RADIO_COMPLETE_README.md" class="doc-link">📻 Radio Promo Guide</a>
+                <a href="DEPLOYMENT_GUIDE.md" class="doc-link">🚀 Deployment Guide</a>
+                <a href="TROUBLESHOOTING_GUIDE.md" class="doc-link">🔧 Troubleshooting</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <p class="footer-tagline">Where Healing Meets Energy • Live Moments Shine</p>
+            <div class="footer-info">
+                <p><strong>Voices & Vibes Professional Radio Studio Suite</strong></p>
+                <p>Version 2.7 • March 2026</p>
+                <p>Browser-Based • No Installation • Works Offline • Mobile-Friendly</p>
+                <p style="margin-top: 20px; opacity: 0.6;">Professional tools for adult education and broadcast production • Created by professionals, for professionals</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

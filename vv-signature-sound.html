@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voices & Vibes — Signature Sound Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#009B9B;--teal-l:#00C4C4;--teal-d:#007A7A;
+  --coral:#E8624A;--coral-l:#F07A62;
+  --black:#080c0c;--panel:#131e1e;--card:#182020;
+  --cream:#e8f5f5;--muted:#5a9090;--gold:#D4A830;
+  --border:rgba(0,155,155,0.18);
+}
+html,body{
+  background:var(--black);color:var(--cream);
+  font-family:'Montserrat',sans-serif;
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 60% at 20% 30%,rgba(0,155,155,0.09),transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 70%,rgba(232,98,74,0.06),transparent 60%);
+}
+
+/* ── CARD ── */
+.card{
+  position:relative;z-index:2;
+  width:min(480px,92vw);
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:2.5rem 2rem 2rem;
+  text-align:center;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,var(--teal),var(--coral),var(--teal));
+}
+
+/* ── HEADER ── */
+.live-row{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin-bottom:1.2rem;
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--coral);
+  animation:blink 1.3s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.live-txt{
+  font-size:9px;font-weight:700;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--coral);
+}
+.logo{
+  font-family:'Dancing Script',cursive;font-size:2.8rem;font-weight:700;
+  background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;line-height:1;margin-bottom:0.3rem;
+}
+.sub{
+  font-size:9px;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:0.35rem;
+}
+.tagline{
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  color:rgba(232,245,245,0.45);letter-spacing:0.12em;
+  margin-bottom:2rem;
+}
+
+/* ── WAVEFORM CANVAS ── */
+.vis-wrap{
+  position:relative;background:rgba(0,0,0,0.3);
+  border:1px solid var(--border);margin-bottom:1.5rem;
+  height:72px;overflow:hidden;
+}
+canvas{display:block;width:100%;height:100%}
+.vis-label{
+  position:absolute;top:6px;left:10px;
+  font-family:'Share Tech Mono',monospace;font-size:8px;
+  letter-spacing:0.15em;color:var(--teal);text-transform:uppercase;
+  opacity:0.6;
+}
+.vis-bpm{
+  position:absolute;top:6px;right:10px;
+  font-family:'Share Tech Mono',monospace;font-size:8px;
+  letter-spacing:0.1em;color:var(--muted);
+}
+
+/* ── INFO ROW ── */
+.info-row{
+  display:flex;gap:2px;margin-bottom:1.5rem;
+}
+.info-chip{
+  flex:1;background:rgba(0,155,155,0.06);border:1px solid rgba(0,155,155,0.18);
+  padding:6px 4px;text-align:center;
+}
+.chip-val{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  color:var(--teal);display:block;
+}
+.chip-lbl{
+  font-size:7px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);margin-top:1px;display:block;
+}
+
+/* ── MOOD DISPLAY ── */
+.mood-row{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(0,155,155,0.04);border:1px solid var(--border);
+  padding:10px 14px;margin-bottom:1.5rem;text-align:left;
+}
+.mood-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--teal);box-shadow:0 0 8px var(--teal);
+  flex-shrink:0;animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 6px var(--teal)}50%{box-shadow:0 0 14px var(--teal)}}
+.mood-name{font-weight:700;font-size:12px;color:var(--cream)}
+.mood-key{
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  color:var(--muted);margin-top:1px;
+}
+.mood-tags{
+  margin-left:auto;display:flex;gap:4px;
+}
+.tag{
+  font-size:7px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  padding:2px 7px;border-radius:1px;
+}
+.tag.teal{background:rgba(0,155,155,0.15);border:1px solid rgba(0,155,155,0.3);color:var(--teal)}
+.tag.coral{background:rgba(232,98,74,0.15);border:1px solid rgba(232,98,74,0.3);color:var(--coral)}
+.tag.gold{background:rgba(212,168,48,0.15);border:1px solid rgba(212,168,48,0.3);color:var(--gold)}
+
+/* ── CONTROLS ── */
+.controls{display:flex;gap:8px;margin-bottom:1.2rem}
+.btn-play{
+  flex:1;height:46px;background:var(--teal);color:var(--black);
+  border:none;font-family:'Montserrat',sans-serif;font-weight:900;
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;
+  justify-content:center;gap:8px;
+}
+.btn-play:hover{background:var(--teal-l)}
+.btn-play.playing{background:var(--coral);color:var(--black)}
+.btn-play.playing:hover{background:var(--coral-l)}
+.btn-play.rendering{background:rgba(212,168,48,0.8);color:var(--black);cursor:wait}
+
+.btn-dl{
+  flex:1;height:46px;background:transparent;
+  border:1px solid rgba(0,155,155,0.35);color:var(--teal);
+  font-family:'Montserrat',sans-serif;font-weight:700;
+  font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;
+  justify-content:center;gap:8px;
+}
+.btn-dl:hover{background:rgba(0,155,155,0.12);border-color:var(--teal)}
+.btn-dl:disabled{opacity:0.4;cursor:not-allowed}
+.btn-dl.done{border-color:var(--coral);color:var(--coral)}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{
+  height:2px;background:rgba(255,255,255,0.06);margin-bottom:1.2rem;overflow:hidden;
+}
+.progress-fill{
+  height:100%;width:0%;
+  background:linear-gradient(to right,var(--teal),var(--coral));
+  transition:width 0.1s linear;
+}
+
+/* ── ELAPSED ── */
+.elapsed-row{
+  display:flex;justify-content:space-between;
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  color:var(--muted);margin-bottom:1.5rem;
+}
+
+/* ── EQ BARS ── */
+.eq-row{
+  display:flex;gap:2px;align-items:flex-end;
+  height:20px;justify-content:center;margin-bottom:1.5rem;
+}
+.eq-bar{
+  width:5px;background:var(--teal);border-radius:1px;
+  transition:height 0.08s ease;height:3px;
+}
+.eq-bar:nth-child(even){background:var(--coral)}
+
+/* ── STATUS ── */
+.status{
+  font-family:'Share Tech Mono',monospace;font-size:9px;
+  color:var(--muted);letter-spacing:0.1em;margin-bottom:0;
+  min-height:14px;
+}
+.status.ok{color:var(--teal)}
+.status.err{color:var(--coral)}
+
+/* ── FOOTER ── */
+.footer{
+  position:relative;z-index:2;margin-top:1.2rem;
+  font-size:8px;letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(90,144,144,0.4);text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="live-row">
+    <div class="live-dot"></div>
+    <span class="live-txt">Voices & Vibes · Signature Sound</span>
+  </div>
+  <span class="logo">Voices & Vibes</span>
+  <div class="sub">Radio · Studio · Platform</div>
+  <div class="tagline">Where Healing Meets Music · Houston, TX · Est. Jan 2026</div>
+
+  <div class="vis-wrap">
+    <canvas id="vis" width="480" height="72"></canvas>
+    <span class="vis-label">Afrobeats Jazz</span>
+    <span class="vis-bpm">92 BPM</span>
+  </div>
+
+  <div class="info-row">
+    <div class="info-chip">
+      <span class="chip-val">Fm9</span>
+      <span class="chip-lbl">Key</span>
+    </div>
+    <div class="info-chip">
+      <span class="chip-val">6 Bars</span>
+      <span class="chip-lbl">Length</span>
+    </div>
+    <div class="info-chip">
+      <span class="chip-val" id="durVal">~15.7s</span>
+      <span class="chip-lbl">Duration</span>
+    </div>
+    <div class="info-chip">
+      <span class="chip-val">WAV</span>
+      <span class="chip-lbl">Format</span>
+    </div>
+  </div>
+
+  <div class="mood-row">
+    <div class="mood-dot"></div>
+    <div>
+      <div class="mood-name">VV Signature · Afrobeats Jazz</div>
+      <div class="mood-key">Chord pad · Shimmer · Bass · Drums · Reverb</div>
+    </div>
+    <div class="mood-tags">
+      <span class="tag teal">Jazz</span>
+      <span class="tag coral">Gospel</span>
+      <span class="tag gold">Soul</span>
+    </div>
+  </div>
+
+  <div class="eq-row" id="eqRow">
+    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+    <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+    <div class="eq-bar"></div>
+  </div>
+
+  <div class="progress-wrap"><div class="progress-fill" id="prog"></div></div>
+  <div class="elapsed-row">
+    <span id="elapsed">0:00</span>
+    <span id="total">0:15</span>
+  </div>
+
+  <div class="controls">
+    <button class="btn-play" id="btnPlay" onclick="togglePlay()">▶ Preview</button>
+    <button class="btn-dl" id="btnDl" onclick="downloadWAV()">⬇ Download WAV</button>
+  </div>
+
+  <div class="status" id="status">Ready — click Preview to listen or Download WAV to save</div>
+</div>
+
+<div class="footer">© 2026 Voices & Vibes Radio · Doreatha Page · LPC, NCC · voicesandvibesradio.com</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// VV SIGNATURE SOUND ENGINE
+// Afrobeats Jazz · Fm9 · 92 BPM · 6 bars ≈ 15.65s
+// ═══════════════════════════════════════════════════════════
+
+const BPM   = 92;
+const SR    = 44100;
+const BEAT  = 60 / BPM;           // 0.6522s
+const BAR   = BEAT * 4;           // 2.6087s
+const STEP  = BEAT / 4;           // 16th note = 0.163s
+const BARS  = 6;
+const DUR   = BAR * BARS;         // ≈ 15.65s
+
+// Note frequencies (Hz)
+const N = {
+  F2:87.31, Ab2:103.83, Bb2:116.54, C3:130.81,
+  Db3:138.59, D3:146.83, Eb3:155.56, F3:174.61,
+  G3:196.00, Ab3:207.65, Bb3:233.08, C4:261.63,
+  Db4:277.18, Eb4:311.13, F4:349.23, G4:392.00,
+  Ab4:415.30, Bb4:466.16, C5:523.25, Eb5:622.25
+};
+
+// Chord voicings  [root, 3rd, 5th, 7th, (9th)]
+const CHORDS = [
+  [N.F3,  N.Ab3, N.C4,  N.Eb4, N.G4 ],  // Fm9      bar 1
+  [N.Db3, N.F3,  N.Ab3, N.C4,  N.Eb4],  // Dbmaj9   bar 2
+  [N.Bb2, N.Db3, N.F3,  N.Ab3       ],  // Bbm7     bar 3
+  [N.Eb3, N.G3,  N.Bb3, N.Db4      ],  // Eb7      bar 4
+  [N.F3,  N.Ab3, N.C4,  N.Eb4, N.G4 ],  // Fm9      bar 5
+  [N.F3,  N.Ab3, N.C4,  N.Eb4      ],  // Fm7      bar 6 (outro)
+];
+
+// Bass roots per bar
+const BASS = [N.F2, N.Db3/2||N.F2, N.Bb2, N.Eb3/2||N.F2, N.F2, N.F2];
+// Fix bass: Db bass = 69.30 (too low), use F2 for smoothness
+const BASS_FREQS = [N.F2, 69.30, N.Bb2, 77.78, N.F2, N.F2];
+
+// Afrobeats drum patterns (16 steps, 1=hit, 0=rest)
+const KICK  = [1,0,0,0, 1,0,1,0, 1,0,0,0, 1,0,1,0];
+const SNARE = [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,1];
+const HAT   = [1,0,1,1, 0,1,1,0, 1,0,1,1, 0,1,1,0];
+const CLAVE = [1,0,0,1, 0,0,1,0, 0,1,0,0, 1,0,0,0];
+
+// ── Reverb impulse response ──────────────────────────────
+function makeImpulse(ctx, dur=2.5, decay=2.0) {
+  const len = ctx.sampleRate * dur;
+  const buf = ctx.createBuffer(2, len, ctx.sampleRate);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = buf.getChannelData(ch);
+    for (let i = 0; i < len; i++) {
+      d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, decay);
+    }
+  }
+  return buf;
+}
+
+// ── Synthesis helpers ────────────────────────────────────
+function note(ctx, dest, freq, t, dur, gain=0.25, type='sine') {
+  const osc = ctx.createOscillator();
+  const env = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  env.gain.setValueAtTime(0, t);
+  env.gain.linearRampToValueAtTime(gain, t + 0.025);
+  env.gain.setValueAtTime(gain * 0.7, t + 0.12);
+  env.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  osc.connect(env); env.connect(dest);
+  osc.start(t); osc.stop(t + dur + 0.05);
+}
+
+function shimmer(ctx, dest, freq, t, dur) {
+  [3.0, 4.0, 5.02, 6.0, 7.5].forEach((h, i) => {
+    const osc = ctx.createOscillator();
+    const env = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq * h + (i * 0.3);
+    const g = 0.028 / (i + 1);
+    env.gain.setValueAtTime(0, t);
+    env.gain.linearRampToValueAtTime(g, t + 0.18);
+    env.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.85);
+    osc.connect(env); env.connect(dest);
+    osc.start(t); osc.stop(t + dur);
+  });
+}
+
+function bass(ctx, dest, freq, t, dur) {
+  // Sub sine
+  const sub = ctx.createOscillator();
+  const subEnv = ctx.createGain();
+  sub.type = 'sine';
+  sub.frequency.setValueAtTime(freq, t);
+  sub.frequency.linearRampToValueAtTime(freq * 0.98, t + 0.05);
+  subEnv.gain.setValueAtTime(0, t);
+  subEnv.gain.linearRampToValueAtTime(0.55, t + 0.04);
+  subEnv.gain.exponentialRampToValueAtTime(0.3, t + 0.3);
+  subEnv.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  sub.connect(subEnv); subEnv.connect(dest);
+  sub.start(t); sub.stop(t + dur + 0.1);
+
+  // Harmonic layer
+  const harm = ctx.createOscillator();
+  const harmEnv = ctx.createGain();
+  harm.type = 'triangle';
+  harm.frequency.value = freq * 2;
+  harmEnv.gain.setValueAtTime(0, t);
+  harmEnv.gain.linearRampToValueAtTime(0.12, t + 0.03);
+  harmEnv.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.6);
+  harm.connect(harmEnv); harmEnv.connect(dest);
+  harm.start(t); harm.stop(t + dur);
+}
+
+function trigKick(ctx, dest, t) {
+  const osc = ctx.createOscillator();
+  const env = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(155, t);
+  osc.frequency.exponentialRampToValueAtTime(48, t + 0.18);
+  env.gain.setValueAtTime(0.85, t);
+  env.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+  osc.connect(env); env.connect(dest);
+  osc.start(t); osc.stop(t + 0.5);
+
+  // Click transient
+  const click = ctx.createOscillator();
+  const cEnv = ctx.createGain();
+  click.type = 'square';
+  click.frequency.value = 1200;
+  cEnv.gain.setValueAtTime(0.15, t);
+  cEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.012);
+  click.connect(cEnv); cEnv.connect(dest);
+  click.start(t); click.stop(t + 0.02);
+}
+
+function trigSnare(ctx, dest, t) {
+  // Noise burst
+  const noiseLen = SR * 0.18;
+  const nBuf = ctx.createBuffer(1, noiseLen, SR);
+  const nd = nBuf.getChannelData(0);
+  for (let i = 0; i < noiseLen; i++) nd[i] = Math.random() * 2 - 1;
+  const noise = ctx.createBufferSource();
+  noise.buffer = nBuf;
+  const nFilt = ctx.createBiquadFilter();
+  nFilt.type = 'highpass';
+  nFilt.frequency.value = 1800;
+  const nEnv = ctx.createGain();
+  nEnv.gain.setValueAtTime(0.38, t);
+  nEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+  noise.connect(nFilt); nFilt.connect(nEnv); nEnv.connect(dest);
+  noise.start(t);
+
+  // Body tone
+  const tone = ctx.createOscillator();
+  const tEnv = ctx.createGain();
+  tone.type = 'triangle';
+  tone.frequency.setValueAtTime(220, t);
+  tone.frequency.exponentialRampToValueAtTime(130, t + 0.08);
+  tEnv.gain.setValueAtTime(0.28, t);
+  tEnv.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+  tone.connect(tEnv); tEnv.connect(dest);
+  tone.start(t); tone.stop(t + 0.12);
+}
+
+function trigHat(ctx, dest, t, open=false) {
+  const dur = open ? 0.28 : 0.07;
+  const bufLen = Math.ceil(SR * (dur + 0.05));
+  const hBuf = ctx.createBuffer(1, bufLen, SR);
+  const hd = hBuf.getChannelData(0);
+  for (let i = 0; i < bufLen; i++) hd[i] = Math.random() * 2 - 1;
+  const hat = ctx.createBufferSource();
+  hat.buffer = hBuf;
+  const hFilt = ctx.createBiquadFilter();
+  hFilt.type = 'bandpass';
+  hFilt.frequency.value = 9500;
+  hFilt.Q.value = 0.6;
+  const hEnv = ctx.createGain();
+  hEnv.gain.setValueAtTime(open ? 0.18 : 0.13, t);
+  hEnv.gain.exponentialRampToValueAtTime(0.001, t + dur);
+  hat.connect(hFilt); hFilt.connect(hEnv); hEnv.connect(dest);
+  hat.start(t);
+}
+
+function trigClave(ctx, dest, t) {
+  const osc = ctx.createOscillator();
+  const env = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = 1350;
+  env.gain.setValueAtTime(0.25, t);
+  env.gain.exponentialRampToValueAtTime(0.001, t + 0.055);
+  osc.connect(env); env.connect(dest);
+  osc.start(t); osc.stop(t + 0.07);
+}
+
+// ── Main audio builder ───────────────────────────────────
+function buildAudio(ctx) {
+  const master = ctx.createGain();
+  master.connect(ctx.destination);
+
+  // Reverb
+  const conv = ctx.createConvolver();
+  conv.buffer = makeImpulse(ctx, 2.2, 1.8);
+  const reverbGain = ctx.createGain();
+  reverbGain.gain.value = 0.28;
+  conv.connect(reverbGain);
+  reverbGain.connect(master);
+
+  // Drum bus (dry)
+  const drumBus = ctx.createGain();
+  drumBus.gain.value = 1.0;
+  drumBus.connect(master);
+
+  // Chord/bass bus
+  const harmBus = ctx.createGain();
+  harmBus.gain.value = 0.85;
+  harmBus.connect(master);
+  harmBus.connect(conv); // send to reverb
+
+  // Master fade in/out
+  master.gain.setValueAtTime(0, 0);
+  master.gain.linearRampToValueAtTime(0.78, BAR * 0.5);       // fade in
+  master.gain.setValueAtTime(0.78, BAR * (BARS - 0.8));
+  master.gain.linearRampToValueAtTime(0, BAR * BARS);          // fade out
+
+  const t0 = ctx.currentTime !== undefined ? ctx.currentTime + 0.05 : 0.05;
+
+  // ── Schedule 6 bars ──────────────────────────────────
+  for (let bar = 0; bar < BARS; bar++) {
+    const barT = t0 + bar * BAR;
+    const chord = CHORDS[bar];
+    const bassFreq = BASS_FREQS[bar] || N.F2;
+    const intro = bar < 2;
+
+    // CHORDS — play each note of the chord
+    if (!intro || bar >= 1) {
+      chord.forEach((f, idx) => {
+        const chordGain = [0.22, 0.18, 0.16, 0.14, 0.10][idx] || 0.10;
+        note(ctx, harmBus, f, barT + 0.01, BAR * 0.92, chordGain, 'sine');
+        // 2nd hit mid-bar for jazz feel
+        note(ctx, harmBus, f, barT + BAR * 0.5, BAR * 0.45, chordGain * 0.7, 'sine');
+        // Shimmer on root and 5th
+        if (idx === 0 || idx === 2) {
+          shimmer(ctx, harmBus, f, barT + 0.05, BAR * 0.88);
+        }
+      });
+    }
+
+    // BASS — plays from bar 1
+    if (bar >= 1) {
+      bass(ctx, harmBus, bassFreq, barT, BEAT * 1.8);
+      // Walking feel: hit again on beat 3
+      bass(ctx, harmBus, bassFreq * 1.12, barT + BEAT * 2, BEAT * 1.4);
+    }
+
+    // SHIMMER INTRO — bar 0 only
+    if (bar === 0) {
+      chord.forEach((f, idx) => {
+        shimmer(ctx, harmBus, f, barT + 0.2 + idx * 0.15, BAR * 0.7);
+      });
+    }
+
+    // DRUMS — enter from bar 2
+    if (bar >= 2) {
+      for (let step = 0; step < 16; step++) {
+        const stepT = barT + step * STEP;
+        if (KICK[step])  trigKick(ctx, drumBus, stepT);
+        if (SNARE[step]) trigSnare(ctx, drumBus, stepT);
+        if (HAT[step])   trigHat(ctx, drumBus, stepT, step === 14);
+        if (CLAVE[step] && bar >= 3) trigClave(ctx, drumBus, stepT);
+      }
+    }
+
+    // LIGHT PERCUSSION bar 1 (just kick)
+    if (bar === 1) {
+      trigKick(ctx, drumBus, barT);
+      trigKick(ctx, drumBus, barT + BEAT * 2);
+    }
+  }
+
+  return DUR;
+}
+
+// ═══════════════════════════════════════════════════════════
+// REAL-TIME PLAYBACK
+// ═══════════════════════════════════════════════════════════
+let audioCtx = null;
+let isPlaying = false;
+let startTime = 0;
+let rafId = null;
+let analyser = null;
+
+function togglePlay() {
+  if (isPlaying) {
+    stopAudio();
+  } else {
+    startAudio();
+  }
+}
+
+function startAudio() {
+  try {
+    if (audioCtx) audioCtx.close();
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: SR });
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.connect(audioCtx.destination);
+
+    // Patch destination to analyser
+    const origDest = audioCtx.destination;
+    const splitter = audioCtx.createGain();
+    splitter.connect(analyser);
+
+    buildAudio(audioCtx);
+    isPlaying = true;
+    startTime = audioCtx.currentTime + 0.05;
+
+    document.getElementById('btnPlay').className = 'btn-play playing';
+    document.getElementById('btnPlay').textContent = '⏹ Stop';
+    setStatus('Playing VV Signature Sound...', 'ok');
+
+    animateVis();
+
+    // Auto stop
+    setTimeout(() => { if (isPlaying) stopAudio(); }, (DUR + 0.2) * 1000);
+  } catch(e) {
+    setStatus('Audio error: ' + e.message, 'err');
+  }
+}
+
+function stopAudio() {
+  if (audioCtx) audioCtx.close();
+  isPlaying = false;
+  cancelAnimationFrame(rafId);
+  document.getElementById('btnPlay').className = 'btn-play';
+  document.getElementById('btnPlay').textContent = '▶ Preview';
+  document.getElementById('prog').style.width = '0%';
+  document.getElementById('elapsed').textContent = '0:00';
+  setEQFlat();
+  setStatus('Ready — click Preview to listen or Download WAV to save', '');
+}
+
+// ── Visualizer ───────────────────────────────────────────
+const canvas = document.getElementById('vis');
+const canvasCtx = canvas.getContext('2d');
+const eqBars = document.querySelectorAll('.eq-bar');
+
+function animateVis() {
+  if (!isPlaying || !analyser) return;
+  rafId = requestAnimationFrame(animateVis);
+
+  // Progress
+  if (audioCtx) {
+    const elapsed = Math.max(0, audioCtx.currentTime - startTime + 0.05);
+    const pct = Math.min(100, (elapsed / DUR) * 100);
+    document.getElementById('prog').style.width = pct + '%';
+    const s = Math.floor(elapsed);
+    document.getElementById('elapsed').textContent =
+      Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+  }
+
+  // Waveform
+  const bufLen = analyser.frequencyBinCount;
+  const data = new Uint8Array(bufLen);
+  analyser.getByteTimeDomainData(data);
+
+  const W = canvas.width, H = canvas.height;
+  canvasCtx.fillStyle = 'rgba(8,12,12,0.85)';
+  canvasCtx.fillRect(0,0,W,H);
+  canvasCtx.beginPath();
+  canvasCtx.strokeStyle = '#009B9B';
+  canvasCtx.lineWidth = 1.5;
+  const slice = W / bufLen;
+  let x = 0;
+  for (let i = 0; i < bufLen; i++) {
+    const v = data[i] / 128.0;
+    const y = v * H / 2;
+    i === 0 ? canvasCtx.moveTo(x, y) : canvasCtx.lineTo(x, y);
+    x += slice;
+  }
+  canvasCtx.stroke();
+
+  // Center line
+  canvasCtx.beginPath();
+  canvasCtx.strokeStyle = 'rgba(0,155,155,0.12)';
+  canvasCtx.lineWidth = 1;
+  canvasCtx.moveTo(0, H/2);
+  canvasCtx.lineTo(W, H/2);
+  canvasCtx.stroke();
+
+  // EQ bars
+  analyser.getByteFrequencyData(data);
+  eqBars.forEach((bar, i) => {
+    const idx = Math.floor(i * bufLen / (eqBars.length * 2));
+    const h = 2 + (data[idx] / 255) * 18;
+    bar.style.height = h + 'px';
+  });
+}
+
+function setEQFlat() {
+  eqBars.forEach(b => b.style.height = '3px');
+}
+
+// Draw idle state
+(function drawIdle() {
+  const W = canvas.width, H = canvas.height;
+  canvasCtx.fillStyle = 'rgba(8,12,12,1)';
+  canvasCtx.fillRect(0,0,W,H);
+  canvasCtx.beginPath();
+  canvasCtx.strokeStyle = 'rgba(0,155,155,0.18)';
+  canvasCtx.lineWidth = 1;
+  canvasCtx.moveTo(0, H/2); canvasCtx.lineTo(W, H/2);
+  canvasCtx.stroke();
+  // Draw flat VV waveform decoration
+  canvasCtx.beginPath();
+  canvasCtx.strokeStyle = 'rgba(0,155,155,0.25)';
+  canvasCtx.lineWidth = 1.5;
+  for (let x = 0; x < W; x++) {
+    const y = H/2 + Math.sin(x * 0.06) * 8 + Math.sin(x * 0.13) * 4;
+    x === 0 ? canvasCtx.moveTo(x,y) : canvasCtx.lineTo(x,y);
+  }
+  canvasCtx.stroke();
+})();
+
+// ═══════════════════════════════════════════════════════════
+// WAV DOWNLOAD (OfflineAudioContext render)
+// ═══════════════════════════════════════════════════════════
+async function downloadWAV() {
+  const btn = document.getElementById('btnDl');
+  const playBtn = document.getElementById('btnPlay');
+  if (btn.disabled) return;
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Rendering...';
+  playBtn.className = 'btn-play rendering';
+  playBtn.disabled = true;
+  setStatus('Rendering audio offline — this takes a few seconds...', '');
+
+  try {
+    const numSamples = Math.ceil(SR * (DUR + 0.3));
+    const offCtx = new OfflineAudioContext(2, numSamples, SR);
+    buildAudio(offCtx);
+
+    setStatus('Encoding to WAV format...', '');
+    const rendered = await offCtx.startRendering();
+    const wavBuffer = encodeWAV(rendered);
+    const blob = new Blob([wavBuffer], { type: 'audio/wav' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'VV-Signature-Sound-92BPM-Afrobeats-Jazz.wav';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    btn.textContent = '✓ Downloaded!';
+    btn.className = 'btn-dl done';
+    setStatus('WAV file downloaded! Ready for your video.', 'ok');
+    setTimeout(() => {
+      btn.textContent = '⬇ Download WAV';
+      btn.className = 'btn-dl';
+      btn.disabled = false;
+    }, 3000);
+  } catch(e) {
+    setStatus('Render error: ' + e.message, 'err');
+    btn.textContent = '⬇ Download WAV';
+    btn.disabled = false;
+  }
+
+  playBtn.className = 'btn-play';
+  playBtn.disabled = false;
+}
+
+// ── WAV Encoder ──────────────────────────────────────────
+function encodeWAV(audioBuffer) {
+  const numCh = audioBuffer.numberOfChannels;
+  const sampleRate = audioBuffer.sampleRate;
+  const numSamples = audioBuffer.length;
+  const bitsPerSample = 16;
+  const bytesPerSample = bitsPerSample / 8;
+  const blockAlign = numCh * bytesPerSample;
+  const dataSize = numSamples * blockAlign;
+  const buf = new ArrayBuffer(44 + dataSize);
+  const view = new DataView(buf);
+
+  function ws(off, str) {
+    for (let i = 0; i < str.length; i++) view.setUint8(off + i, str.charCodeAt(i));
+  }
+
+  ws(0, 'RIFF');
+  view.setUint32(4, 36 + dataSize, true);
+  ws(8, 'WAVE');
+  ws(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numCh, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * blockAlign, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitsPerSample, true);
+  ws(36, 'data');
+  view.setUint32(40, dataSize, true);
+
+  let off = 44;
+  for (let i = 0; i < numSamples; i++) {
+    for (let ch = 0; ch < numCh; ch++) {
+      const s = Math.max(-1, Math.min(1, audioBuffer.getChannelData(ch)[i]));
+      view.setInt16(off, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      off += 2;
+    }
+  }
+  return buf;
+}
+
+// ── UI helpers ───────────────────────────────────────────
+function setStatus(msg, cls) {
+  const el = document.getElementById('status');
+  el.textContent = msg;
+  el.className = 'status ' + (cls || '');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.root{font-family:system-ui,sans-serif;background:var(--color-background-secondary);padding:12px}
+.nav{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.nb{padding:7px 16px;font-size:11px;font-weight:600;border-radius:50px;cursor:pointer;border:1px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .15s}
+.nb.on{background:#009B9B;color:#fff;border-color:#009B9B}
+.pv{display:none}
+.pv.on{display:block}
+
+/* ── 1. CRIMSON SPLIT (inspired directly by upload) ── */
+.cs{min-height:480px;background:#fff}
+.cs-hero{display:grid;grid-template-columns:42% 58%;height:220px}
+.cs-left{background:#8b0000;padding:32px 28px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.cs-left::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,#a0000044,transparent 70%)}
+.cs-badge{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#ffffff66;margin-bottom:12px}
+.cs-name{font-size:34px;font-weight:700;color:#fff;font-family:Georgia,serif;line-height:1.05;position:relative;z-index:1}
+.cs-tagline{font-size:12px;color:#ffffffaa;margin-top:10px;line-height:1.5;position:relative;z-index:1;font-style:italic}
+.cs-right{background:#2a2a2a;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.cs-flatlay{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:20px;width:100%}
+.cs-item{background:#3a3a3a;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:20px;height:60px}
+.cs-headphones{grid-column:2;grid-row:1/3;height:130px;background:#333;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.cs-body{display:grid;grid-template-columns:42% 58%}
+.cs-info{padding:20px 28px;border-right:1px solid #f0f0f0}
+.cs-stat-row{display:flex;gap:20px;margin-bottom:14px}
+.cs-stat{text-align:center}
+.cs-snum{font-size:20px;font-weight:700;color:#8b0000;font-family:Georgia,serif}
+.cs-slbl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.05em}
+.cs-pill{display:inline-block;font-size:9px;padding:2px 8px;margin:2px 2px 0 0;border-radius:2px;background:#fff0f0;color:#8b0000;border:1px solid #8b000033}
+.cs-pill-t{background:#f0fafa;color:#009B9B;border-color:#009B9B33}
+.cs-follow{display:inline-flex;gap:5px;align-items:center;font-size:11px;font-weight:700;padding:8px 18px;background:#8b0000;color:#fff;border:none;border-radius:2px;cursor:pointer;margin-top:12px}
+.cs-tracks{padding:20px 24px}
+.cs-track{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5;cursor:pointer}
+.cs-tnum{font-size:11px;color:#ccc;width:18px;text-align:center;flex-shrink:0}
+.cs-tname{font-size:12px;font-weight:600;color:#1a1a1a;flex:1}
+.cs-tname.a{color:#8b0000}
+.cs-tgenre{font-size:10px;color:#bbb;flex-shrink:0}
+.cs-tdur{font-size:10px;color:#bbb;width:30px;text-align:right;flex-shrink:0}
+
+/* ── 2. TEAL SPLIT ── */
+.ts{min-height:480px;background:#fff}
+.ts-hero{display:grid;grid-template-columns:42% 58%;height:220px}
+.ts-left{background:#009B9B;padding:32px 28px;display:flex;flex-direction:column;justify-content:center}
+.ts-badge{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#ffffff88;margin-bottom:12px}
+.ts-name{font-size:34px;font-weight:700;color:#fff;font-family:Georgia,serif;line-height:1.05}
+.ts-tagline{font-size:12px;color:#ffffffbb;margin-top:10px;line-height:1.5;font-style:italic}
+.ts-right{background:#0d2a2a;display:flex;align-items:center;justify-content:center;padding:20px;gap:10px;flex-wrap:wrap;position:relative;overflow:hidden}
+.ts-circle{position:absolute;width:220px;height:220px;border-radius:50%;border:1px solid #009B9B22;top:-60px;right:-60px}
+.ts-circle2{position:absolute;width:140px;height:140px;border-radius:50%;border:1px solid #009B9B22;bottom:-40px;left:20px}
+.ts-icon{background:#0a2222;border:1px solid #009B9B33;border-radius:6px;width:70px;height:70px;display:flex;align-items:center;justify-content:center;font-size:24px;position:relative;z-index:1}
+.ts-body{display:grid;grid-template-columns:42% 58%}
+.ts-info{padding:20px 28px;border-right:1px solid #f0f0f0}
+.ts-stat-row{display:flex;gap:20px;margin-bottom:14px}
+.ts-stat{text-align:center}
+.ts-snum{font-size:20px;font-weight:700;color:#009B9B;font-family:Georgia,serif}
+.ts-slbl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.05em}
+.ts-pill{display:inline-block;font-size:9px;padding:2px 8px;margin:2px 2px 0 0;border-radius:2px;background:#f0fafa;color:#009B9B;border:1px solid #009B9B33}
+.ts-pill-c{background:#fef0ec;color:#E8624A;border-color:#E8624A33}
+.ts-follow{display:inline-flex;gap:5px;align-items:center;font-size:11px;font-weight:700;padding:8px 18px;background:#009B9B;color:#fff;border:none;border-radius:2px;cursor:pointer;margin-top:12px}
+.ts-tracks{padding:20px 24px}
+.ts-track{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5;cursor:pointer}
+.ts-tnum{font-size:11px;color:#ccc;width:18px;text-align:center;flex-shrink:0}
+.ts-tname{font-size:12px;font-weight:600;color:#1a1a1a;flex:1}
+.ts-tname.a{color:#009B9B}
+.ts-tgenre{font-size:10px;color:#bbb;flex-shrink:0}
+.ts-tdur{font-size:10px;color:#bbb;width:30px;text-align:right;flex-shrink:0}
+
+/* ── 3. MIDNIGHT NAVY SPLIT ── */
+.ns{min-height:480px;background:#fff}
+.ns-hero{display:grid;grid-template-columns:42% 58%;height:220px}
+.ns-left{background:#0f1f3d;padding:32px 28px;display:flex;flex-direction:column;justify-content:center}
+.ns-badge{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#E8624A;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.ns-dot{width:6px;height:6px;border-radius:50%;background:#E8624A;display:inline-block}
+.ns-name{font-size:34px;font-weight:700;color:#fff;font-family:Georgia,serif;line-height:1.05}
+.ns-tagline{font-size:12px;color:#8899bb;margin-top:10px;line-height:1.5}
+.ns-right{background:#f8f8f8;display:flex;align-items:center;justify-content:center;padding:24px;gap:14px;flex-direction:column}
+.ns-wave{display:flex;align-items:flex-end;gap:3px;height:50px}
+.ns-bar{width:6px;background:#0f1f3d;border-radius:3px}
+.ns-items{display:flex;gap:12px}
+.ns-item{background:#fff;border:1px solid #e8e8e8;border-radius:6px;width:70px;height:70px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.ns-body{display:grid;grid-template-columns:42% 58%}
+.ns-info{padding:20px 28px;border-right:1px solid #f0f0f0}
+.ns-stat-row{display:flex;gap:20px;margin-bottom:14px}
+.ns-stat{text-align:center}
+.ns-snum{font-size:20px;font-weight:700;color:#0f1f3d;font-family:Georgia,serif}
+.ns-slbl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.05em}
+.ns-pill{display:inline-block;font-size:9px;padding:2px 8px;margin:2px 2px 0 0;border-radius:2px;background:#f0f2f8;color:#0f1f3d;border:1px solid #0f1f3d33}
+.ns-pill-c{background:#fef0ec;color:#E8624A;border-color:#E8624A33}
+.ns-follow{display:inline-flex;gap:5px;align-items:center;font-size:11px;font-weight:700;padding:8px 18px;background:#0f1f3d;color:#fff;border:none;border-radius:2px;cursor:pointer;margin-top:12px}
+.ns-tracks{padding:20px 24px}
+.ns-track{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f5;cursor:pointer}
+.ns-tnum{font-size:11px;color:#ccc;width:18px;text-align:center;flex-shrink:0}
+.ns-tname{font-size:12px;font-weight:600;color:#1a1a1a;flex:1}
+.ns-tname.a{color:#0f1f3d}
+.ns-tgenre{font-size:10px;color:#bbb;flex-shrink:0}
+.ns-tdur{font-size:10px;color:#bbb;width:30px;text-align:right;flex-shrink:0}
+
+/* ── 4. WARM COCOA SPLIT ── */
+.wc{min-height:480px;background:#fff}
+.wc-hero{display:grid;grid-template-columns:42% 58%;height:220px}
+.wc-left{background:#3d1f0a;padding:32px 28px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.wc-glow{position:absolute;top:-40px;left:-40px;width:180px;height:180px;border-radius:50%;background:#c4864a33}
+.wc-badge{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#c4864a;margin-bottom:12px;position:relative;z-index:1}
+.wc-name{font-size:34px;font-weight:700;color:#fff;font-family:Georgia,serif;line-height:1.05;position:relative;z-index:1}
+.wc-tagline{font-size:12px;color:#c4a882;margin-top:10px;line-height:1.5;font-style:italic;position:relative;z-index:1}
+.wc-right{background:#f5efe8;display:flex;align-items:center;justify-content:center;padding:20px;gap:12px;flex-wrap:wrap}
+.wc-item{background:#fff;border:1px solid #e8d8c4;border-radius:6px;width:72px;height:72px;display:flex;align-items:center;justify-content:center;font-size:24px}
+.wc-item-lg{width:100%;height:60px;font-size:22px}
+.wc-body{display:grid;grid-template-columns:42% 58%}
+.wc-info{padding:20px 28px;border-right:1px solid #f0e8dc}
+.wc-stat-row{display:flex;gap:20px;margin-bottom:14px}
+.wc-stat{text-align:center}
+.wc-snum{font-size:20px;font-weight:700;color:#3d1f0a;font-family:Georgia,serif}
+.wc-slbl{font-size:9px;color:#a07850;text-transform:uppercase;letter-spacing:.05em}
+.wc-pill{display:inline-block;font-size:9px;padding:2px 8px;margin:2px 2px 0 0;border-radius:2px;background:#fff3ec;color:#c4864a;border:1px solid #c4864a33}
+.wc-pill-g{background:#f0f8f0;color:#4a7a3a;border-color:#4a7a3a33}
+.wc-follow{display:inline-flex;gap:5px;align-items:center;font-size:11px;font-weight:700;padding:8px 18px;background:#3d1f0a;color:#fff;border:none;border-radius:2px;cursor:pointer;margin-top:12px;font-family:Georgia,serif}
+.wc-tracks{padding:20px 24px;background:#fffaf6}
+.wc-track{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f0e8dc;cursor:pointer}
+.wc-tnum{font-size:11px;color:#c4a882;width:18px;text-align:center;flex-shrink:0;font-family:Georgia,serif}
+.wc-tname{font-size:12px;font-weight:600;color:#2a1a08;flex:1}
+.wc-tname.a{color:#c4864a}
+.wc-tgenre{font-size:10px;color:#c4a882;flex-shrink:0}
+.wc-tdur{font-size:10px;color:#c4a882;width:30px;text-align:right;flex-shrink:0;font-family:Georgia,serif}
+</style>
+
+<div class="root">
+  <div class="nav">
+    <button class="nb on" onclick="show('cs')">1 · Crimson Split</button>
+    <button class="nb" onclick="show('ts')">2 · Teal Split</button>
+    <button class="nb" onclick="show('ns')">3 · Midnight Navy</button>
+    <button class="nb" onclick="show('wc')">4 · Warm Cocoa</button>
+  </div>
+
+  <!-- 1. CRIMSON SPLIT -->
+  <div class="pv cs on" id="p-cs">
+    <div class="cs-hero">
+      <div class="cs-left">
+        <div class="cs-badge">Voices &amp; Vibes Radio</div>
+        <div class="cs-name">Lady D</div>
+        <div class="cs-tagline">Healing Through Music &amp; Conversation</div>
+      </div>
+      <div class="cs-right">
+        <div class="cs-flatlay">
+          <div class="cs-item">🎵</div>
+          <div class="cs-headphones">🎧</div>
+          <div class="cs-item">🎤</div>
+          <div class="cs-item">📖</div>
+          <div class="cs-item" style="grid-column:1/2">⌚</div>
+        </div>
+      </div>
+    </div>
+    <div class="cs-body">
+      <div class="cs-info">
+        <div class="cs-stat-row">
+          <div class="cs-stat"><div class="cs-snum">12.4k</div><div class="cs-slbl">Plays</div></div>
+          <div class="cs-stat"><div class="cs-snum">843</div><div class="cs-slbl">Followers</div></div>
+          <div class="cs-stat"><div class="cs-snum">14</div><div class="cs-slbl">Tracks</div></div>
+        </div>
+        <div><span class="cs-pill-t cs-pill">Neo Soul</span><span class="cs-pill-t cs-pill">Gospel</span></div>
+        <div style="margin-top:4px"><span class="cs-pill">Grief</span><span class="cs-pill">Anxiety</span><span class="cs-pill">Self-Love</span></div>
+        <button class="cs-follow">+ Follow</button>
+      </div>
+      <div class="cs-tracks">
+        <div class="cs-track"><div class="cs-tnum">▶</div><div class="cs-tname a" style="flex:1">Rooted in Hope</div><div class="cs-tgenre">Neo Soul</div><div class="cs-tdur">3:42</div></div>
+        <div class="cs-track"><div class="cs-tnum">2</div><div class="cs-tname" style="flex:1">Still Water Runs Deep</div><div class="cs-tgenre">Gospel</div><div class="cs-tdur">4:18</div></div>
+        <div class="cs-track"><div class="cs-tnum">3</div><div class="cs-tname" style="flex:1">Breathe Again</div><div class="cs-tgenre">R&amp;B</div><div class="cs-tdur">3:55</div></div>
+        <div class="cs-track"><div class="cs-tnum">4</div><div class="cs-tname" style="flex:1">Kaleidoscope</div><div class="cs-tgenre">Neo Soul</div><div class="cs-tdur">4:01</div></div>
+        <div class="cs-track"><div class="cs-tnum">5</div><div class="cs-tname" style="flex:1">Morning Grace</div><div class="cs-tgenre">Gospel</div><div class="cs-tdur">5:12</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. TEAL SPLIT -->
+  <div class="pv ts" id="p-ts">
+    <div class="ts-hero">
+      <div class="ts-left">
+        <div class="ts-badge">Voices &amp; Vibes Radio</div>
+        <div class="ts-name">Lady D</div>
+        <div class="ts-tagline">Healing Through Music &amp; Conversation</div>
+      </div>
+      <div class="ts-right">
+        <div class="ts-circle"></div>
+        <div class="ts-circle2"></div>
+        <div class="ts-icon">🎧</div>
+        <div class="ts-icon">🎤</div>
+        <div class="ts-icon">🎵</div>
+        <div class="ts-icon">📻</div>
+        <div class="ts-icon">🎼</div>
+        <div class="ts-icon">📖</div>
+      </div>
+    </div>
+    <div class="ts-body">
+      <div class="ts-info">
+        <div class="ts-stat-row">
+          <div class="ts-stat"><div class="ts-snum">12.4k</div><div class="ts-slbl">Plays</div></div>
+          <div class="ts-stat"><div class="ts-snum">843</div><div class="ts-slbl">Followers</div></div>
+          <div class="ts-stat"><div class="ts-snum">14</div><div class="ts-slbl">Tracks</div></div>
+        </div>
+        <div><span class="ts-pill">Neo Soul</span><span class="ts-pill">Gospel</span><span class="ts-pill">R&amp;B</span></div>
+        <div style="margin-top:4px"><span class="ts-pill-c">Grief</span><span class="ts-pill-c">Anxiety</span></div>
+        <button class="ts-follow">+ Follow</button>
+      </div>
+      <div class="ts-tracks">
+        <div class="ts-track"><div class="ts-tnum">▶</div><div class="ts-tname a" style="flex:1">Rooted in Hope</div><div class="ts-tgenre">Neo Soul</div><div class="ts-tdur">3:42</div></div>
+        <div class="ts-track"><div class="ts-tnum">2</div><div class="ts-tname" style="flex:1">Still Water Runs Deep</div><div class="ts-tgenre">Gospel</div><div class="ts-tdur">4:18</div></div>
+        <div class="ts-track"><div class="ts-tnum">3</div><div class="ts-tname" style="flex:1">Breathe Again</div><div class="ts-tgenre">R&amp;B</div><div class="ts-tdur">3:55</div></div>
+        <div class="ts-track"><div class="ts-tnum">4</div><div class="ts-tname" style="flex:1">Kaleidoscope</div><div class="ts-tgenre">Neo Soul</div><div class="ts-tdur">4:01</div></div>
+        <div class="ts-track"><div class="ts-tnum">5</div><div class="ts-tname" style="flex:1">Morning Grace</div><div class="ts-tgenre">Gospel</div><div class="ts-tdur">5:12</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MIDNIGHT NAVY -->
+  <div class="pv ns" id="p-ns">
+    <div class="ns-hero">
+      <div class="ns-left">
+        <div class="ns-badge"><span class="ns-dot"></span> Voices &amp; Vibes Radio · Live</div>
+        <div class="ns-name">Lady D</div>
+        <div class="ns-tagline">Healing Through Music &amp; Conversation</div>
+      </div>
+      <div class="ns-right">
+        <div class="ns-wave">
+          <div class="ns-bar" style="height:18px"></div><div class="ns-bar" style="height:32px"></div><div class="ns-bar" style="height:44px"></div><div class="ns-bar" style="height:28px"></div><div class="ns-bar" style="height:48px"></div><div class="ns-bar" style="height:22px"></div><div class="ns-bar" style="height:40px"></div><div class="ns-bar" style="height:16px"></div><div class="ns-bar" style="height:36px"></div><div class="ns-bar" style="height:50px"></div><div class="ns-bar" style="height:24px"></div><div class="ns-bar" style="height:42px"></div><div class="ns-bar" style="height:30px"></div><div class="ns-bar" style="height:20px"></div><div class="ns-bar" style="height:38px"></div>
+        </div>
+        <div class="ns-items">
+          <div class="ns-item">🎧</div>
+          <div class="ns-item">🎤</div>
+          <div class="ns-item">📻</div>
+          <div class="ns-item">🎵</div>
+        </div>
+      </div>
+    </div>
+    <div class="ns-body">
+      <div class="ns-info">
+        <div class="ns-stat-row">
+          <div class="ns-stat"><div class="ns-snum">12.4k</div><div class="ns-slbl">Plays</div></div>
+          <div class="ns-stat"><div class="ns-snum">843</div><div class="ns-slbl">Followers</div></div>
+          <div class="ns-stat"><div class="ns-snum">14</div><div class="ns-slbl">Tracks</div></div>
+        </div>
+        <div><span class="ns-pill">Neo Soul</span><span class="ns-pill">Gospel</span><span class="ns-pill">R&amp;B</span></div>
+        <div style="margin-top:4px"><span class="ns-pill-c">Grief</span><span class="ns-pill-c">Anxiety</span></div>
+        <button class="ns-follow">+ Follow</button>
+      </div>
+      <div class="ns-tracks">
+        <div class="ns-track"><div class="ns-tnum">▶</div><div class="ns-tname a" style="flex:1">Rooted in Hope</div><div class="ns-tgenre">Neo Soul</div><div class="ns-tdur">3:42</div></div>
+        <div class="ns-track"><div class="ns-tnum">2</div><div class="ns-tname" style="flex:1">Still Water Runs Deep</div><div class="ns-tgenre">Gospel</div><div class="ns-tdur">4:18</div></div>
+        <div class="ns-track"><div class="ns-tnum">3</div><div class="ns-tname" style="flex:1">Breathe Again</div><div class="ns-tgenre">R&amp;B</div><div class="ns-tdur">3:55</div></div>
+        <div class="ns-track"><div class="ns-tnum">4</div><div class="ns-tname" style="flex:1">Kaleidoscope</div><div class="ns-tgenre">Neo Soul</div><div class="ns-tdur">4:01</div></div>
+        <div class="ns-track"><div class="ns-tnum">5</div><div class="ns-tname" style="flex:1">Morning Grace</div><div class="ns-tgenre">Gospel</div><div class="ns-tdur">5:12</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. WARM COCOA -->
+  <div class="pv wc" id="p-wc">
+    <div class="wc-hero">
+      <div class="wc-left">
+        <div class="wc-glow"></div>
+        <div class="wc-badge">Voices &amp; Vibes Radio</div>
+        <div class="wc-name">Lady D</div>
+        <div class="wc-tagline">Healing Through Music &amp; Conversation</div>
+      </div>
+      <div class="wc-right">
+        <div class="wc-item">🎧</div>
+        <div class="wc-item">🎤</div>
+        <div class="wc-item">📻</div>
+        <div class="wc-item">🎵</div>
+        <div class="wc-item">📖</div>
+        <div class="wc-item">⌚</div>
+      </div>
+    </div>
+    <div class="wc-body">
+      <div class="wc-info">
+        <div class="wc-stat-row">
+          <div class="wc-stat"><div class="wc-snum">12.4k</div><div class="wc-slbl">Plays</div></div>
+          <div class="wc-stat"><div class="wc-snum">843</div><div class="wc-slbl">Followers</div></div>
+          <div class="wc-stat"><div class="wc-snum">14</div><div class="wc-slbl">Tracks</div></div>
+        </div>
+        <div><span class="wc-pill-g">Neo Soul</span><span class="wc-pill-g">Gospel</span></div>
+        <div style="margin-top:4px"><span class="wc-pill">Grief</span><span class="wc-pill">Anxiety</span><span class="wc-pill">Self-Love</span></div>
+        <button class="wc-follow">+ Follow</button>
+      </div>
+      <div class="wc-tracks">
+        <div class="wc-track"><div class="wc-tnum">I</div><div class="wc-tname a" style="flex:1">Rooted in Hope</div><div class="wc-tgenre">Neo Soul</div><div class="wc-tdur">3:42</div></div>
+        <div class="wc-track"><div class="wc-tnum">II</div><div class="wc-tname" style="flex:1">Still Water Runs Deep</div><div class="wc-tgenre">Gospel</div><div class="wc-tdur">4:18</div></div>
+        <div class="wc-track"><div class="wc-tnum">III</div><div class="wc-tname" style="flex:1">Breathe Again</div><div class="wc-tgenre">R&amp;B</div><div class="wc-tdur">3:55</div></div>
+        <div class="wc-track"><div class="wc-tnum">IV</div><div class="wc-tname" style="flex:1">Kaleidoscope</div><div class="wc-tgenre">Neo Soul</div><div class="wc-tdur">4:01</div></div>
+        <div class="wc-track"><div class="wc-tnum">V</div><div class="wc-tname" style="flex:1">Morning Grace</div><div class="wc-tgenre">Gospel</div><div class="wc-tdur">5:12</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.pv').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  event.target.classList.add('on');
+}
+</script>

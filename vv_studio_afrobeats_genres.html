@@ -1,0 +1,537 @@
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0a0118;--card:#130a2a;--purple:#7c3aed;--gold:#f59e0b;--pink:#ec4899;--orange:#f97316;--cyan:#06b6d4;--green:#10b981;--red:#ef4444;--text:#f1e8ff;--muted:#9d8fb8;}
+#APP{position:relative;min-height:660px;border-radius:18px;overflow:hidden;font-family:'Nunito',sans-serif;background:var(--bg);}
+#BG{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden;}
+.star{position:absolute;border-radius:50%;animation:tw var(--d,3s) ease-in-out infinite var(--dl,0s);}
+@keyframes tw{0%,100%{opacity:.1;}50%{opacity:.7;}}
+.neb{position:absolute;border-radius:50%;filter:blur(60px);}
+#STUDIO{position:relative;z-index:2;padding:14px;display:flex;flex-direction:column;min-height:660px;}
+/* Nav */
+.topbar{display:flex;align-items:center;gap:7px;margin-bottom:8px;}
+.logo{font-family:'Orbitron',monospace;font-size:.68rem;font-weight:900;background:linear-gradient(135deg,#f59e0b,#ec4899,#7c3aed,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.on-air{background:var(--red);color:#fff;font-size:.52rem;font-weight:800;padding:2px 5px;border-radius:3px;animation:blink 1.4s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+.ntitle{font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--purple);flex:1;text-align:center;}
+.xpb{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);color:var(--gold);padding:2px 7px;border-radius:9px;font-size:.62rem;font-weight:800;font-family:'Orbitron',monospace;}
+/* Buttons */
+.btn{padding:6px 12px;border-radius:9px;border:none;font-weight:800;font-size:.72rem;cursor:pointer;transition:all .13s;font-family:'Nunito',sans-serif;}
+.btn:active{transform:scale(.95);}
+.bpurp{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;}
+.bgold{background:linear-gradient(135deg,#f59e0b,#f97316);color:#1a0a00;}
+.bgreen{background:linear-gradient(135deg,#10b981,#059669);color:#fff;}
+.bred{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;}
+.bcyan{background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;}
+.bpink{background:linear-gradient(135deg,#ec4899,#db2777);color:#fff;}
+.bgh{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:var(--text);}
+.bsm{padding:4px 9px;font-size:.66rem;width:auto;}
+/* Seq controls */
+.seq-controls{display:flex;align-items:center;gap:5px;margin-bottom:7px;flex-wrap:wrap;}
+.bpm-box{display:flex;align-items:center;gap:3px;background:rgba(255,255,255,.06);border-radius:7px;padding:3px 8px;}
+.bpm-lbl{font-size:.58rem;color:var(--gold);font-family:'Orbitron',monospace;}
+.bpm-inp{width:38px;background:transparent;border:none;color:#fff;font-size:.72rem;font-weight:800;font-family:'Orbitron',monospace;text-align:center;outline:none;}
+/* ── GENRE PRESET BAR ── */
+.genre-bar{margin-bottom:8px;}
+.genre-bar-title{font-family:'Orbitron',monospace;font-size:.58rem;font-weight:700;color:var(--gold);letter-spacing:1px;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.genre-pills{display:flex;gap:4px;flex-wrap:wrap;}
+.genre-pill{padding:5px 11px;border-radius:20px;border:1.5px solid;font-size:.68rem;font-weight:800;cursor:pointer;transition:all .15s;font-family:'Nunito',sans-serif;position:relative;}
+.genre-pill:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.3);}
+.genre-pill.active{transform:translateY(-2px);}
+.genre-pill .pill-bpm{font-size:.52rem;font-weight:600;opacity:.75;margin-left:4px;}
+/* Afrobeats special glow */
+.genre-pill.afrobeats{animation:afroglow 2s ease-in-out infinite;}
+@keyframes afroglow{0%,100%{box-shadow:0 0 8px rgba(249,115,22,.3);}50%{box-shadow:0 0 18px rgba(249,115,22,.6);}}
+/* Seq grid */
+.seq-wrap{overflow-x:auto;}
+.seq-row{display:flex;align-items:center;gap:2px;margin-bottom:2px;}
+.seq-name{font-size:.54rem;font-weight:800;color:var(--muted);width:46px;flex-shrink:0;font-family:'Orbitron',monospace;}
+.sb{width:16px;height:20px;border-radius:2px;border:none;cursor:pointer;background:rgba(255,255,255,.07);transition:all .08s;flex-shrink:0;}
+.sb.on{background:var(--purple);}
+.sb.c0.on{background:#ec4899;}.sb.c1.on{background:#f97316;}.sb.c2.on{background:#06b6d4;}
+.sb.c3.on{background:#10b981;}.sb.c4.on{background:#fbbf24;}.sb.c5.on{background:#3b82f6;}
+.sb.c6.on{background:#a78bfa;}.sb.c7.on{background:#f472b6;}
+.sb.playing{outline:2px solid #fff;outline-offset:1px;}
+/* Beat dividers - group every 4 steps */
+.sb.div{margin-left:4px;}
+/* Visualizer */
+#viz{width:100%;height:64px;border-radius:9px;background:rgba(0,0,0,.5);display:block;border:1px solid rgba(124,58,237,.22);margin-top:6px;}
+/* Info panel */
+.info-panel{background:rgba(255,255,255,.04);border:1px solid rgba(249,115,22,.2);border-radius:11px;padding:11px;margin-top:8px;}
+.info-title{font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--orange);margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.info-body{font-size:.76rem;color:var(--text);line-height:1.55;font-weight:600;}
+.info-body b{color:var(--orange);}
+.info-body .tag{display:inline-block;background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);border-radius:6px;padding:1px 6px;font-size:.66rem;color:#fed7aa;margin:2px 2px 2px 0;}
+/* Toast */
+.toast{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(249,115,22,.94);color:#fff;padding:6px 16px;border-radius:9px;font-weight:800;font-size:.72rem;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:60;font-family:'Nunito',sans-serif;}
+.toast.show{opacity:1;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.pulse{animation:pulse .6s ease-in-out infinite;}
+.glass{background:rgba(19,10,42,.8);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:10px;}
+</style>
+
+<div id="APP">
+<div id="BG"></div>
+
+<div id="STUDIO">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">V&V RADIO</div>
+    <div class="on-air">● ON AIR</div>
+    <div class="ntitle">🥁 BEATS STUDIO — GENRE PRESETS</div>
+    <div class="xpb">⭐ <span id="xpd">0</span></div>
+  </div>
+
+  <!-- Transport -->
+  <div class="seq-controls">
+    <button class="btn bgreen bsm" id="play-btn" onclick="togglePlay()">▶ PLAY</button>
+    <button class="btn bred bsm" onclick="clearSeq()">✕ CLR</button>
+    <button class="btn bpurp bsm" onclick="randomSeq()">🎲 RND</button>
+    <div class="bpm-box">
+      <span class="bpm-lbl">BPM</span>
+      <input type="number" class="bpm-inp" id="bpm" value="100" min="60" max="200" onchange="updateBPM()">
+      <input type="range" min="60" max="200" value="100" id="bpmsl" oninput="syncBPM(this.value)" style="width:44px;height:3px;accent-color:#7c3aed;">
+    </div>
+    <div style="font-size:.58rem;color:var(--muted);margin-left:4px;display:flex;align-items:center;gap:4px;">
+      Step: <span id="stepdsp" style="color:var(--gold);font-weight:800;font-family:'Orbitron',monospace;">—</span>
+      <div id="playind" style="display:none;width:7px;height:7px;border-radius:50%;background:var(--green);" class="pulse"></div>
+    </div>
+  </div>
+
+  <!-- ══ GENRE PRESET BAR ══ -->
+  <div class="genre-bar">
+    <div class="genre-bar-title">
+      🎛️ GENRE PRESETS
+      <span style="font-size:.55rem;color:var(--muted);font-weight:600;letter-spacing:0;">— tap to load a beat</span>
+    </div>
+    <div class="genre-pills" id="genre-pills"></div>
+  </div>
+
+  <!-- Seq grid -->
+  <div class="seq-wrap" id="seq-grid"></div>
+
+  <!-- Visualizer -->
+  <canvas id="viz" height="64"></canvas>
+
+  <!-- Genre info panel -->
+  <div class="info-panel" id="info-panel">
+    <div class="info-title" id="info-title">🎵 SELECT A GENRE TO LEARN ABOUT IT</div>
+    <div class="info-body" id="info-body">Choose any genre preset above to load its beat pattern and discover the history, feel, and famous artists behind the style.</div>
+  </div>
+</div>
+
+<div class="toast" id="TOAST"></div>
+</div>
+
+<script>
+// ─── TRACKS ───
+const TRACKS=[
+  {name:'KICK', c:'c0',freq:80, type:'sine',    dec:.3},
+  {name:'SNARE',c:'c1',freq:200,type:'triangle',dec:.15},
+  {name:'HIHAT',c:'c2',freq:800,type:'square',  dec:.05},
+  {name:'CLAP', c:'c3',freq:300,type:'sawtooth',dec:.1},
+  {name:'TOM',  c:'c4',freq:150,type:'sine',    dec:.2},
+  {name:'PERC', c:'c5',freq:500,type:'triangle',dec:.08},
+  {name:'BASS', c:'c6',freq:60, type:'sine',    dec:.28},
+  {name:'FX',   c:'c7',freq:400,type:'square',  dec:.1},
+];
+
+// ─── GENRE PRESETS ───
+// Each genre: {id, label, emoji, bpm, color, border, textColor, pattern (8×16 booleans), info}
+const GENRES=[
+  {
+    id:'afrobeats',
+    label:'Afrobeats',
+    emoji:'🌍',
+    bpm:100,
+    color:'rgba(249,115,22,.18)',
+    border:'#f97316',
+    textColor:'#fed7aa',
+    cls:'afrobeats',
+    pattern:[
+      [1,0,0,0,0,0,1,0,1,0,0,0,0,1,0,0], // KICK — heavy on-beat with "one-drop" feel
+      [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1], // SNARE — 3-and, 4-and syncopation
+      [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0], // HIHAT — offbeat 8th notes
+      [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0], // CLAP — syncopated claps
+      [0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,1], // TOM — tumbling toms
+      [1,0,1,0,1,0,1,1,0,1,0,1,0,1,1,0], // PERC — dense shekere/conga pattern
+      [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], // BASS — steady on-beat bass
+      [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1], // FX — off-beat flourish
+    ].map(r=>r.map(Boolean)),
+    info:{
+      title:'🌍 Afrobeats — West Africa & the World',
+      origin:'Nigeria, Ghana · West Africa',
+      desc:'<b>Afrobeats</b> is a modern West African genre born in the 2000s–2010s from artists like <b>Wizkid, Davido, Burna Boy,</b> and <b>Tems</b>. It blends traditional Yoruba rhythms with hip-hop, dancehall, and R&B. The signature feel is a <b>syncopated kick pattern</b> with dense percussion — imagine the shekere and congas layering on top of the groove.',
+      feel:'Bouncy · High-energy · Soulful · Dance-forward',
+      artists:['Wizkid','Burna Boy','Davido','Tems','Rema','Ayra Starr','Mr Eazi'],
+      tags:['West African','Syncopated','Percussion-heavy','Global Pop'],
+    }
+  },
+  {
+    id:'hiphop',
+    label:'Hip-Hop',
+    emoji:'🎤',
+    bpm:90,
+    color:'rgba(124,58,237,.18)',
+    border:'#7c3aed',
+    textColor:'#c4b5fd',
+    cls:'',
+    pattern:[
+      [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], // KICK — on 1 and 3
+      [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], // SNARE — on 2 and 4
+      [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1], // HIHAT — 8th notes w/ variation
+      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0], // CLAP — ghost clap before snare
+      [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0], // TOM
+      [0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0], // PERC — hi-hat variation
+      [1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0], // BASS
+      [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0], // FX
+    ].map(r=>r.map(Boolean)),
+    info:{
+      title:'🎤 Hip-Hop — New York City, USA',
+      origin:'South Bronx, New York · 1970s',
+      desc:'Born in block parties in the <b>South Bronx</b>, hip-hop\'s beatmaking DNA comes from DJs looping breakbeats from funk and soul records. The classic boom-bap feel sits the <b>kick on 1 & 3</b>, <b>snare on 2 & 4</b>. Artists like <b>DJ Kool Herc, Questlove, J Dilla,</b> and <b>Kendrick Lamar</b> define the genre.',
+      feel:'Boom-bap · Groove · Laid-back · Hard-hitting',
+      artists:['J Dilla','Kendrick Lamar','Drake','Travis Scott','Metro Boomin'],
+      tags:['Boom-bap','4/4 Grid','Looped breaks','Trap-influenced'],
+    }
+  },
+  {
+    id:'afropop',
+    label:'Afropop',
+    emoji:'🎶',
+    bpm:108,
+    color:'rgba(251,191,36,.15)',
+    border:'#fbbf24',
+    textColor:'#fde68a',
+    cls:'',
+    pattern:[
+      [1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0], // KICK — triplet-feel
+      [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], // SNARE
+      [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0], // HIHAT — straight 8th
+      [0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1], // CLAP
+      [0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0], // TOM
+      [1,1,0,1,0,1,1,0,1,1,0,1,0,1,1,0], // PERC — afro clave
+      [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], // BASS
+      [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], // FX
+    ].map(r=>r.map(Boolean)),
+    info:{
+      title:'🎶 Afropop — Highlife Roots',
+      origin:'Ghana, Nigeria · 1960s–present',
+      desc:'<b>Afropop</b> draws from the older <b>Highlife</b> tradition of Ghana and Nigeria — mixing jazz, traditional Akan rhythms, and Western pop. The signature is a <b>clave-based percussion pattern</b> (the 3-2 son clave) that creates an irresistible, rolling feel. Artists like <b>Angelique Kidjo, King Sunny Ade,</b> and <b>CKay</b> define the sound.',
+      feel:'Rolling · Bright · Dance-driven · Melodic',
+      artists:['CKay','Angelique Kidjo','King Sunny Ade','Asa','Yemi Alade'],
+      tags:['Clave-based','Highlife','Rolling groove','West African'],
+    }
+  },
+  {
+    id:'reggaeton',
+    label:'Reggaetón',
+    emoji:'🇵🇷',
+    bpm:95,
+    color:'rgba(16,185,129,.15)',
+    border:'#10b981',
+    textColor:'#6ee7b7',
+    cls:'',
+    pattern:[
+      [1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0], // KICK — dembow pattern
+      [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1], // SNARE — dembow off-beat snare
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], // HIHAT — all 16ths
+      [0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0], // CLAP — off beats
+      [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0], // TOM
+      [0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0], // PERC — guira feel
+      [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], // BASS
+      [0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0], // FX
+    ].map(r=>r.map(Boolean)),
+    info:{
+      title:'🇵🇷 Reggaetón — Puerto Rico & Latin America',
+      origin:'Puerto Rico · 1990s',
+      desc:'Reggaetón\'s heartbeat is the <b>dembow rhythm</b> — a syncopated kick pattern borrowed from Jamaican dancehall with the snare hitting on the upbeat. Born in Puerto Rico in the 90s, it exploded globally through artists like <b>Daddy Yankee, J Balvin, Bad Bunny,</b> and <b>Ozuna</b>.',
+      feel:'Bouncy · Danceable · Urban · High-energy',
+      artists:['Bad Bunny','J Balvin','Daddy Yankee','Karol G','Ozuna'],
+      tags:['Dembow','Dancehall roots','Latin urban','16th hi-hats'],
+    }
+  },
+  {
+    id:'trap',
+    label:'Trap',
+    emoji:'🌀',
+    bpm:140,
+    color:'rgba(6,182,212,.15)',
+    border:'#06b6d4',
+    textColor:'#67e8f9',
+    cls:'',
+    pattern:[
+      [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], // KICK — sparse, heavy
+      [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], // SNARE — on 2 & 4
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], // HIHAT — rolling 32nd trap hats
+      [0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0], // CLAP
+      [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0], // TOM
+      [0,0,1,0,0,1,0,0,0,0,1,0,0,1,0,0], // PERC — trap shaker
+      [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], // BASS
+      [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0], // FX
+    ].map(r=>r.map(Boolean)),
+    info:{
+      title:'🌀 Trap — Atlanta, Georgia, USA',
+      origin:'Atlanta, Georgia · 2000s',
+      desc:'Trap music takes its name from the "trap house" (drug trap). <b>T.I., Young Jeezy,</b> and <b>Gucci Mane</b> pioneered the sound in the early 2000s. The signature is <b>fast rolling hi-hats</b> at double or triple speed, a sparse kick, and hard-hitting 808 bass. Producers like <b>Metro Boomin</b> and <b>Lex Luger</b> shaped the modern sound.',
+      feel:'Dark · Hard-hitting · Cinematic · Heavy 808s',
+      artists:['Metro Boomin','Travis Scott','21 Savage','Future','Young Thug'],
+      tags:['Rolling hi-hats','808 bass','Atlanta','Cinematic'],
+    }
+  },
+  {
+    id:'amapiano',
+    label:'Amapiano',
+    emoji:'🇿🇦',
+    bpm:112,
+    color:'rgba(236,72,153,.15)',
+    border:'#ec4899',
+    textColor:'#f9a8d4',
+    cls:'',
+    pattern:[
+      [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], // KICK — log drum feel
+      [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], // SNARE
+      [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0], // HIHAT — swing hi-hats
+      [0,1,0,0,0,0,0,1,0,1,0,0,0,0,0,1], // CLAP — scattered claps
+      [0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0], // TOM — log drum
+      [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0], // PERC — marimba-style
+      [1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0], // BASS — walking bass
+      [0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0], // FX — log drum hits
+    ].map(r=>r.map(Boolean)),
+    info:{
+      title:'🇿🇦 Amapiano — South Africa',
+      origin:'Pretoria, South Africa · 2012',
+      desc:'<b>Amapiano</b> (meaning "the pianos" in Zulu) emerged from Pretoria\'s townships. It blends <b>deep house, jazz,</b> and <b>lounge music</b> with a distinctive <b>log drum bass</b> and melodic piano runs. Artists like <b>DJ Maphorisa, Kabza De Small,</b> and <b>Focalistic</b> took it from the streets to global stages.',
+      feel:'Smooth · Jazzy · Deep · Hypnotic · Party',
+      artists:['Kabza De Small','DJ Maphorisa','Focalistic','Sha Sha','Ami Faku'],
+      tags:['South African','Log drum bass','Deep house','Jazz-influenced'],
+    }
+  },
+  {
+    id:'dancehall',
+    label:'Dancehall',
+    emoji:'🇯🇲',
+    bpm:105,
+    color:'rgba(251,191,36,.12)',
+    border:'#f59e0b',
+    textColor:'#fcd34d',
+    cls:'',
+    pattern:[
+      [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], // KICK
+      [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1], // SNARE — one-drop
+      [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0], // HIHAT — off-beat
+      [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0], // CLAP — syncopated
+      [0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0], // TOM
+      [1,0,0,1,0,1,0,0,1,0,0,1,0,1,0,0], // PERC — nyahbinghi drum pattern
+      [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], // BASS
+      [0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0], // FX
+    ].map(r=>r.map(Boolean)),
+    info:{
+      title:'🇯🇲 Dancehall — Kingston, Jamaica',
+      origin:'Kingston, Jamaica · 1970s–1980s',
+      desc:'Dancehall evolved from reggae in Kingston\'s dance halls. The <b>"one-drop"</b> — where the kick and bass drop away from beat 1 and land on beats 2-4 — creates that unmistakable lopsided sway. <b>Bob Marley, Shabba Ranks, Sean Paul,</b> and <b>Shaggy</b> brought it global. Today artists like <b>Koffee</b> and <b>Popcaan</b> carry the torch.',
+      feel:'Swaying · Roots · Rebel · Island vibes',
+      artists:['Sean Paul','Koffee','Popcaan','Shaggy','Vybz Kartel'],
+      tags:['One-drop','Reggae roots','Kingston','Off-beat groove'],
+    }
+  },
+  {
+    id:'afroswing',
+    label:'Afro-Swing',
+    emoji:'🇬🇧',
+    bpm:98,
+    color:'rgba(167,139,250,.15)',
+    border:'#a78bfa',
+    textColor:'#ddd6fe',
+    cls:'',
+    pattern:[
+      [1,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0], // KICK — swing feel
+      [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], // SNARE
+      [1,0,1,1,0,1,0,1,1,0,1,1,0,1,0,1], // HIHAT — swung hats
+      [0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0], // CLAP — off-beat UK feel
+      [0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0], // TOM
+      [1,0,0,1,1,0,1,0,0,1,0,0,1,0,0,1], // PERC — swung conga
+      [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], // BASS
+      [0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0], // FX
+    ].map(r=>r.map(Boolean)),
+    info:{
+      title:'🇬🇧 Afro-Swing — London, UK',
+      origin:'London, UK · 2010s',
+      desc:'<b>Afro-Swing</b> is a UK genre fusing <b>Afrobeats, R&B, dancehall,</b> and <b>grime</b>, born in South and East London. Artists like <b>J Hus, Kojo Funds, Hardy Caprio,</b> and <b>Not3s</b> created a distinctly British take on West African rhythms — swung hats, slick flows, and melodic hooks layered over percussion-heavy grooves.',
+      feel:'Swung · Melodic · UK street · Smooth',
+      artists:['J Hus','Kojo Funds','Hardy Caprio','Not3s','Fredo'],
+      tags:['UK','Swung hats','Grime influence','Melodic'],
+    }
+  },
+];
+
+// ─── STATE ───
+let xp=0,isPlaying=false,currentStep=0,playInterval=null,bpm=100;
+let seqState=TRACKS.map(()=>Array(16).fill(false));
+let volState=TRACKS.map(()=>80),muteState=TRACKS.map(()=>false),soloState=TRACKS.map(()=>false);
+let activeGenre=null;
+let audioCtx=null,analyser=null,masterGain=null,vizId=null;
+
+// ─── AUDIO ───
+function getAC(){if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();analyser=audioCtx.createAnalyser();analyser.fftSize=512;analyser.smoothingTimeConstant=0.82;masterGain=audioCtx.createGain();masterGain.gain.value=0.8;masterGain.connect(analyser);analyser.connect(audioCtx.destination);}return audioCtx;}
+function playDrum(ti){if(muteState[ti])return;const hs=soloState.some(s=>s);if(hs&&!soloState[ti])return;try{const ac=getAC(),t=TRACKS[ti],o=ac.createOscillator(),g=ac.createGain();o.type=t.type;o.frequency.value=t.freq;g.gain.setValueAtTime((volState[ti]/100)*.85,ac.currentTime);g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+t.dec);o.connect(g);g.connect(masterGain);o.start();o.stop(ac.currentTime+t.dec);}catch(e){}}
+
+// ─── TOAST ───
+function toast(m){const t=document.getElementById('TOAST');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+// ─── XP ───
+function addXP(n){xp+=n;document.getElementById('xpd').textContent=xp;}
+
+// ─── GENRE PILLS ───
+function buildGenrePills(){
+  const wrap=document.getElementById('genre-pills');wrap.innerHTML='';
+  GENRES.forEach(g=>{
+    const pill=document.createElement('button');
+    pill.className=`genre-pill${g.cls?' '+g.cls:''}`;
+    pill.id='gp-'+g.id;
+    pill.style.cssText=`background:${g.color};border-color:${g.border};color:${g.textColor};`;
+    pill.innerHTML=`${g.emoji} ${g.label}<span class="pill-bpm">${g.bpm}</span>`;
+    pill.onclick=()=>loadGenre(g.id);
+    wrap.appendChild(pill);
+  });
+}
+
+function loadGenre(id){
+  const g=GENRES.find(x=>x.id===id);if(!g)return;
+  activeGenre=id;
+  // Update pill active states
+  document.querySelectorAll('.genre-pill').forEach(p=>p.classList.remove('active'));
+  const pill=document.getElementById('gp-'+id);
+  if(pill){pill.classList.add('active');pill.style.boxShadow=`0 0 18px ${g.border}88`;}
+  // Load pattern
+  seqState=g.pattern.map(r=>[...r]);
+  // Set BPM
+  bpm=g.bpm;
+  document.getElementById('bpm').value=bpm;
+  document.getElementById('bpmsl').value=bpm;
+  // Rebuild grid
+  buildSeqGrid();
+  // Update info panel
+  showInfo(g);
+  addXP(5);
+  toast(`${g.emoji} ${g.label} loaded! +5 XP`);
+  // If already playing, restart
+  if(isPlaying){stopSeq();startSeq();}
+  getAC();startViz();
+}
+
+function showInfo(g){
+  const {info}=g;
+  document.getElementById('info-title').innerHTML=info.title;
+  const artistPills=info.artists.map(a=>`<span class="tag">${a}</span>`).join('');
+  const tagPills=info.tags.map(t=>`<span class="tag" style="background:rgba(124,58,237,.15);border-color:rgba(124,58,237,.3);color:#c4b5fd;">${t}</span>`).join('');
+  document.getElementById('info-body').innerHTML=
+    `<div style="margin-bottom:6px;">${info.desc}</div>
+     <div style="margin-bottom:5px;"><b>Feel:</b> ${info.feel}</div>
+     <div style="margin-bottom:4px;"><b style="color:var(--gold);">Key Artists:</b><br>${artistPills}</div>
+     <div style="margin-top:4px;">${tagPills}</div>`;
+  document.getElementById('info-panel').style.borderColor=g.border+'66';
+  document.getElementById('info-title').style.color=g.border;
+}
+
+// ─── SEQ GRID ───
+function buildSeqGrid(){
+  const g=document.getElementById('seq-grid');g.innerHTML='';
+  TRACKS.forEach((track,ti)=>{
+    const row=document.createElement('div');row.className='seq-row';
+    const lbl=document.createElement('div');lbl.className='seq-name';lbl.textContent=track.name;row.appendChild(lbl);
+    for(let s=0;s<16;s++){
+      const btn=document.createElement('button');
+      btn.className=`sb ${track.c}${s%4===0&&s>0?' div':''}${seqState[ti][s]?' on':''}`;
+      btn.id=`sb-${ti}-${s}`;
+      btn.onclick=()=>{seqState[ti][s]=!seqState[ti][s];btn.classList.toggle('on',seqState[ti][s]);addXP(1);};
+      row.appendChild(btn);
+    }
+    g.appendChild(row);
+  });
+}
+
+function togglePlay(){
+  isPlaying=!isPlaying;
+  document.getElementById('play-btn').textContent=isPlaying?'⏸ PAUSE':'▶ PLAY';
+  document.getElementById('play-btn').className=isPlaying?'btn bred bsm':'btn bgreen bsm';
+  document.getElementById('playind').style.display=isPlaying?'block':'none';
+  if(isPlaying){getAC();startSeq();startViz();}else{stopSeq();}
+}
+function startSeq(){
+  if(playInterval)clearInterval(playInterval);
+  const iv=Math.round(60000/bpm/4);
+  playInterval=setInterval(()=>{
+    TRACKS.forEach((_,ti)=>{const pb=document.getElementById(`sb-${ti}-${(currentStep+15)%16}`);if(pb)pb.classList.remove('playing');});
+    TRACKS.forEach((_,ti)=>{const btn=document.getElementById(`sb-${ti}-${currentStep}`);if(btn)btn.classList.add('playing');if(seqState[ti][currentStep])playDrum(ti);});
+    document.getElementById('stepdsp').textContent=currentStep+1;
+    currentStep=(currentStep+1)%16;
+  },iv);
+}
+function stopSeq(){if(playInterval){clearInterval(playInterval);playInterval=null;}TRACKS.forEach((_,ti)=>{for(let s=0;s<16;s++){const b=document.getElementById(`sb-${ti}-${s}`);if(b)b.classList.remove('playing');}});document.getElementById('stepdsp').textContent='—';currentStep=0;}
+function clearSeq(){if(isPlaying)togglePlay();seqState=TRACKS.map(()=>Array(16).fill(false));buildSeqGrid();document.querySelectorAll('.genre-pill').forEach(p=>{p.classList.remove('active');p.style.boxShadow='';});activeGenre=null;document.getElementById('info-title').textContent='🎵 SELECT A GENRE TO LEARN ABOUT IT';document.getElementById('info-body').textContent='Choose any genre preset above to load its beat pattern and discover the history, feel, and famous artists behind the style.';document.getElementById('info-panel').style.borderColor='';}
+function randomSeq(){seqState=TRACKS.map((_,ti)=>Array(16).fill(false).map(()=>Math.random()<(ti===0?.45:ti===1?.22:.13)));buildSeqGrid();addXP(5);toast('Random beat! 🎲');if(isPlaying){stopSeq();startSeq();}}
+function updateBPM(){bpm=Math.max(60,Math.min(200,parseInt(document.getElementById('bpm').value)||100));document.getElementById('bpmsl').value=bpm;if(isPlaying){stopSeq();startSeq();}}
+function syncBPM(v){bpm=parseInt(v);document.getElementById('bpm').value=bpm;if(isPlaying){stopSeq();startSeq();}}
+
+// ─── VISUALIZER ───
+let vizColor=[['#f97316','#ec4899','#7c3aed']]; // default, updates per genre
+const VIZ_PALETTE={
+  afrobeats:['#f97316','#fbbf24','#ec4899'],
+  hiphop:['#7c3aed','#a855f7','#ec4899'],
+  afropop:['#fbbf24','#f97316','#10b981'],
+  reggaeton:['#10b981','#06b6d4','#fbbf24'],
+  trap:['#06b6d4','#3b82f6','#7c3aed'],
+  amapiano:['#ec4899','#f472b6','#fbbf24'],
+  dancehall:['#f59e0b','#fbbf24','#f97316'],
+  afroswing:['#a78bfa','#7c3aed','#ec4899'],
+};
+function startViz(){if(vizId)return;drawViz();}
+function drawViz(){
+  const canvas=document.getElementById('viz');if(!canvas){vizId=null;return;}
+  const ctx=canvas.getContext('2d');
+  const W=canvas.offsetWidth||300,H=64;
+  canvas.width=W;canvas.height=H;
+  const cols=activeGenre&&VIZ_PALETTE[activeGenre]?VIZ_PALETTE[activeGenre]:['#7c3aed','#ec4899','#f59e0b'];
+  function frame(){
+    vizId=requestAnimationFrame(frame);
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(10,1,24,.88)';ctx.fillRect(0,0,W,H);
+    if(!analyser){
+      // idle sine wave
+      ctx.strokeStyle='rgba(124,58,237,.25)';ctx.lineWidth=1.2;ctx.beginPath();
+      for(let x=0;x<W;x++){ctx.lineTo(x,H/2+Math.sin((x*.04)+(Date.now()*.002))*10);}
+      ctx.stroke();return;
+    }
+    const fd=new Uint8Array(analyser.frequencyBinCount);
+    analyser.getByteFrequencyData(fd);
+    const bw=Math.floor(W/56);
+    for(let i=0;i<56;i++){
+      const val=fd[i*2]/255;const bH=Math.max(2,val*H);
+      const col=cols[i%cols.length];
+      ctx.shadowColor=col;ctx.shadowBlur=val>0.35?14:0;
+      const grad=ctx.createLinearGradient(0,H-bH,0,H);
+      grad.addColorStop(0,col);grad.addColorStop(1,col.replace(')',',.3)').replace('rgb(','rgba(').replace('#','').length>8?col+'44':col+'44');
+      ctx.fillStyle=grad;
+      ctx.fillRect(i*(bw+1),H-bH,bw,bH);
+    }
+    ctx.shadowBlur=0;
+  }
+  frame();
+}
+
+// ─── BACKGROUND ───
+function buildBG(){
+  const bg=document.getElementById('BG');
+  const cols=['#7c3aed','#ec4899','#f59e0b','#f97316','#10b981','#06b6d4','#fff'];
+  for(let i=0;i<90;i++){const s=document.createElement('div');s.className='star';const sz=.4+Math.random()*2;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--d:${2+Math.random()*4}s;--dl:${Math.random()*4}s;`;bg.appendChild(s);}
+  [{x:5,y:8,w:200,h:130,c:'rgba(249,115,22,.1)'},{x:62,y:50,w:210,h:150,c:'rgba(124,58,237,.08)'},{x:33,y:70,w:170,h:100,c:'rgba(236,72,153,.07)'}].forEach(n=>{const d=document.createElement('div');d.className='neb';d.style.cssText=`left:${n.x}%;top:${n.y}%;width:${n.w}px;height:${n.h}px;background:${n.c};`;bg.appendChild(d);});
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+  buildBG();buildGenrePills();buildSeqGrid();
+  // Auto-load Afrobeats on open
+  setTimeout(()=>loadGenre('afrobeats'),400);
+  setTimeout(()=>{getAC();startViz();},600);
+});
+</script>

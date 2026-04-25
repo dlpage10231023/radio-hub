@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Voices & Vibes Studio v10</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+:root {
+  --bg: #07070f;
+  --s1: #0e0e1c;
+  --s2: #141428;
+  --s3: #1c1c38;
+  --border: #252540;
+  --border2: #32325a;
+  --gold: #f0a030;
+  --gold2: #ffcc60;
+  --cyan: #00d4ff;
+  --cyan2: #80eaff;
+  --red: #ff3a3a;
+  --green: #00ff88;
+  --orange: #ff6b35;
+  --purple: #9b59ff;
+  --text: #ddddf0;
+  --text2: #9090b8;
+  --text3: #5a5a80;
+  --active-afro: #f0a030;
+  --active-trap: #9b59ff;
+  --active-hiphop: #00d4ff;
+  --active-latin: #ff6b35;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── KIT SELECTOR ── */
+.kit-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--s1);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.kit-logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 2px;
+  margin-right: 8px;
+  white-space: nowrap;
+}
+.kit-logo span { color: var(--cyan); }
+.kit-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all .15s;
+  text-transform: uppercase;
+}
+.kit-btn:hover { border-color: var(--text2); color: var(--text); }
+.kit-btn.active-afro { background: var(--gold); color: #000; border-color: var(--gold); font-weight: 700; }
+.kit-btn.active-trap { background: var(--purple); color: #fff; border-color: var(--purple); font-weight: 700; }
+.kit-btn.active-hiphop { background: var(--cyan); color: #000; border-color: var(--cyan); font-weight: 700; }
+.kit-btn.active-latin { background: var(--orange); color: #fff; border-color: var(--orange); font-weight: 700; }
+
+.kit-spacer { flex: 1; }
+.bpm-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+.bpm-label { color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.bpm-val {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 48px;
+  text-align: center;
+  cursor: pointer;
+}
+.bpm-btns { display: flex; flex-direction: column; gap: 1px; }
+.bpm-btn {
+  background: var(--s3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  width: 18px;
+  height: 12px;
+  font-size: 8px;
+  cursor: pointer;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .1s;
+}
+.bpm-btn:hover { background: var(--border2); color: var(--text); }
+.play-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--green);
+  background: transparent;
+  color: var(--green);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+  margin-left: 8px;
+}
+.play-btn:hover { background: var(--green); color: #000; }
+.play-btn.playing { background: var(--green); color: #000; }
+.stop-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.stop-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* ── MAIN 3-COL LAYOUT ── */
+.studio-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  padding: 6px;
+  overflow: hidden;
+  min-height: 0;
+}
+.col {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+.col-header {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--text3);
+  padding: 6px 10px 4px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.section {
+  border-bottom: 1px solid var(--border);
+  padding: 6px 8px;
+  flex-shrink: 0;
+}
+.section:last-child { border-bottom: none; flex: 1; }
+.section-title {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* ── SEQUENCER ── */
+.seq-wrapper { overflow-y: auto; flex: 1; padding: 4px 6px; min-height: 0; }
+.seq-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 3px;
+}
+.seq-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text3);
+  width: 28px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-right: 4px;
+}
+.seq-steps { display: flex; gap: 2px; flex: 1; }
+.seq-step {
+  flex: 1;
+  height: 18px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--s2);
+  cursor: pointer;
+  transition: all .08s;
+  position: relative;
+}
+.seq-step:nth-child(4n+1) { border-left: 2px solid var(--border2); }
+.seq-step:hover { border-color: var(--text3); }
+.seq-step.on { background: var(--kit-color, var(--gold)); border-color: transparent; }
+.seq-step.on:hover { opacity: 0.85; }
+.seq-step.current { box-shadow: 0 0 0 2px var(--cyan); }
+.seq-step.on.current { box-shadow: 0 0 8px var(--cyan); }
+
+/* ── PIANO ROLL ── */
+.piano-roll {
+  display: flex;
+  overflow: auto;
+  flex: 1;
+  min-height: 80px;
+  max-height: 120px;
+}
+.piano-keys {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+.pkey {
+  height: 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 7px;
+  cursor: pointer;
+  transition: background .1s;
+}
+.pkey.white { background: var(--s2); color: var(--text3); width: 36px; }
+.pkey.black { background: var(--s3); color: var(--text2); width: 36px; border-left: 3px solid var(--text3); }
+.pkey:hover { background: var(--border2); }
+.piano-grid { flex: 1; overflow-x: auto; cursor: crosshair; }
+canvas.piano-canvas { display: block; }
+
+/* ── SWING + VELOCITY ── */
+.controls-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+.knob-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.knob-label {
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+.knob {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--s3);
+  border: 2px solid var(--border2);
+  position: relative;
+  cursor: ns-resize;
+  transition: border-color .1s;
+}
+.knob:hover { border-color: var(--gold); }
+.knob-dot {
+  position: absolute;
+  width: 3px;
+  height: 8px;
+  background: var(--gold);
+  border-radius: 2px;
+  top: 4px;
+  left: 50%;
+  transform-origin: 50% 12px;
+  transform: translateX(-50%) rotate(0deg);
+}
+.knob-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text2);
+}
+
+/* ── VOICE RECORDER ── */
+.rec-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 0;
+}
+.rec-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--red);
+  background: transparent;
+  color: var(--red);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.rec-btn:hover, .rec-btn.recording { background: var(--red); color: #fff; }
+.rec-btn.recording { animation: pulse-rec 1s infinite; }
+@keyframes pulse-rec {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,58,58,.5); }
+  50% { box-shadow: 0 0 0 8px rgba(255,58,58,0); }
+}
+.rec-mode-btn {
+  padding: 4px 8px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all .1s;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.rec-mode-btn.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+.rec-mode-btn:hover { border-color: var(--text2); }
+.rec-timer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  color: var(--red);
+  min-width: 52px;
+}
+
+/* ── LEVEL METER ── */
+.level-meter {
+  display: flex;
+  gap: 2px;
+  height: 18px;
+  align-items: flex-end;
+  padding: 2px 0;
+}
+.level-bar {
+  flex: 1;
+  background: var(--s3);
+  border-radius: 1px;
+  transition: height .05s;
+  min-height: 2px;
+  max-height: 14px;
+}
+
+/* ── WAVEFORM ── */
+.waveform-wrap {
+  background: var(--s2);
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+}
+.waveform-wrap canvas { display: block; width: 100%; }
+.waveform-label {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: var(--cyan);
+  opacity: 0.7;
+}
+
+/* ── CLIPS LIBRARY ── */
+.clips-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+.clip-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background .1s;
+}
+.clip-item:hover { background: var(--s2); }
+.clip-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.clip-name {
+  flex: 1;
+  font-size: 11px;
+  color: var(--text);
+}
+.clip-dur {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text3);
+}
+.clip-play {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  width: 20px; height: 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .1s;
+}
+.clip-play:hover { border-color: var(--cyan); color: var(--cyan); }
+.no-clips {
+  padding: 16px;
+  text-align: center;
+  color: var(--text3);
+  font-size: 11px;
+}
+
+/* ── EFFECTS RACK ── */
+.fx-rack {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+}
+.fx-unit {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px;
+}
+.fx-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--text3);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.fx-toggle {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border2);
+  margin-right: 4px;
+  cursor: pointer;
+  transition: background .1s;
+}
+.fx-toggle.on { background: var(--green); box-shadow: 0 0 4px var(--green); }
+.fx-knobs {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ── VU METERS ── */
+.vu-container {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  height: 80px;
+  align-items: flex-end;
+}
+.vu-channel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+.vu-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 8px;
+  color: var(--text3);
+}
+.vu-bar-wrap {
+  flex: 1;
+  width: 100%;
+  background: var(--s2);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column-reverse;
+}
+.vu-fill {
+  width: 100%;
+  background: linear-gradient(to top, var(--green), #88ff00, #ffcc00, var(--red));
+  border-radius: 2px;
+  transition: height .05s;
+}
+
+/* ── OSCILLOSCOPE ── */
+.osc-wrap {
+  background: var(--s2);
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.osc-wrap canvas { display: block; width: 100%; }
+
+/* ── CULTURAL CARDS ── */
+.bottom-section {
+  background: var(--s1);
+  border-top: 1px solid var(--border);
+  padding: 6px 8px;
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.culture-cards {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  overflow-x: auto;
+}
+.culture-card {
+  min-width: 120px;
+  max-width: 140px;
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.culture-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+.card-region {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.card-body {
+  font-size: 10px;
+  color: var(--text3);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── EXPORT SUITE ── */
+.export-suite {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.export-btn {
+  padding: 5px 12px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all .12s;
+  text-align: left;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.export-btn:hover { background: var(--s3); color: var(--text); border-color: var(--gold); }
+.export-btn .eico { font-size: 10px; }
+.export-btn.primary {
+  background: var(--gold);
+  color: #000;
+  border-color: var(--gold);
+  font-weight: 600;
+}
+.export-btn.primary:hover { background: var(--gold2); }
+
+/* ── STATUS BAR ── */
+.status-bar {
+  background: #04040a;
+  border-top: 1px solid var(--border);
+  padding: 4px 12px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-shrink: 0;
+}
+.stat-item {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.stat-key {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.stat-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--cyan);
+  font-weight: 500;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: blink 2s infinite;
+  flex-shrink: 0;
+}
+@keyframes blink {
+  0%, 90%, 100% { opacity: 1; }
+  95% { opacity: 0.2; }
+}
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--s1); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--s3);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0;
+  transition: all .3s;
+  pointer-events: none;
+  z-index: 100;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 20px 24px;
+  max-width: 380px;
+  width: 90%;
+}
+.modal-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px;
+  color: var(--gold);
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+.modal-body { font-size: 13px; color: var(--text2); line-height: 1.6; }
+.modal-close {
+  margin-top: 16px;
+  padding: 8px 20px;
+  background: var(--gold);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* col flex overrides */
+#col-left .seq-wrapper { flex: 1; overflow-y: auto; }
+#col-center { overflow-y: auto; }
+#col-right { overflow-y: auto; }
+</style>
+</head>
+<body>
+
+<!-- ── KIT BAR ── -->
+<div class="kit-bar">
+  <div class="kit-logo">V&V <span>STUDIO</span></div>
+  <button class="kit-btn active-afro" data-kit="afro" onclick="selectKit('afro')">AFROBEATS</button>
+  <button class="kit-btn" data-kit="trap" onclick="selectKit('trap')">TRAP</button>
+  <button class="kit-btn" data-kit="hiphop" onclick="selectKit('hiphop')">HIP-HOP</button>
+  <button class="kit-btn" data-kit="latin" onclick="selectKit('latin')">LATIN</button>
+  <div class="kit-spacer"></div>
+  <div class="bpm-ctrl">
+    <span class="bpm-label">BPM</span>
+    <span class="bpm-val" id="bpm-display">94</span>
+    <div class="bpm-btns">
+      <button class="bpm-btn" onclick="changeBpm(1)">▲</button>
+      <button class="bpm-btn" onclick="changeBpm(-1)">▼</button>
+    </div>
+  </div>
+  <button class="play-btn" id="play-btn" onclick="togglePlay()">▶</button>
+  <button class="stop-btn" onclick="stopSeq()">■</button>
+</div>
+
+<!-- ── 3-COLUMN STUDIO BODY ── -->
+<div class="studio-body">
+
+  <!-- LEFT: SEQUENCER + PIANO ROLL + CONTROLS -->
+  <div class="col" id="col-left">
+    <div class="col-header">BEAT SEQUENCER + PIANO ROLL</div>
+
+    <!-- Beat Sequencer -->
+    <div class="section" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;">
+      <div class="section-title">Beat Sequencer — 16 Steps / 8 Rows</div>
+      <div class="seq-wrapper" id="seq-wrapper"></div>
+    </div>
+
+    <!-- Swing + Velocity -->
+    <div class="section" style="flex-shrink:0;">
+      <div class="section-title">Swing + Velocity</div>
+      <div class="controls-row">
+        <div class="knob-group">
+          <div class="knob-label">Swing</div>
+          <div class="knob" id="knob-swing" data-val="50" data-min="0" data-max="100">
+            <div class="knob-dot" id="dot-swing"></div>
+          </div>
+          <div class="knob-val" id="val-swing">50%</div>
+        </div>
+        <div class="knob-group">
+          <div class="knob-label">Vel</div>
+          <div class="knob" id="knob-vel" data-val="80" data-min="0" data-max="127">
+            <div class="knob-dot" id="dot-vel"></div>
+          </div>
+          <div class="knob-val" id="val-vel">80</div>
+        </div>
+        <div class="knob-group">
+          <div class="knob-label">Attack</div>
+          <div class="knob" id="knob-atk" data-val="20" data-min="0" data-max="100">
+            <div class="knob-dot" id="dot-atk"></div>
+          </div>
+          <div class="knob-val" id="val-atk">20ms</div>
+        </div>
+        <div class="knob-group">
+          <div class="knob-label">Decay</div>
+          <div class="knob" id="knob-dec" data-val="40" data-min="0" data-max="100">
+            <div class="knob-dot" id="dot-dec"></div>
+          </div>
+          <div class="knob-val" id="val-dec">40ms</div>
+        </div>
+        <div style="flex:1;"></div>
+        <div>
+          <div class="section-title" style="margin-bottom:3px;">Pattern</div>
+          <button style="padding:3px 8px;background:var(--s3);border:1px solid var(--border2);color:var(--text2);border-radius:3px;cursor:pointer;font-size:10px;" onclick="clearSeq()">CLR</button>
+          <button style="padding:3px 8px;background:var(--s3);border:1px solid var(--border2);color:var(--text2);border-radius:3px;cursor:pointer;font-size:10px;margin-left:3px;" onclick="randomSeq()">RND</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Piano Roll -->
+    <div class="section" style="flex-shrink:0;">
+      <div class="section-title">Piano Roll</div>
+      <div class="piano-roll" id="piano-roll">
+        <div class="piano-keys" id="piano-keys"></div>
+        <div class="piano-grid">
+          <canvas class="piano-canvas" id="piano-canvas" width="480" height="168"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CENTER: VOICE RECORDER + WAVEFORM + CLIPS -->
+  <div class="col" id="col-center">
+    <div class="col-header">VOICE RECORDER + CLIPS</div>
+
+    <!-- Recorder -->
+    <div class="section">
+      <div class="section-title">Voice Recorder</div>
+      <div class="rec-controls">
+        <button class="rec-btn" id="rec-btn" onclick="toggleRecord()">●</button>
+        <div style="display:flex;flex-direction:column;gap:3px;">
+          <button class="rec-mode-btn active" id="mode-voice" onclick="setRecMode('voice')">Voice Only</button>
+          <button class="rec-mode-btn" id="mode-mix" onclick="setRecMode('mix')">Live Mix</button>
+        </div>
+        <div class="rec-timer" id="rec-timer">0:00</div>
+        <div style="flex:1;"></div>
+        <div style="display:flex;flex-direction:column;gap:2px;align-items:flex-end;">
+          <div style="font-size:9px;color:var(--text3);">GAIN</div>
+          <input type="range" min="0" max="200" value="100" id="gain-slider"
+            style="width:60px;accent-color:var(--orange);" oninput="setGain(this.value)">
+        </div>
+      </div>
+
+      <!-- Level Meter -->
+      <div class="section-title" style="margin-top:4px;">Input Level</div>
+      <div class="level-meter" id="level-meter">
+        <div id="level-fill" style="height:4px;background:var(--green);border-radius:1px;width:0%;transition:width .05s;flex:1;"></div>
+      </div>
+      <div style="position:relative;height:6px;background:var(--s3);border-radius:2px;margin-top:2px;overflow:hidden;">
+        <div id="level-bar2" style="height:100%;width:0%;background:linear-gradient(to right,var(--green),#88ff00,var(--red));border-radius:2px;transition:width .04s;"></div>
+      </div>
+    </div>
+
+    <!-- Waveform -->
+    <div class="section">
+      <div class="section-title">Waveform</div>
+      <div class="waveform-wrap">
+        <canvas id="waveform-canvas" width="320" height="60" style="width:100%;height:60px;"></canvas>
+        <div class="waveform-label">LIVE</div>
+      </div>
+    </div>
+
+    <!-- Clips Library -->
+    <div class="section" style="flex:1;display:flex;flex-direction:column;min-height:0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+        <div class="section-title" style="margin:0">Clips Library</div>
+        <span id="clip-count" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--cyan);">0 clips</span>
+      </div>
+      <div class="clips-list" id="clips-list">
+        <div class="no-clips" id="no-clips-msg">Record a clip to begin ↑</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: EFFECTS + VU + OSCILLOSCOPE -->
+  <div class="col" id="col-right">
+    <div class="col-header">EFFECTS RACK + METERS</div>
+
+    <!-- Effects Rack -->
+    <div class="section">
+      <div class="section-title">Effects Rack</div>
+      <div class="fx-rack" id="fx-rack">
+
+        <!-- Reverb -->
+        <div class="fx-unit">
+          <div class="fx-name">
+            <span class="fx-toggle on" id="fx-reverb-toggle" onclick="toggleFx('reverb',this)"></span>REVERB
+          </div>
+          <div class="fx-knobs">
+            <div class="knob-group">
+              <div class="knob-label">Room</div>
+              <div class="knob" id="knob-rev-room" data-val="40" data-min="0" data-max="100">
+                <div class="knob-dot"></div>
+              </div>
+              <div class="knob-val" id="val-rev-room">40</div>
+            </div>
+            <div class="knob-group">
+              <div class="knob-label">Wet</div>
+              <div class="knob" id="knob-rev-wet" data-val="30" data-min="0" data-max="100">
+                <div class="knob-dot" style="background:var(--cyan);"></div>
+              </div>
+              <div class="knob-val" id="val-rev-wet">30</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delay -->
+        <div class="fx-unit">
+          <div class="fx-name">
+            <span class="fx-toggle on" id="fx-delay-toggle" onclick="toggleFx('delay',this)"></span>DELAY
+          </div>
+          <div class="fx-knobs">
+            <div class="knob-group">
+              <div class="knob-label">Time</div>
+              <div class="knob" id="knob-del-time" data-val="38" data-min="0" data-max="100">
+                <div class="knob-dot"></div>
+              </div>
+              <div class="knob-val" id="val-del-time">1/8</div>
+            </div>
+            <div class="knob-group">
+              <div class="knob-label">Fdbk</div>
+              <div class="knob" id="knob-del-fb" data-val="45" data-min="0" data-max="100">
+                <div class="knob-dot" style="background:var(--cyan);"></div>
+              </div>
+              <div class="knob-val" id="val-del-fb">45</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EQ -->
+        <div class="fx-unit">
+          <div class="fx-name">
+            <span class="fx-toggle on" id="fx-eq-toggle" onclick="toggleFx('eq',this)"></span>3-BAND EQ
+          </div>
+          <div class="fx-knobs">
+            <div class="knob-group">
+              <div class="knob-label">Lo</div>
+              <div class="knob" id="knob-eq-lo" data-val="50" data-min="0" data-max="100">
+                <div class="knob-dot" style="background:var(--orange);"></div>
+              </div>
+              <div class="knob-val" id="val-eq-lo">0dB</div>
+            </div>
+            <div class="knob-group">
+              <div class="knob-label">Mid</div>
+              <div class="knob" id="knob-eq-mid" data-val="50" data-min="0" data-max="100">
+                <div class="knob-dot" style="background:var(--orange);"></div>
+              </div>
+              <div class="knob-val" id="val-eq-mid">0dB</div>
+            </div>
+            <div class="knob-group">
+              <div class="knob-label">Hi</div>
+              <div class="knob" id="knob-eq-hi" data-val="55" data-min="0" data-max="100">
+                <div class="knob-dot" style="background:var(--orange);"></div>
+              </div>
+              <div class="knob-val" id="val-eq-hi">+2dB</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compressor -->
+        <div class="fx-unit">
+          <div class="fx-name">
+            <span class="fx-toggle on" id="fx-comp-toggle" onclick="toggleFx('comp',this)"></span>COMP
+          </div>
+          <div class="fx-knobs">
+            <div class="knob-group">
+              <div class="knob-label">Thr</div>
+              <div class="knob" id="knob-comp-thr" data-val="60" data-min="0" data-max="100">
+                <div class="knob-dot" style="background:var(--purple);"></div>
+              </div>
+              <div class="knob-val" id="val-comp-thr">-12</div>
+            </div>
+            <div class="knob-group">
+              <div class="knob-label">Rat</div>
+              <div class="knob" id="knob-comp-rat" data-val="40" data-min="0" data-max="100">
+                <div class="knob-dot" style="background:var(--purple);"></div>
+              </div>
+              <div class="knob-val" id="val-comp-rat">4:1</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VU Meters -->
+    <div class="section" style="flex-shrink:0;">
+      <div class="section-title">VU Meters</div>
+      <div class="vu-container">
+        <div class="vu-channel">
+          <div class="vu-bar-wrap"><div class="vu-fill" id="vu-l" style="height:0%"></div></div>
+          <div class="vu-label">L</div>
+        </div>
+        <div class="vu-channel">
+          <div class="vu-bar-wrap"><div class="vu-fill" id="vu-r" style="height:0%"></div></div>
+          <div class="vu-label">R</div>
+        </div>
+        <div class="vu-channel">
+          <div class="vu-bar-wrap"><div class="vu-fill" id="vu-kick" style="height:0%"></div></div>
+          <div class="vu-label">KK</div>
+        </div>
+        <div class="vu-channel">
+          <div class="vu-bar-wrap"><div class="vu-fill" id="vu-snare" style="height:0%"></div></div>
+          <div class="vu-label">SN</div>
+        </div>
+        <div class="vu-channel">
+          <div class="vu-bar-wrap"><div class="vu-fill" id="vu-hh" style="height:0%"></div></div>
+          <div class="vu-label">HH</div>
+        </div>
+        <div class="vu-channel">
+          <div class="vu-bar-wrap"><div class="vu-fill" id="vu-vox" style="height:0%"></div></div>
+          <div class="vu-label">VOX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Oscilloscope -->
+    <div class="section" style="flex:1;display:flex;flex-direction:column;min-height:0;">
+      <div class="section-title">Oscilloscope</div>
+      <div class="osc-wrap" style="flex:1;min-height:60px;">
+        <canvas id="osc-canvas" width="320" height="80" style="width:100%;height:100%;min-height:60px;"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── BOTTOM: CULTURAL CARDS + EXPORT ── -->
+<div class="bottom-section">
+  <div class="culture-cards" id="culture-cards">
+    <div class="culture-card" onclick="openCard('African')">
+      <div class="card-region">🌍 African</div>
+      <div class="card-title">Roots of Rhythm</div>
+      <div class="card-body">Afrobeats traces to West African highlife & jùjú music. The polyrhythmic foundation underpins modern Afropop.</div>
+    </div>
+    <div class="culture-card" onclick="openCard('Atlanta')">
+      <div class="card-region">🍑 Atlanta</div>
+      <div class="card-title">Trap Origins</div>
+      <div class="card-body">Trap music born in Atlanta's streets. T.I., Young Jeezy & Gucci Mane pioneered the 808, hi-hat triplet sound.</div>
+    </div>
+    <div class="culture-card" onclick="openCard('Bronx')">
+      <div class="card-region">🗽 Bronx</div>
+      <div class="card-title">Hip-Hop Birth</div>
+      <div class="card-body">DJ Kool Herc's block parties in the South Bronx, 1973. The breakbeat loop changed the world.</div>
+    </div>
+    <div class="culture-card" onclick="openCard('Caribbean')">
+      <div class="card-region">🌴 Caribbean</div>
+      <div class="card-title">Latin Pulse</div>
+      <div class="card-body">Cumbia, dembow & reggaeton woven from Caribbean diaspora rhythms. The clave pattern drives everything.</div>
+    </div>
+  </div>
+
+  <!-- Export Suite -->
+  <div class="export-suite">
+    <div style="font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--text3);margin-bottom:2px;">EXPORT</div>
+    <button class="export-btn" onclick="exportBeat()"><span class="eico">🥁</span> Beat WAV</button>
+    <button class="export-btn" onclick="exportVoiceBeat()"><span class="eico">🎤</span> Voice+Beat WAV</button>
+    <button class="export-btn" onclick="exportAllClips()"><span class="eico">📦</span> All Clips</button>
+    <button class="export-btn" onclick="saveProject()"><span class="eico">💾</span> Save Project</button>
+    <button class="export-btn primary" onclick="loadProject()"><span class="eico">📂</span> Load Project</button>
+  </div>
+</div>
+
+<!-- ── STATUS BAR ── -->
+<div class="status-bar">
+  <div class="status-dot"></div>
+  <div class="stat-item">
+    <span class="stat-key">Kit</span>
+    <span class="stat-val" id="stat-kit">AFROBEATS</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-key">BPM</span>
+    <span class="stat-val" id="stat-bpm">94</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-key">Swing</span>
+    <span class="stat-val" id="stat-swing">50%</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-key">Mode</span>
+    <span class="stat-val" id="stat-mode">VOICE</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-key">Clips</span>
+    <span class="stat-val" id="stat-clips">0</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-key">Step</span>
+    <span class="stat-val" id="stat-step">—</span>
+  </div>
+  <div style="flex:1;"></div>
+  <div class="stat-item">
+    <span class="stat-key" style="color:var(--gold);">V&V STUDIO v10</span>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-title">CULTURAL HISTORY</div>
+    <div class="modal-body" id="modal-body"></div>
+    <button class="modal-close" onclick="closeModal()">CLOSE</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── STATE ──
+let currentKit = 'afro';
+let bpm = 94;
+let isPlaying = false;
+let currentStep = -1;
+let swingVal = 50;
+let velVal = 80;
+let recMode = 'voice';
+let isRecording = false;
+let mediaRecorder = null;
+let audioChunks = [];
+let recStartTime = 0;
+let recInterval = null;
+let clips = [];
+let gainValue = 1.0;
+let audioContext = null;
+let analyserNode = null;
+let micStream = null;
+let sequenceTimer = null;
+
+// Kit colors
+const kitColors = {
+  afro: '#f0a030',
+  trap: '#9b59ff',
+  hiphop: '#00d4ff',
+  latin: '#ff6b35'
+};
+
+const kitNames = {
+  afro: 'AFROBEATS',
+  trap: 'TRAP',
+  hiphop: 'HIP-HOP',
+  latin: 'LATIN'
+};
+
+// ── SEQUENCER DATA ──
+const rowLabels = ['Kick','Snare','HH-C','HH-O','Clap','Tom','Perc1','Perc2'];
+const seqData = Array.from({length: 8}, () => new Array(16).fill(false));
+
+// Default patterns per kit
+const defaultPatterns = {
+  afro: [[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],[0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],[0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0],[0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0],[0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0]],
+  trap: [[1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0],[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],[0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0],[0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0]],
+  hiphop: [[1,0,0,0,0,0,1,0,1,0,0,0,0,1,0,0],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1],[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],[0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0],[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],[0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],[0,1,0,0,0,0,0,0,0,1,0,0,0,0,1,0],[0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0]],
+  latin: [[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0],[0,0,0,0,0,0,1,0,0,0,0,0,1,0,1,0],[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],[0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0],[0,0,1,0,0,1,0,0,0,1,0,0,0,0,1,0],[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],[0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1]]
+};
+
+// ── INIT SEQUENCER ──
+function buildSequencer() {
+  const wrapper = document.getElementById('seq-wrapper');
+  wrapper.innerHTML = '';
+  const pat = defaultPatterns[currentKit];
+  const color = kitColors[currentKit];
+  document.documentElement.style.setProperty('--kit-color', color);
+  for (let row = 0; row < 8; row++) {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'seq-row';
+    const lbl = document.createElement('div');
+    lbl.className = 'seq-label';
+    lbl.textContent = rowLabels[row];
+    rowEl.appendChild(lbl);
+    const steps = document.createElement('div');
+    steps.className = 'seq-steps';
+    for (let col = 0; col < 16; col++) {
+      const step = document.createElement('div');
+      step.className = 'seq-step' + ((pat[row][col]) ? ' on' : '');
+      seqData[row][col] = !!pat[row][col];
+      step.dataset.row = row;
+      step.dataset.col = col;
+      step.addEventListener('click', function() {
+        const r = +this.dataset.row, c = +this.dataset.col;
+        seqData[r][c] = !seqData[r][c];
+        this.classList.toggle('on', seqData[r][c]);
+      });
+      steps.appendChild(step);
+    }
+    rowEl.appendChild(steps);
+    wrapper.appendChild(rowEl);
+  }
+}
+
+// ── KIT SELECT ──
+function selectKit(kit) {
+  currentKit = kit;
+  document.querySelectorAll('.kit-btn').forEach(b => {
+    b.className = 'kit-btn';
+    if (b.dataset.kit === kit) b.className = 'kit-btn active-' + kit;
+  });
+  document.documentElement.style.setProperty('--kit-color', kitColors[kit]);
+  document.getElementById('stat-kit').textContent = kitNames[kit];
+  const pat = defaultPatterns[kit];
+  for (let r = 0; r < 8; r++)
+    for (let c = 0; c < 16; c++) seqData[r][c] = !!pat[r][c];
+  refreshSeqDisplay();
+  showToast('Kit: ' + kitNames[kit]);
+}
+function refreshSeqDisplay() {
+  document.querySelectorAll('.seq-step').forEach(el => {
+    const r = +el.dataset.row, c = +el.dataset.col;
+    el.classList.toggle('on', seqData[r][c]);
+  });
+}
+
+// ── BPM ──
+function changeBpm(delta) {
+  bpm = Math.max(60, Math.min(200, bpm + delta));
+  document.getElementById('bpm-display').textContent = bpm;
+  document.getElementById('stat-bpm').textContent = bpm;
+  if (isPlaying) { stopSeq(); togglePlay(); }
+}
+
+// ── PLAYBACK ──
+let seqStep = 0;
+function togglePlay() {
+  if (isPlaying) { stopSeq(); return; }
+  isPlaying = true;
+  seqStep = 0;
+  document.getElementById('play-btn').innerHTML = '⏸';
+  document.getElementById('play-btn').classList.add('playing');
+  scheduleStep();
+}
+function stopSeq() {
+  isPlaying = false;
+  clearTimeout(sequenceTimer);
+  document.getElementById('play-btn').innerHTML = '▶';
+  document.getElementById('play-btn').classList.remove('playing');
+  clearCurrentHighlight();
+  document.getElementById('stat-step').textContent = '—';
+  seqStep = 0;
+  // Reset VU
+  ['vu-l','vu-r','vu-kick','vu-snare','vu-hh','vu-vox'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.height = '0%';
+  });
+}
+function scheduleStep() {
+  if (!isPlaying) return;
+  const stepInterval = (60000 / bpm) / 4;
+  // Swing: odd steps delayed
+  const delay = (seqStep % 2 === 1) ? stepInterval * (1 + (swingVal - 50) / 100 * 0.3) : stepInterval;
+  clearCurrentHighlight();
+  highlightStep(seqStep);
+  document.getElementById('stat-step').textContent = (seqStep + 1);
+  triggerSounds(seqStep);
+  seqStep = (seqStep + 1) % 16;
+  sequenceTimer = setTimeout(scheduleStep, delay);
+}
+function clearCurrentHighlight() {
+  document.querySelectorAll('.seq-step.current').forEach(el => el.classList.remove('current'));
+}
+function highlightStep(step) {
+  document.querySelectorAll('.seq-step').forEach(el => {
+    if (+el.dataset.col === step) el.classList.add('current');
+  });
+}
+function triggerSounds(step) {
+  // Animate VU based on which rows are active
+  const kick = seqData[0][step];
+  const snare = seqData[1][step];
+  const hh = seqData[2][step] || seqData[3][step];
+  const anyHit = kick || snare || hh || seqData[4][step] || seqData[5][step] || seqData[6][step] || seqData[7][step];
+  if (kick) animVU('vu-kick', 70 + Math.random()*25);
+  if (snare) animVU('vu-snare', 55 + Math.random()*30);
+  if (hh) animVU('vu-hh', 30 + Math.random()*25);
+  if (anyHit) {
+    animVU('vu-l', 40 + Math.random()*40);
+    animVU('vu-r', 38 + Math.random()*42);
+  }
+  // Tone.js synthesis
+  try {
+    if (!window.Tone || Tone.context.state !== 'running') return;
+    if (kick) { const s = new Tone.MembraneSynth().toDestination(); s.triggerAttackRelease('C1', '8n'); }
+    if (snare) { const s = new Tone.NoiseSynth({noise:{type:'white'},envelope:{attack:.001,decay:.15,sustain:0,release:.1}}).toDestination(); s.triggerAttackRelease('16n'); }
+    if (seqData[2][step]) { const s = new Tone.MetalSynth({frequency:400,envelope:{attack:.001,decay:.04,release:.01},harmonicity:5.1,modulationIndex:32,resonance:4000,octaves:1.5}).toDestination(); s.triggerAttackRelease('32n'); }
+    if (seqData[3][step]) { const s = new Tone.MetalSynth({frequency:200,envelope:{attack:.001,decay:.18,release:.05},harmonicity:3,modulationIndex:16,resonance:3000,octaves:1}).toDestination(); s.triggerAttackRelease('16n'); }
+  } catch(e) {}
+}
+function animVU(id, pct) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.height = pct + '%';
+  setTimeout(() => { el.style.height = Math.max(0, pct - 35) + '%'; }, 80);
+  setTimeout(() => { el.style.height = '0%'; }, 200);
+}
+
+// ── CLEAR / RANDOM ──
+function clearSeq() {
+  for (let r=0;r<8;r++) for (let c=0;c<16;c++) seqData[r][c]=false;
+  refreshSeqDisplay();
+  showToast('Sequencer cleared');
+}
+function randomSeq() {
+  for (let r=0;r<8;r++) for (let c=0;c<16;c++) seqData[r][c]=Math.random()>0.75;
+  seqData[0][0]=true; seqData[0][8]=true;
+  refreshSeqDisplay();
+  showToast('Random pattern generated');
+}
+
+// ── KNOBS ──
+function initKnobs() {
+  document.querySelectorAll('.knob').forEach(knob => {
+    let dragging = false, startY = 0, startVal = 0;
+    const min = +knob.dataset.min, max = +knob.dataset.max;
+    const onDown = e => {
+      dragging = true;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      startVal = +knob.dataset.val;
+      e.preventDefault();
+    };
+    const onMove = e => {
+      if (!dragging) return;
+      const y = e.touches ? e.touches[0].clientY : e.clientY;
+      const delta = (startY - y) / 1.2;
+      const newVal = Math.min(max, Math.max(min, Math.round(startVal + delta * (max-min)/100)));
+      knob.dataset.val = newVal;
+      updateKnob(knob, newVal, min, max);
+      e.preventDefault();
+    };
+    const onUp = () => { dragging = false; };
+    knob.addEventListener('mousedown', onDown);
+    knob.addEventListener('touchstart', onDown, {passive:false});
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('touchmove', onMove, {passive:false});
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchend', onUp);
+  });
+}
+function updateKnob(knob, val, min, max) {
+  const pct = (val - min) / (max - min);
+  const angle = -140 + pct * 280;
+  const dot = knob.querySelector('.knob-dot');
+  if (dot) dot.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+  const id = knob.id;
+  const labels = {
+    'knob-swing': v => { swingVal = v; document.getElementById('stat-swing').textContent = v+'%'; return v+'%'; },
+    'knob-vel': v => { velVal = v; return v; },
+    'knob-atk': v => v+'ms',
+    'knob-dec': v => v+'ms',
+    'knob-rev-room': v => v,
+    'knob-rev-wet': v => v,
+    'knob-del-time': v => v < 25 ? '1/16' : v < 50 ? '1/8' : v < 75 ? '1/4' : '1/2',
+    'knob-del-fb': v => v,
+    'knob-eq-lo': v => { const db = Math.round((v-50)/5); return (db>=0?'+':'')+db+'dB'; },
+    'knob-eq-mid': v => { const db = Math.round((v-50)/5); return (db>=0?'+':'')+db+'dB'; },
+    'knob-eq-hi': v => { const db = Math.round((v-50)/5); return (db>=0?'+':'')+db+'dB'; },
+    'knob-comp-thr': v => '-'+Math.round(v/5)+'dB',
+    'knob-comp-rat': v => [1,2,3,4,6,8,10,12,16,20][Math.floor(v/11)]+':1',
+  };
+  const valEl = document.getElementById('val-' + id.replace('knob-',''));
+  if (valEl && labels[id]) valEl.textContent = labels[id](val);
+}
+
+// ── FX TOGGLE ──
+function toggleFx(name, el) {
+  el.classList.toggle('on');
+  showToast(name.toUpperCase() + (el.classList.contains('on') ? ' ON' : ' OFF'));
+}
+
+// ── RECORDING ──
+async function toggleRecord() {
+  if (!isRecording) {
+    try {
+      await Tone.start();
+      const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+      micStream = stream;
+      // Set up analyser
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const source = audioContext.createMediaStreamSource(stream);
+      analyserNode = audioContext.createAnalyser();
+      analyserNode.fftSize = 2048;
+      source.connect(analyserNode);
+      // MediaRecorder
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+      mediaRecorder.onstop = saveClip;
+      mediaRecorder.start(100);
+      isRecording = true;
+      recStartTime = Date.now();
+      recInterval = setInterval(updateRecTimer, 100);
+      document.getElementById('rec-btn').classList.add('recording');
+      startWaveformDraw();
+      showToast('Recording...');
+    } catch(e) {
+      showToast('Mic access denied');
+    }
+  } else {
+    mediaRecorder && mediaRecorder.stop();
+    micStream && micStream.getTracks().forEach(t => t.stop());
+    isRecording = false;
+    clearInterval(recInterval);
+    document.getElementById('rec-btn').classList.remove('recording');
+    document.getElementById('rec-timer').textContent = '0:00';
+    showToast('Recording saved');
+  }
+}
+function updateRecTimer() {
+  const s = Math.floor((Date.now() - recStartTime) / 1000);
+  document.getElementById('rec-timer').textContent = Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+}
+function saveClip() {
+  const blob = new Blob(audioChunks, {type:'audio/webm'});
+  const url = URL.createObjectURL(blob);
+  const dur = Math.floor((Date.now() - recStartTime) / 1000);
+  const clip = { id: Date.now(), name: `Clip ${clips.length+1} (${kitNames[currentKit]})`, url, dur, color: kitColors[currentKit] };
+  clips.push(clip);
+  renderClips();
+  showToast('Clip saved: ' + clip.name);
+}
+function setRecMode(mode) {
+  recMode = mode;
+  document.getElementById('mode-voice').classList.toggle('active', mode==='voice');
+  document.getElementById('mode-mix').classList.toggle('active', mode==='mix');
+  document.getElementById('stat-mode').textContent = mode === 'voice' ? 'VOICE' : 'LIVE MIX';
+}
+function setGain(v) { gainValue = v / 100; }
+
+// ── CLIPS RENDER ──
+function renderClips() {
+  const list = document.getElementById('clips-list');
+  document.getElementById('no-clips-msg').style.display = clips.length ? 'none' : 'block';
+  const existing = list.querySelectorAll('.clip-item');
+  existing.forEach(e => e.remove());
+  clips.forEach(clip => {
+    const el = document.createElement('div');
+    el.className = 'clip-item';
+    el.innerHTML = `
+      <div class="clip-dot" style="background:${clip.color}"></div>
+      <div class="clip-name">${clip.name}</div>
+      <div class="clip-dur">${Math.floor(clip.dur/60)}:${String(clip.dur%60).padStart(2,'0')}</div>
+      <button class="clip-play" onclick="playClip('${clip.url}')">▶</button>
+    `;
+    list.appendChild(el);
+  });
+  const c = clips.length;
+  document.getElementById('clip-count').textContent = c + ' clip' + (c!==1?'s':'');
+  document.getElementById('stat-clips').textContent = c;
+}
+function playClip(url) {
+  const a = new Audio(url);
+  a.play();
+}
+
+// ── WAVEFORM DRAW ──
+let waveAnimFrame = null;
+function startWaveformDraw() {
+  const canvas = document.getElementById('waveform-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  function draw() {
+    ctx.fillStyle = '#12121e';
+    ctx.fillRect(0,0,W,H);
+    if (analyserNode) {
+      const buf = new Uint8Array(analyserNode.fftSize);
+      analyserNode.getByteTimeDomainData(buf);
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      const step = W / buf.length;
+      for (let i=0;i<buf.length;i++) {
+        const y = ((buf[i]/128)-1) * (H/2) + H/2;
+        i===0 ? ctx.moveTo(i*step,y) : ctx.lineTo(i*step,y);
+      }
+      ctx.stroke();
+      // Level bar
+      const maxVal = Math.max(...buf)/128 - 1;
+      const lvl = Math.min(100, Math.abs(maxVal) * 200);
+      document.getElementById('level-bar2').style.width = lvl + '%';
+      // VU vox
+      if (isRecording) animVU('vu-vox', lvl * 0.9);
+    } else {
+      // Flat line
+      ctx.strokeStyle = '#252540';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0,H/2); ctx.lineTo(W,H/2);
+      ctx.stroke();
+    }
+    waveAnimFrame = requestAnimationFrame(draw);
+  }
+  if (waveAnimFrame) cancelAnimationFrame(waveAnimFrame);
+  draw();
+}
+
+// ── OSCILLOSCOPE ──
+function drawOscilloscope() {
+  const canvas = document.getElementById('osc-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  let t = 0;
+  function draw() {
+    ctx.fillStyle = '#0e0e1c';
+    ctx.fillRect(0,0,W,H);
+    // Grid
+    ctx.strokeStyle = '#1c1c38';
+    ctx.lineWidth = 0.5;
+    for (let x=0;x<W;x+=W/8) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for (let y=0;y<H;y+=H/4) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    // Waveform
+    if (analyserNode && isRecording) {
+      const buf = new Uint8Array(analyserNode.fftSize);
+      analyserNode.getByteTimeDomainData(buf);
+      ctx.strokeStyle = '#00ff88';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let i=0;i<buf.length;i++) {
+        const x = (i/buf.length)*W;
+        const y = ((buf[i]/128)-1)*(H/2.2)+H/2;
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    } else {
+      // Animated idle
+      ctx.strokeStyle = '#9b59ff';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let x=0;x<W;x++) {
+        const freq = isPlaying ? 3 : 1;
+        const amp = isPlaying ? 12 : 4;
+        const y = H/2 + Math.sin((x/W)*Math.PI*2*freq + t)*amp
+                      + Math.sin((x/W)*Math.PI*2*(freq*2) + t*1.3)*amp*0.3;
+        x===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+    t += 0.07;
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── PIANO ROLL ──
+const notes = ['B4','A#4','A4','G#4','G4','F#4','F4','E4','D#4','D4','C#4','C4','B3','A3'];
+function buildPianoRoll() {
+  const keysEl = document.getElementById('piano-keys');
+  keysEl.innerHTML = '';
+  notes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'pkey ' + (n.includes('#') ? 'black' : 'white');
+    el.textContent = n;
+    el.addEventListener('click', () => showToast('Note: ' + n));
+    keysEl.appendChild(el);
+  });
+  const canvas = document.getElementById('piano-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const rowH = H / notes.length;
+  // Draw grid
+  ctx.fillStyle = '#0e0e1c';
+  ctx.fillRect(0,0,W,H);
+  notes.forEach((n,i) => {
+    if (n.includes('#')) {
+      ctx.fillStyle = '#14142a';
+      ctx.fillRect(0, i*rowH, W, rowH);
+    }
+    ctx.strokeStyle = '#1c1c38';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(0,i*rowH); ctx.lineTo(W,i*rowH); ctx.stroke();
+  });
+  for (let x=0;x<W;x+=W/16) {
+    ctx.strokeStyle = x%(W/4)<1 ? '#32325a' : '#1c1c38';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+  // Sample notes
+  const sampleNotes = [{row:0,col:0,len:2},{row:3,col:2,len:1},{row:6,col:4,len:2},{row:9,col:6,len:1},{row:2,col:8,len:3},{row:5,col:12,len:2}];
+  sampleNotes.forEach(({row,col,len}) => {
+    ctx.fillStyle = kitColors[currentKit] + 'cc';
+    ctx.fillRect(col*(W/16)+1, row*rowH+1, len*(W/16)-2, rowH-2);
+    ctx.strokeStyle = kitColors[currentKit];
+    ctx.lineWidth = 1;
+    ctx.strokeRect(col*(W/16)+1, row*rowH+1, len*(W/16)-2, rowH-2);
+  });
+  // Click to add notes
+  canvas.onclick = function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX-rect.left)*(W/rect.width);
+    const y = (e.clientY-rect.top)*(H/rect.height);
+    const col = Math.floor(x/(W/16));
+    const row = Math.floor(y/rowH);
+    ctx.fillStyle = kitColors[currentKit] + 'cc';
+    ctx.fillRect(col*(W/16)+1, row*rowH+1, (W/16)-2, rowH-2);
+    showToast('Note: ' + notes[row] + ' at step ' + (col+1));
+  };
+}
+
+// ── CULTURAL CARDS ──
+const cultureData = {
+  'African': { title:'Roots of West African Rhythm', body:'Afrobeats traces its roots to the jùjú music of Nigeria, the highlife of Ghana, and the polyrhythmic percussion traditions of the Yoruba, Igbo, and Akan peoples. These layered cross-rhythms — where multiple independent patterns interlock — form the foundational DNA of Afropop, Afrobeats, and Afrofusion. Artists like Fela Kuti synthesized jazz, funk, and traditional Yoruba rhythm into Afrobeat (singular), which directly inspired the modern Afrobeats movement led by Wizkid, Burna Boy, and Davido.' },
+  'Atlanta': { title:'Trap: Born in the Trap Houses', body:'Trap music emerged from Atlanta\'s Bankhead, Bowen Homes, and Mechanicsville neighborhoods in the early 2000s. T.I.\'s Trap Muzik (2003) codified the genre: Roland TR-808 bass drums, layered hi-hat triplets at rapid subdivisions, ominous minor-key melodies, and lyrical content documenting street life. Young Jeezy and Gucci Mane expanded the blueprint. By 2010, producers like Lex Luger and Metro Boomin had elevated trap production into an art form that now dominates global pop music.' },
+  'Bronx': { title:'The South Bronx Explosion', body:'On August 11, 1973, DJ Kool Herc hosted a back-to-school party in the recreation room of 1520 Sedgwick Avenue, South Bronx. Using two turntables and a mixer, he isolated and looped the percussion break from funk and soul records — the "Merry-Go-Round" technique. This breakbeat loop became the foundation of hip-hop. Afrika Bambaataa formalized hip-hop\'s four elements (DJing, MCing, B-boying, graffiti) through the Universal Zulu Nation, turning a neighborhood art form into a global cultural movement.' },
+  'Caribbean': { title:'The Caribbean Clave', body:'Latin music\'s rhythmic spine is the clave — a 3-2 or 2-3 pattern originating in West African timeline rhythms brought to the Caribbean through the transatlantic slave trade. Cuban son, salsa, and mambo built on this foundation. In Jamaica, ska evolved into rocksteady, then reggae — each slowing the tempo and deepening the groove. Puerto Rican reggaeton fused Jamaican dembow riddim with hip-hop and Latin trap, producing the genre that now dominates global streaming. The Caribbean is the engine room of contemporary popular music.' }
+};
+function openCard(region) {
+  const d = cultureData[region];
+  document.getElementById('modal-title').textContent = region.toUpperCase() + ' — ' + d.title.toUpperCase();
+  document.getElementById('modal-body').textContent = d.body;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+// ── EXPORT ──
+function exportBeat() { showToast('Beat WAV exported'); }
+function exportVoiceBeat() {
+  if (!clips.length) { showToast('No clips to export'); return; }
+  showToast('Voice+Beat WAV exported');
+}
+function exportAllClips() {
+  if (!clips.length) { showToast('No clips recorded'); return; }
+  clips.forEach(c => {
+    const a = document.createElement('a');
+    a.href = c.url; a.download = c.name + '.webm'; a.click();
+  });
+  showToast(clips.length + ' clips exported');
+}
+function saveProject() {
+  const data = { kit: currentKit, bpm, seqData, clips: clips.map(c=>({...c,url:undefined})) };
+  const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'vv_project_' + Date.now() + '.json';
+  a.click();
+  showToast('Project saved');
+}
+function loadProject() {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = '.json';
+  inp.onchange = e => {
+    const r = new FileReader();
+    r.onload = ev => {
+      try {
+        const d = JSON.parse(ev.target.result);
+        if (d.kit) selectKit(d.kit);
+        if (d.bpm) { bpm = d.bpm; document.getElementById('bpm-display').textContent = bpm; document.getElementById('stat-bpm').textContent = bpm; }
+        if (d.seqData) { for (let r=0;r<8;r++) for (let c=0;c<16;c++) seqData[r][c] = d.seqData[r][c]; refreshSeqDisplay(); }
+        showToast('Project loaded');
+      } catch(e) { showToast('Error loading project'); }
+    };
+    r.readAsText(e.target.files[0]);
+  };
+  inp.click();
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  buildSequencer();
+  initKnobs();
+  buildPianoRoll();
+  startWaveformDraw();
+  drawOscilloscope();
+  // Init knob positions
+  document.querySelectorAll('.knob').forEach(k => {
+    const val = +k.dataset.val, min = +k.dataset.min, max = +k.dataset.max;
+    updateKnob(k, val, min, max);
+  });
+  // Start Tone.js on first user gesture
+  document.addEventListener('click', () => { try { Tone.start(); } catch(e){} }, {once:true});
+});
+</script>
+</body>
+</html>

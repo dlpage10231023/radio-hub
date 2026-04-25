@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voices & Vibes — Artists</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;500;700;900&family=Share+Tech+Mono&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#009B9B;--teal-d:#007A7A;--teal-l:#00C4C4;
+  --coral:#E8624A;--coral-l:#F07A62;
+  --black:#080c0c;--dark:#0f1515;--panel:#131e1e;
+  --card:#182020;--raised:#1e2a2a;--border:rgba(0,155,155,0.18);
+  --cream:#e8f5f5;--muted:#5a9090;--dim:#1a2a2a;
+  --gold:#D4A830;--purple:#8855CC;
+}
+html,body{background:var(--black);color:var(--cream);font-family:'Montserrat',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 55% 45% at 15% 15%,rgba(0,155,155,0.07),transparent 55%),
+  radial-gradient(ellipse 40% 30% at 85% 85%,rgba(232,98,74,0.04),transparent 55%)}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:1rem;
+  padding:0 5vw;height:52px;background:rgba(8,12,12,0.97);
+  border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.nav-logo{font-family:'Dancing Script',cursive;font-size:1.3rem;font-weight:700;
+  background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-decoration:none;white-space:nowrap}
+.nav-links{display:flex;gap:1.5rem;margin-left:auto;align-items:center}
+.nav-links a{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--teal)}
+.nav-cta{background:var(--teal);color:var(--black);font-size:10px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;padding:7px 16px;
+  text-decoration:none;transition:background 0.2s;white-space:nowrap}
+.nav-cta:hover{background:var(--teal-l)}
+
+/* ── HERO ── */
+.hero{position:relative;z-index:2;text-align:center;padding:52px 5vw 40px}
+.live-badge{display:inline-flex;align-items:center;gap:7px;
+  background:rgba(232,98,74,0.12);border:1px solid rgba(232,98,74,0.3);
+  color:var(--coral);font-size:9px;font-weight:700;letter-spacing:0.22em;
+  text-transform:uppercase;padding:5px 14px;margin-bottom:1.2rem}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--coral);animation:blink 1.3s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.hero-logo{font-family:'Dancing Script',cursive;font-size:clamp(2rem,5vw,4rem);
+  font-weight:700;background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:0.3rem}
+.hero-title{font-size:clamp(0.85rem,2vw,1.1rem);color:rgba(232,245,245,0.6);margin-bottom:0.5rem}
+.hero-stats{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-top:1.5rem}
+.stat{text-align:center}
+.stat-num{font-family:'Share Tech Mono',monospace;font-size:1.6rem;color:var(--teal);line-height:1}
+.stat-lbl{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+
+/* ── FILTER BAR ── */
+.filter-bar{position:relative;z-index:2;padding:0 5vw 1.5rem;
+  display:flex;gap:8px;flex-wrap:wrap;align-items:center;max-width:1300px;margin:0 auto}
+.filter-btn{background:var(--card);border:1px solid var(--border);
+  color:var(--muted);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;padding:6px 14px;cursor:pointer;
+  transition:all 0.2s}
+.filter-btn:hover{border-color:rgba(0,155,155,0.4);color:var(--cream)}
+.filter-btn.active{background:var(--teal);color:var(--black);border-color:var(--teal)}
+.filter-btn.gospel.active{background:var(--purple);border-color:var(--purple)}
+.filter-btn.soul.active{background:var(--coral);border-color:var(--coral)}
+.filter-btn.lat.active{background:var(--gold);border-color:var(--gold)}
+.search-wrap{margin-left:auto;position:relative}
+.search-input{background:var(--card);border:1px solid var(--border);color:var(--cream);
+  font-family:'Montserrat',sans-serif;font-size:11px;padding:7px 14px 7px 32px;
+  outline:none;width:200px;transition:border-color 0.2s}
+.search-input:focus{border-color:var(--teal)}
+.search-input::placeholder{color:var(--muted)}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  font-size:12px;color:var(--muted);pointer-events:none}
+
+/* ── ARTIST GRID ── */
+.artists-section{position:relative;z-index:2;padding:0 5vw 4rem;max-width:1300px;margin:0 auto}
+.artists-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2px}
+
+/* ── ARTIST CARD ── */
+.artist-card{background:var(--card);border:1px solid var(--border);
+  overflow:hidden;position:relative;transition:all 0.25s;cursor:pointer}
+.artist-card:hover{border-color:rgba(0,155,155,0.45);transform:translateY(-3px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.4)}
+
+/* PHOTO ZONE */
+.artist-photo{position:relative;aspect-ratio:1/1;overflow:hidden;background:var(--dim)}
+.artist-img{width:100%;height:100%;object-fit:cover;object-position:top;
+  display:block;transition:transform 0.4s ease,filter 0.3s ease;filter:brightness(0.8)}
+.artist-card:hover .artist-img{transform:scale(1.04);filter:brightness(0.65)}
+.photo-placeholder{width:100%;height:100%;display:flex;align-items:center;
+  justify-content:center;font-size:3rem;background:linear-gradient(135deg,#0d1a1a,#1a0d10)}
+.photo-gradient{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,12,12,0.9) 0%,transparent 55%);pointer-events:none}
+
+/* TIER BADGE */
+.tier-badge{position:absolute;top:10px;right:10px;z-index:3;
+  font-size:8px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  padding:3px 8px}
+.tier-badge.free{background:rgba(90,144,144,0.85);color:var(--black)}
+.tier-badge.artist{background:rgba(0,155,155,0.9);color:var(--black)}
+.tier-badge.spotlight{background:rgba(136,85,204,0.9);color:#fff}
+.tier-badge.onair{background:rgba(232,98,74,0.9);color:var(--black)}
+
+/* LIVE INDICATOR */
+.live-indicator{position:absolute;top:10px;left:10px;z-index:3;
+  display:flex;align-items:center;gap:5px;
+  background:rgba(232,98,74,0.9);padding:3px 8px}
+.li-dot{width:5px;height:5px;border-radius:50%;background:#fff;animation:blink 1s infinite}
+.li-txt{font-size:8px;font-weight:700;color:#fff;letter-spacing:0.1em}
+
+/* PLAY OVERLAY */
+.play-overlay{position:absolute;inset:0;display:flex;align-items:center;
+  justify-content:center;opacity:0;transition:opacity 0.2s;z-index:4}
+.artist-card:hover .play-overlay{opacity:1}
+.play-circle{width:44px;height:44px;border-radius:50%;background:var(--teal);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--black);
+  box-shadow:0 0 20px rgba(0,155,155,0.5)}
+
+/* ARTIST INFO */
+.artist-info{padding:1rem}
+.artist-name{font-family:'Dancing Script',cursive;font-size:1.3rem;font-weight:700;
+  color:var(--coral);margin-bottom:0.2rem;line-height:1.1}
+.artist-handle{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:0.5rem}
+.artist-bio{font-size:11px;color:rgba(232,245,245,0.6);line-height:1.6;margin-bottom:0.75rem;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.genre-pills{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:0.75rem}
+.gpill{font-size:8px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  padding:2px 8px;border-radius:2px}
+.gpill.teal{background:rgba(0,155,155,0.12);border:1px solid rgba(0,155,155,0.25);color:var(--teal)}
+.gpill.coral{background:rgba(232,98,74,0.12);border:1px solid rgba(232,98,74,0.25);color:var(--coral)}
+.gpill.purple{background:rgba(136,85,204,0.12);border:1px solid rgba(136,85,204,0.25);color:var(--purple)}
+.gpill.gold{background:rgba(212,168,48,0.12);border:1px solid rgba(212,168,48,0.25);color:var(--gold)}
+
+/* ARTIST STATS ROW */
+.artist-stats{display:flex;gap:0;border-top:1px solid var(--border)}
+.ast{flex:1;text-align:center;padding:8px 4px;border-right:1px solid var(--border)}
+.ast:last-child{border-right:none}
+.ast-num{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--teal)}
+.ast-lbl{font-size:7px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-top:1px}
+
+/* ARTIST FOOTER */
+.artist-footer{padding:0.65rem 1rem;border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:6px}
+.af-kit{font-size:8px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);background:var(--raised);border:1px solid var(--border);padding:3px 7px}
+.af-listen{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:0.1em;
+  text-transform:uppercase;color:var(--teal);text-decoration:none;
+  display:flex;align-items:center;gap:4px;transition:color 0.2s}
+.af-listen:hover{color:var(--teal-l)}
+
+/* SPOTLIGHT RING */
+.artist-card.spotlight-card{border-color:rgba(136,85,204,0.4)}
+.artist-card.spotlight-card .artist-name{color:var(--purple)}
+.artist-card.onair-card{border-color:rgba(232,98,74,0.4)}
+.artist-card.onair-card .artist-name{color:var(--coral)}
+.artist-card.featured-card{border-top:2px solid var(--teal)}
+
+/* ── PLANS SECTION ── */
+.plans-section{position:relative;z-index:2;padding:4rem 5vw;
+  background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.plans-inner{max-width:1100px;margin:0 auto}
+.plans-header{text-align:center;margin-bottom:3rem}
+.plans-kicker{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.5rem;display:flex;align-items:center;justify-content:center;gap:0.6rem}
+.plans-kicker::before,.plans-kicker::after{content:'';width:24px;height:1px;background:var(--teal)}
+.plans-title{font-family:'Dancing Script',cursive;font-size:clamp(1.8rem,4vw,3rem);
+  font-weight:700;color:var(--cream);margin-bottom:0.5rem}
+.plans-desc{font-size:13px;color:var(--muted);max-width:520px;margin:0 auto;line-height:1.8}
+
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:2px}
+.plan-card{background:var(--card);border:1px solid var(--border);
+  padding:1.8rem 1.5rem;position:relative;transition:all 0.2s}
+.plan-card:hover{border-color:rgba(0,155,155,0.35);transform:translateY(-2px)}
+.plan-card.featured{border-color:rgba(0,155,155,0.5);background:rgba(0,155,155,0.04)}
+.plan-card.featured::before{content:'MOST POPULAR';position:absolute;top:-1px;left:50%;
+  transform:translateX(-50%);background:var(--teal);color:var(--black);
+  font-size:8px;font-weight:700;letter-spacing:0.18em;padding:3px 16px;white-space:nowrap}
+.plan-card.spotlight-plan{border-color:rgba(136,85,204,0.35)}
+.plan-card.onair-plan{border-color:rgba(232,98,74,0.35)}
+.plan-icon{font-size:1.8rem;margin-bottom:0.75rem;display:block}
+.plan-name{font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:0.6rem}
+.plan-price{font-family:'Montserrat',sans-serif;font-size:2.4rem;font-weight:900;
+  color:var(--teal);line-height:1;margin-bottom:0.25rem}
+.plan-price span{font-size:0.9rem;font-weight:400;color:var(--muted)}
+.plan-card.spotlight-plan .plan-price{color:var(--purple)}
+.plan-card.onair-plan .plan-price{color:var(--coral)}
+.plan-tagline{font-family:'Playfair Display',serif;font-style:italic;
+  font-size:12px;color:rgba(232,245,245,0.55);margin-bottom:1.2rem;line-height:1.5}
+.plan-feats{list-style:none;margin-bottom:1.5rem}
+.plan-feats li{font-size:11px;color:var(--cream);padding:5px 0 5px 18px;
+  position:relative;border-bottom:1px solid rgba(0,155,155,0.06)}
+.plan-feats li:last-child{border-bottom:none}
+.plan-feats li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
+.plan-feats li.no{color:var(--muted)}
+.plan-feats li.no::before{content:'○';color:var(--muted)}
+.plan-card.spotlight-plan .plan-feats li::before{color:var(--purple)}
+.plan-card.onair-plan .plan-feats li::before{color:var(--coral)}
+.plan-btn{width:100%;padding:10px;font-family:'Montserrat',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  cursor:pointer;border:none;transition:all 0.2s}
+.plan-btn.teal{background:rgba(0,155,155,0.15);border:1px solid rgba(0,155,155,0.35);color:var(--teal)}
+.plan-btn.teal:hover,.plan-card.featured .plan-btn.teal{background:var(--teal);color:var(--black);border-color:var(--teal)}
+.plan-btn.purple{background:rgba(136,85,204,0.15);border:1px solid rgba(136,85,204,0.35);color:var(--purple)}
+.plan-btn.purple:hover{background:var(--purple);color:#fff}
+.plan-btn.coral{background:rgba(232,98,74,0.15);border:1px solid rgba(232,98,74,0.35);color:var(--coral)}
+.plan-btn.coral:hover{background:var(--coral);color:var(--black)}
+.plan-compare{text-align:center;margin-top:1.5rem;font-size:11px;color:var(--muted)}
+.plan-compare a{color:var(--teal);text-decoration:none}
+.plan-compare a:hover{text-decoration:underline}
+
+/* ── JOIN CTA ── */
+.join-section{position:relative;z-index:2;text-align:center;padding:4rem 5vw;
+  max-width:700px;margin:0 auto}
+.join-title{font-family:'Dancing Script',cursive;font-size:clamp(2rem,4vw,3.2rem);
+  font-weight:700;margin-bottom:0.75rem;
+  background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.join-desc{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:2rem;max-width:480px;margin-left:auto;margin-right:auto}
+.join-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.join-btn{padding:12px 28px;font-family:'Montserrat',sans-serif;font-size:11px;
+  font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  text-decoration:none;transition:all 0.2s}
+.join-btn.teal{background:var(--teal);color:var(--black)}
+.join-btn.teal:hover{background:var(--teal-l)}
+.join-btn.ghost{border:1px solid rgba(0,155,155,0.35);color:var(--teal)}
+.join-btn.ghost:hover{background:rgba(0,155,155,0.1)}
+
+/* ── STEPS ── */
+.steps-row{display:flex;align-items:center;gap:0.5rem;justify-content:center;
+  margin-bottom:2.5rem;flex-wrap:wrap}
+.step-item{display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:8px 16px;border:1px solid var(--border);background:var(--card);
+  transition:all 0.2s;cursor:pointer;min-width:100px}
+.step-item.active{border-color:var(--teal);background:rgba(0,155,155,0.08)}
+.step-item.done{border-color:rgba(0,155,155,0.3);background:rgba(0,155,155,0.04)}
+.step-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);transition:color 0.2s}
+.step-item.active .step-num,.step-item.done .step-num{color:var(--teal)}
+.step-lbl{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--muted);transition:color 0.2s}
+.step-item.active .step-lbl{color:var(--cream)}
+.step-arrow{font-size:12px;color:var(--muted)}
+.setup-step{animation:fadeIn 0.3s ease}
+.setup-step.hidden{display:none}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.step-title{font-size:16px;font-weight:700;color:var(--cream);margin-bottom:0.4rem}
+.step-desc{font-size:12px;color:var(--muted);margin-bottom:1.8rem;line-height:1.6}
+.step-nav{display:flex;gap:8px;justify-content:flex-end;margin-top:2rem;
+  padding-top:1.5rem;border-top:1px solid var(--border)}
+.step-back-btn{background:var(--raised);border:1px solid var(--border);
+  color:var(--muted);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;padding:9px 20px;cursor:pointer;transition:all 0.2s}
+.step-back-btn:hover{border-color:rgba(0,155,155,0.35);color:var(--cream)}
+.step-next-btn{background:var(--teal);color:var(--black);border:none;
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;padding:9px 24px;cursor:pointer;transition:all 0.2s}
+.step-next-btn:hover{background:var(--teal-l)}
+
+/* ── OUTLINE GRID ── */
+.outline-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;margin-bottom:1rem}
+.outline-group{}
+.og-label{font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.65rem}
+.og-options{display:flex;flex-wrap:wrap;gap:5px}
+.og-opt{background:var(--card);border:1px solid var(--border);
+  font-size:11px;padding:7px 12px;cursor:pointer;transition:all 0.15s;color:var(--muted)}
+.og-opt:hover{border-color:rgba(0,155,155,0.35);color:var(--cream)}
+.og-opt.selected{background:rgba(0,155,155,0.12);border-color:var(--teal);color:var(--cream)}
+.og-opt.teal.selected{background:rgba(0,155,155,0.15);border-color:var(--teal)}
+.og-opt.purple.selected{background:rgba(136,85,204,0.15);border-color:var(--purple);color:var(--purple)}
+.og-opt.coral.selected{background:rgba(232,98,74,0.12);border-color:var(--coral);color:var(--coral)}
+.og-opt.gold.selected{background:rgba(212,168,48,0.12);border-color:var(--gold);color:var(--gold)}
+
+/* ── TEMPLATES ── */
+.templates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:2px;margin-bottom:1rem}
+.template-card{background:var(--card);border:1px solid var(--border);
+  overflow:hidden;cursor:pointer;transition:all 0.2s}
+.template-card:hover{border-color:rgba(0,155,155,0.45);transform:translateY(-2px)}
+.template-card.selected{border-color:var(--teal);border-width:2px}
+.tmpl-preview{height:140px;overflow:hidden;background:var(--dim)}
+.tmpl-info{padding:0.75rem}
+.tmpl-name{font-size:12px;font-weight:700;color:var(--cream);margin-bottom:0.2rem}
+.tmpl-desc{font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:0.5rem}
+.tmpl-tags{display:flex;gap:4px;flex-wrap:wrap}
+.ttag{font-size:8px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 7px}
+.ttag.teal{background:rgba(0,155,155,0.12);border:1px solid rgba(0,155,155,0.25);color:var(--teal)}
+.ttag.purple{background:rgba(136,85,204,0.12);border:1px solid rgba(136,85,204,0.25);color:var(--purple)}
+.ttag.coral{background:rgba(232,98,74,0.12);border:1px solid rgba(232,98,74,0.25);color:var(--coral)}
+
+/* ── SUMMARY ── */
+.summary-card{background:var(--card);border:1px solid var(--border);padding:1.5rem}
+.summary-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.sum-block{}
+.sum-lbl{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.25rem}
+.sum-val{font-size:13px;font-weight:700;color:var(--teal)}
+.summary-profile-preview{background:var(--raised);border:1px solid var(--border);
+  margin-bottom:1.5rem;padding:1rem;text-align:center}
+.summary-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+
+/* ── TEMPLATE BROWSER ── */
+.tmpl-section-label{font-size:10px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:1rem;padding-bottom:0.5rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:0.5rem}
+.tmpl-section-label::before{content:'';width:14px;height:2px;background:var(--teal);flex-shrink:0}
+.templates-browser{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:2px;margin-bottom:0}
+.template-card{background:var(--card);border:1px solid var(--border);
+  overflow:hidden;cursor:pointer;transition:all 0.2s}
+.template-card:hover{border-color:rgba(0,155,155,0.45);transform:translateY(-2px)}
+.template-card.selected{border:2px solid var(--teal);transform:translateY(-2px)}
+.tmpl-preview{height:130px;overflow:hidden;background:var(--dim)}
+.tmpl-info{padding:0.65rem}
+.tmpl-name{font-size:11px;font-weight:700;color:var(--cream);margin-bottom:0.15rem}
+.tmpl-desc{font-size:9px;color:var(--muted);line-height:1.5;margin-bottom:0.4rem}
+.tmpl-tags{display:flex;gap:3px;flex-wrap:wrap}
+.ttag{font-size:7px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:2px 6px}
+.ttag.teal{background:rgba(0,155,155,0.12);border:1px solid rgba(0,155,155,0.25);color:var(--teal)}
+.ttag.purple{background:rgba(136,85,204,0.12);border:1px solid rgba(136,85,204,0.25);color:var(--purple)}
+.ttag.coral{background:rgba(232,98,74,0.12);border:1px solid rgba(232,98,74,0.25);color:var(--coral)}
+
+/* ── SETUP PANEL ── */
+.setup-panel{background:var(--raised);border:1px solid var(--teal);
+  margin-top:2px;animation:slideDown 0.3s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.setup-panel.hidden{display:none}
+.setup-panel-inner{padding:1.5rem;position:relative}
+.sp-close{position:absolute;top:1rem;right:1rem;
+  background:var(--card);border:1px solid var(--border);color:var(--muted);
+  font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  padding:5px 12px;cursor:pointer;transition:all 0.15s}
+.sp-close:hover{border-color:var(--coral);color:var(--coral)}
+.sp-template-row{display:flex;gap:1rem;align-items:flex-start;
+  margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.sp-tmpl-preview{width:120px;height:80px;flex-shrink:0;overflow:hidden;border:1px solid var(--border)}
+.sp-tmpl-name{font-size:16px;font-weight:700;color:var(--cream);margin-bottom:0.3rem}
+.sp-tmpl-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:0.5rem}
+.sp-tmpl-tags{display:flex;gap:4px}
+.sp-tabs{display:flex;gap:2px;margin-bottom:1.5rem}
+.sp-tab{flex:1;padding:8px;font-family:'Montserrat',sans-serif;font-size:10px;
+  font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+  background:var(--card);border:1px solid var(--border);color:var(--muted);transition:all 0.2s}
+.sp-tab:hover{color:var(--cream)}
+.sp-tab.active{background:rgba(0,155,155,0.12);border-color:var(--teal);color:var(--teal)}
+.sp-body{animation:fadeIn 0.25s ease}
+.sp-body.hidden{display:none}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.sp-body-title{font-size:14px;font-weight:700;color:var(--cream);margin-bottom:1.2rem}
+.sp-nav{display:flex;justify-content:space-between;align-items:center;
+  margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.sp-next{background:var(--teal);color:var(--black);border:none;
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;padding:10px 22px;cursor:pointer;transition:all 0.2s}
+.sp-next:hover{background:var(--teal-l)}
+.sp-back{background:var(--card);border:1px solid var(--border);color:var(--muted);
+  font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;transition:all 0.2s}
+.sp-back:hover{border-color:rgba(0,155,155,0.3);color:var(--cream)}
+
+/* PLAN CARDS IN PANEL */
+.sp-plans-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:2px;margin-bottom:0.5rem}
+.sp-plan-card{background:var(--card);border:1px solid var(--border);
+  padding:1.2rem;cursor:pointer;transition:all 0.2s;position:relative}
+.sp-plan-card:hover{border-color:rgba(0,155,155,0.35)}
+.sp-plan-card.selected{border-color:var(--teal);background:rgba(0,155,155,0.06)}
+.sp-plan-card.featured{border-color:rgba(0,155,155,0.4)}
+.sp-plan-card.spotlight-plan{border-color:rgba(136,85,204,0.3)}
+.sp-plan-card.spotlight-plan.selected{border-color:var(--purple);background:rgba(136,85,204,0.06)}
+.sp-plan-card.onair-plan{border-color:rgba(232,98,74,0.3)}
+.sp-plan-card.onair-plan.selected{border-color:var(--coral);background:rgba(232,98,74,0.06)}
+.sp-plan-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);
+  background:var(--teal);color:var(--black);font-size:7px;font-weight:700;
+  letter-spacing:0.15em;padding:2px 12px;white-space:nowrap}
+.sp-plan-top{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem}
+.sp-plan-icon{font-size:1.4rem}
+.sp-plan-name{font-size:12px;font-weight:700;color:var(--cream);letter-spacing:0.05em}
+.sp-plan-price{font-family:'Montserrat',sans-serif;font-size:1.2rem;font-weight:900;color:var(--teal)}
+.sp-plan-price span{font-size:0.75rem;font-weight:400;color:var(--muted)}
+.sp-plan-card.spotlight-plan .sp-plan-price{color:var(--purple)}
+.sp-plan-card.onair-plan .sp-plan-price{color:var(--coral)}
+.sp-plan-tagline{font-size:10px;color:var(--muted);line-height:1.5;margin-bottom:0.75rem}
+.sp-studio-label{font-size:8px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.4rem;padding-bottom:0.25rem;border-bottom:1px solid var(--border)}
+.sp-studio-feats{list-style:none}
+.sp-studio-feats li{font-size:10px;padding:3px 0 3px 16px;position:relative;
+  border-bottom:1px solid rgba(0,155,155,0.04);line-height:1.4}
+.sp-studio-feats li.on{color:var(--cream)}
+.sp-studio-feats li.on::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
+.sp-studio-feats li.off{color:var(--muted)}
+.sp-studio-feats li.off::before{content:'○';position:absolute;left:0;color:var(--muted)}
+
+/* OUTLINE */
+.outline-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;margin-bottom:1rem}
+.outline-group{}
+.og-label{font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.6rem}
+.og-options{display:flex;flex-wrap:wrap;gap:4px}
+.og-opt{background:var(--card);border:1px solid var(--border);
+  font-size:10px;padding:6px 11px;cursor:pointer;transition:all 0.15s;color:var(--muted)}
+.og-opt:hover{border-color:rgba(0,155,155,0.35);color:var(--cream)}
+.og-opt.selected{background:rgba(0,155,155,0.12);border-color:var(--teal);color:var(--cream)}
+
+/* PROFILE PREVIEW */
+.profile-preview-wrap{display:flex;justify-content:center;margin-bottom:1.5rem}
+.profile-mock{background:var(--card);border:1px solid var(--border);
+  padding:1.5rem;text-align:center;max-width:320px;width:100%;position:relative}
+.pm-badge{position:absolute;top:-1px;right:1rem;
+  background:var(--teal);color:var(--black);font-size:8px;font-weight:700;
+  letter-spacing:0.12em;text-transform:uppercase;padding:2px 10px}
+.pm-photo{font-size:2.5rem;margin-bottom:0.5rem;display:block}
+.pm-name{font-family:'Dancing Script',cursive;font-size:1.4rem;font-weight:700;
+  color:var(--coral);margin-bottom:0.2rem}
+.pm-meta{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:0.3rem}
+.pm-genre{font-size:10px;color:var(--teal);margin-bottom:0.75rem}
+.pm-tracks{display:flex;flex-direction:column;gap:4px;margin-bottom:0.75rem}
+.pm-track{font-size:10px;color:rgba(232,245,245,0.6);text-align:left;
+  background:var(--raised);padding:5px 8px;display:flex;align-items:center;gap:6px}
+.pm-track span{color:var(--teal);font-size:9px}
+.pm-plan{font-size:9px;font-weight:700;color:var(--teal);letter-spacing:0.1em;
+  text-transform:uppercase;margin-bottom:2px}
+.pm-tmpl{font-size:9px;color:var(--muted)}
+
+/* SUMMARY */
+.sp-summary{background:var(--card);border:1px solid var(--border);padding:1rem}
+.ss-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.75rem}
+.ss-lbl{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.ss-val{font-size:12px;font-weight:700;color:var(--teal)}
+
+/* ── FOOTER ── */
+footer{background:#060606;border-top:1px solid var(--border);
+  padding:2rem 5vw;text-align:center;position:relative;z-index:2}
+.footer-logo{font-family:'Dancing Script',cursive;font-size:1.5rem;font-weight:700;
+  background:linear-gradient(135deg,var(--teal),var(--coral));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;margin-bottom:0.4rem}
+.footer-copy{font-size:9px;color:rgba(138,184,184,0.3);letter-spacing:0.05em}
+
+@media(max-width:640px){
+  .artists-grid{grid-template-columns:1fr 1fr}
+  .plans-grid{grid-template-columns:1fr}
+  .hero-stats{gap:1rem}
+  .nav-links{display:none}
+}
+@media(max-width:420px){
+  .artists-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="voices-vibes.html" class="nav-logo">Voices & Vibes</a>
+  <div class="nav-links">
+    <a href="voices-vibes.html">Home</a>
+    <a href="vv-landing-tabs.html">Studios</a>
+    <a href="#" class="active">Artists</a>
+    <a href="vv-player-8moods.html">Listen</a>
+    <a href="#plans" class="nav-cta">Join Platform</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="live-badge"><span class="live-dot"></span>Voices & Vibes Artist Platform</div>
+  <span class="hero-logo">Healing Artists</span>
+  <p class="hero-title">Discover music created and shared on the Voices & Vibes platform</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">24</div><div class="stat-lbl">Artists</div></div>
+    <div class="stat"><div class="stat-num">87</div><div class="stat-lbl">Tracks</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">On Air</div></div>
+    <div class="stat"><div class="stat-num">12</div><div class="stat-lbl">Spotlights</div></div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterArtists('all',this)">All Artists</button>
+  <button class="filter-btn gospel" onclick="filterArtists('gospel',this)">🕊️ Gospel</button>
+  <button class="filter-btn" onclick="filterArtists('jazz',this)">🎷 Jazz</button>
+  <button class="filter-btn" onclick="filterArtists('hiphop',this)">🎤 Hip-Hop</button>
+  <button class="filter-btn lat" onclick="filterArtists('latin',this)">🎺 Latin</button>
+  <button class="filter-btn soul" onclick="filterArtists('soul',this)">🎵 Soul & R&B</button>
+  <button class="filter-btn" onclick="filterArtists('onair',this)">📻 On Air</button>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" type="text" placeholder="Search artists..." oninput="searchArtists(this.value)">
+  </div>
+</div>
+
+<!-- ARTIST GRID -->
+<div class="artists-section">
+  <div class="artists-grid" id="artistGrid"></div>
+</div>
+
+<!-- PLANS -->
+<div class="plans-section" id="plans">
+  <div class="plans-inner">
+
+    <div class="plans-header">
+      <div class="plans-kicker">Share Your Music</div>
+      <div class="plans-title">Choose Your Look. Then Your Plan.</div>
+      <p class="plans-desc">Browse the templates below. When you find your vibe, click it — then choose your plan, outline your project, and preview your profile all in one place.</p>
+    </div>
+
+    <!-- ══ TEMPLATE BROWSER ══ -->
+    <div class="tmpl-section-label">Browse Templates — Click One to Get Started</div>
+    <div class="templates-browser" id="templateBrowser"></div>
+
+    <!-- ══ SETUP PANEL (slides open under selected template) ══ -->
+    <div class="setup-panel hidden" id="setupPanel">
+
+      <div class="setup-panel-inner">
+
+        <!-- CLOSE -->
+        <button class="sp-close" onclick="closeSetup()">✕ Close</button>
+
+        <!-- SELECTED TEMPLATE PREVIEW -->
+        <div class="sp-template-row">
+          <div class="sp-tmpl-preview" id="spTmplPreview"></div>
+          <div class="sp-tmpl-meta">
+            <div class="sp-tmpl-name" id="spTmplName"></div>
+            <div class="sp-tmpl-desc" id="spTmplDesc"></div>
+            <div class="sp-tmpl-tags" id="spTmplTags"></div>
+          </div>
+        </div>
+
+        <!-- STEP TABS -->
+        <div class="sp-tabs">
+          <button class="sp-tab active" id="sptab1" onclick="spTab(1)">01 Choose Plan</button>
+          <button class="sp-tab" id="sptab2" onclick="spTab(2)">02 Project Outline</button>
+          <button class="sp-tab" id="sptab3" onclick="spTab(3)">03 Profile Preview</button>
+        </div>
+
+        <!-- ── TAB 1: PLAN ── -->
+        <div class="sp-body" id="spBody1">
+          <div class="sp-body-title">What plan fits where you are right now?</div>
+          <div class="sp-plans-grid">
+
+            <div class="sp-plan-card" onclick="spSelectPlan('creator',this)">
+              <div class="sp-plan-top">
+                <div class="sp-plan-icon">🎛️</div>
+                <div>
+                  <div class="sp-plan-name">Creator</div>
+                  <div class="sp-plan-price">Free</div>
+                </div>
+              </div>
+              <div class="sp-plan-tagline">Make music, download beats, no account needed</div>
+              <div class="sp-studio-label">Studio Access</div>
+              <ul class="sp-studio-feats">
+                <li class="on">All 4 drum kits</li>
+                <li class="on">16-step sequencer</li>
+                <li class="on">Basic beat download (WAV)</li>
+                <li class="on">8 ambient mood channels</li>
+                <li class="off">Voice recording</li>
+                <li class="off">Save/load project</li>
+                <li class="off">Piano roll</li>
+                <li class="off">Effects rack</li>
+                <li class="off">Artist profile page</li>
+                <li class="off">Track hosting</li>
+              </ul>
+            </div>
+
+            <div class="sp-plan-card featured" onclick="spSelectPlan('artist',this)">
+              <div class="sp-plan-badge">Most Popular</div>
+              <div class="sp-plan-top">
+                <div class="sp-plan-icon">🎵</div>
+                <div>
+                  <div class="sp-plan-name">Artist</div>
+                  <div class="sp-plan-price">$19<span>/mo</span></div>
+                </div>
+              </div>
+              <div class="sp-plan-tagline">Your profile page + studio upgrade</div>
+              <div class="sp-studio-label">Studio Access</div>
+              <ul class="sp-studio-feats">
+                <li class="on">Everything in Creator</li>
+                <li class="on">Voice recording ✦ Unlocked</li>
+                <li class="on">Save & load project ✦ Unlocked</li>
+                <li class="on">Artist profile page</li>
+                <li class="on">Upload 5 tracks</li>
+                <li class="on">Artist directory listing</li>
+                <li class="off">Piano roll</li>
+                <li class="off">Effects rack</li>
+                <li class="off">Spotlight eligible</li>
+                <li class="off">Radio airplay</li>
+              </ul>
+            </div>
+
+            <div class="sp-plan-card spotlight-plan" onclick="spSelectPlan('spotlight',this)">
+              <div class="sp-plan-top">
+                <div class="sp-plan-icon">🌟</div>
+                <div>
+                  <div class="sp-plan-name">Spotlight</div>
+                  <div class="sp-plan-price">$39<span>/mo</span></div>
+                </div>
+              </div>
+              <div class="sp-plan-tagline">Full studio + featured worldwide</div>
+              <div class="sp-studio-label">Studio Access</div>
+              <ul class="sp-studio-feats">
+                <li class="on">Everything in Artist</li>
+                <li class="on">Piano roll ✦ Unlocked</li>
+                <li class="on">Effects rack ✦ Unlocked</li>
+                <li class="on">Cultural history cards ✦ Unlocked</li>
+                <li class="on">10 tracks hosted</li>
+                <li class="on">Healing Artist badge</li>
+                <li class="on">Homepage spotlight eligible</li>
+                <li class="off">Guaranteed radio airplay</li>
+                <li class="off">Gospel Sunday feature</li>
+              </ul>
+            </div>
+
+            <div class="sp-plan-card onair-plan" onclick="spSelectPlan('onair',this)">
+              <div class="sp-plan-top">
+                <div class="sp-plan-icon">🎙️</div>
+                <div>
+                  <div class="sp-plan-name">On Air</div>
+                  <div class="sp-plan-price">$59<span>/mo</span></div>
+                </div>
+              </div>
+              <div class="sp-plan-tagline">Full radio integration + VIP access</div>
+              <div class="sp-studio-label">Studio Access</div>
+              <ul class="sp-studio-feats">
+                <li class="on">All studio features</li>
+                <li class="on">Upload directly to profile ✦ Unlocked</li>
+                <li class="on">Velocity & swing controls ✦ Unlocked</li>
+                <li class="on">Guaranteed radio airplay</li>
+                <li class="on">Gospel Sunday feature</li>
+                <li class="on">Unlimited tracks</li>
+                <li class="on">Priority spotlight slot</li>
+                <li class="on">Direct booking button</li>
+                <li class="on">VIP Healing Artist status</li>
+              </ul>
+            </div>
+
+          </div>
+          <div class="sp-nav">
+            <div></div>
+            <button class="sp-next" onclick="spTab(2)">Project Outline →</button>
+          </div>
+        </div>
+
+        <!-- ── TAB 2: OUTLINE ── -->
+        <div class="sp-body hidden" id="spBody2">
+          <div class="sp-body-title">Tell us about your project — this shapes your profile.</div>
+          <div class="outline-grid">
+            <div class="outline-group">
+              <div class="og-label">I am a</div>
+              <div class="og-options">
+                <div class="og-opt" onclick="selectOpt(this,'type')">🎤 Solo Artist</div>
+                <div class="og-opt" onclick="selectOpt(this,'type')">🎸 Band / Group</div>
+                <div class="og-opt" onclick="selectOpt(this,'type')">🎧 DJ / Producer</div>
+                <div class="og-opt" onclick="selectOpt(this,'type')">🗣️ Spoken Word</div>
+                <div class="og-opt" onclick="selectOpt(this,'type')">⛪ Church / Choir</div>
+                <div class="og-opt" onclick="selectOpt(this,'type')">🎓 Music Educator</div>
+              </div>
+            </div>
+            <div class="outline-group">
+              <div class="og-label">My genre is</div>
+              <div class="og-options">
+                <div class="og-opt" onclick="selectOpt(this,'genre')">🎷 Jazz</div>
+                <div class="og-opt" onclick="selectOpt(this,'genre')">🕊️ Gospel</div>
+                <div class="og-opt" onclick="selectOpt(this,'genre')">🎵 Soul & R&B</div>
+                <div class="og-opt" onclick="selectOpt(this,'genre')">🎤 Hip-Hop</div>
+                <div class="og-opt" onclick="selectOpt(this,'genre')">🎺 Latin</div>
+                <div class="og-opt" onclick="selectOpt(this,'genre')">🥁 Afrobeats</div>
+              </div>
+            </div>
+            <div class="outline-group">
+              <div class="og-label">My music focus</div>
+              <div class="og-options">
+                <div class="og-opt" onclick="selectOpt(this,'focus')">🌿 Therapeutic</div>
+                <div class="og-opt" onclick="selectOpt(this,'focus')">✨ Spiritual</div>
+                <div class="og-opt" onclick="selectOpt(this,'focus')">📚 Educational</div>
+                <div class="og-opt" onclick="selectOpt(this,'focus')">🎉 Entertainment</div>
+                <div class="og-opt" onclick="selectOpt(this,'focus')">💆 Meditation</div>
+                <div class="og-opt" onclick="selectOpt(this,'focus')">🙏 Worship</div>
+              </div>
+            </div>
+            <div class="outline-group">
+              <div class="og-label">My audience</div>
+              <div class="og-options">
+                <div class="og-opt" onclick="selectOpt(this,'audience')">👤 Adults</div>
+                <div class="og-opt" onclick="selectOpt(this,'audience')">🧓 Seniors</div>
+                <div class="og-opt" onclick="selectOpt(this,'audience')">👨‍👩‍👧 Families</div>
+                <div class="og-opt" onclick="selectOpt(this,'audience')">⛪ Faith Community</div>
+                <div class="og-opt" onclick="selectOpt(this,'audience')">🏥 Therapy Clients</div>
+                <div class="og-opt" onclick="selectOpt(this,'audience')">🌍 Everyone</div>
+              </div>
+            </div>
+          </div>
+          <div class="sp-nav">
+            <button class="sp-back" onclick="spTab(1)">← Back to Plan</button>
+            <button class="sp-next" onclick="spTab(3)">Preview Profile →</button>
+          </div>
+        </div>
+
+        <!-- ── TAB 3: PROFILE PREVIEW ── -->
+        <div class="sp-body hidden" id="spBody3">
+          <div class="sp-body-title">Here's your artist profile preview.</div>
+          <div class="profile-preview-wrap" id="profilePreviewWrap">
+            <div class="profile-mock">
+              <div class="pm-badge" id="pmBadge">Artist</div>
+              <div class="pm-photo">🎤</div>
+              <div class="pm-name" id="pmName">Your Artist Name</div>
+              <div class="pm-meta" id="pmMeta">voicesandvibesradio.com/artists/your-name</div>
+              <div class="pm-genre" id="pmGenre">Genre · Focus</div>
+              <div class="pm-tracks">
+                <div class="pm-track"><span>▶</span> First Track</div>
+                <div class="pm-track"><span>▶</span> Second Track</div>
+              </div>
+              <div class="pm-plan" id="pmPlan">Plan: Free</div>
+              <div class="pm-tmpl" id="pmTmpl">Template: Stage Edge</div>
+            </div>
+          </div>
+          <div class="sp-summary">
+            <div class="ss-row">
+              <div class="ss-item"><div class="ss-lbl">Template</div><div class="ss-val" id="ssTmpl">—</div></div>
+              <div class="ss-item"><div class="ss-lbl">Plan</div><div class="ss-val" id="ssPlan">—</div></div>
+              <div class="ss-item"><div class="ss-lbl">Type</div><div class="ss-val" id="ssType">—</div></div>
+              <div class="ss-item"><div class="ss-lbl">Genre</div><div class="ss-val" id="ssGenre">—</div></div>
+              <div class="ss-item"><div class="ss-lbl">Focus</div><div class="ss-val" id="ssFocus">—</div></div>
+              <div class="ss-item"><div class="ss-lbl">Audience</div><div class="ss-val" id="ssAudience">—</div></div>
+            </div>
+          </div>
+          <div class="sp-nav" style="justify-content:center;gap:1rem;margin-top:1.5rem">
+            <button class="sp-back" onclick="spTab(2)">← Back to Outline</button>
+            <a href="#" class="sp-next" style="text-decoration:none">🚀 Join & Create Profile</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- JOIN CTA -->
+<div class="join-section">
+  <div class="join-title">Ready to Share Your Sound?</div>
+  <p class="join-desc">Join the Voices & Vibes healing music community. Create in the browser, upload your tracks, get featured on the radio.</p>
+  <div class="join-btns">
+    <a href="#plans" class="join-btn teal">🎵 View Plans & Join</a>
+    <a href="vv-studio-pro.html" class="join-btn ghost">🎛️ Try Studio Free First</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">Voices & Vibes Radio</span>
+  <div class="footer-copy">© 2026 Voices & Vibes Radio · Houston, TX · Hosted by Doreatha Page · LPC, NCC · voicesandvibesradio.com</div>
+</footer>
+
+<script>
+// ══════════════════════════════════════════
+// MOCK ARTIST DATA
+// ══════════════════════════════════════════
+const ARTISTS = [
+  {
+    id:1, name:'Tony Williams', handle:'tonywilliams', tier:'onair',
+    genres:['Jazz','Gospel'],
+    kit:'Afrobeats',
+    bio:'Soulful guitarist bringing healing through music. Blending smooth jazz with gospel influences, his sound is a journey through faith and feeling.',
+    tracks:8, plays:1240, followers:89,
+    live:true, featured:true,
+    photo:'',photoEmoji:'🎸',photoBg:'linear-gradient(135deg,#0d1a1a,#1a0d0d)',
+    slug:'tony-williams'
+  },
+  {
+    id:2, name:'Nia Soleil', handle:'niasoleil', tier:'spotlight',
+    genres:['Soul','R&B'],
+    kit:'Hip-Hop',
+    bio:'Houston-born vocalist weaving healing affirmations into neo-soul landscapes. Her music moves slow, like medicine.',
+    tracks:5, plays:876, followers:62,
+    live:false, featured:true,
+    photo:'',photoEmoji:'🎤',photoBg:'linear-gradient(135deg,#1a0d1a,#0d0a1a)',
+    slug:'nia-soleil'
+  },
+  {
+    id:3, name:'Marcus Reed', handle:'marcusreed', tier:'artist',
+    genres:['Jazz','Hip-Hop'],
+    kit:'Trap',
+    bio:'Producer and multi-instrumentalist fusing boom-bap energy with jazz harmony. Every track tells a story.',
+    tracks:4, plays:543, followers:41,
+    live:false, featured:false,
+    photo:'',photoEmoji:'🎹',photoBg:'linear-gradient(135deg,#0a1a0a,#1a1a0d)',
+    slug:'marcus-reed'
+  },
+  {
+    id:4, name:'Amara Joy', handle:'amarajoy', tier:'spotlight',
+    genres:['Gospel','Soul'],
+    kit:'Afrobeats',
+    bio:'Faith-inspired vocalist from the African diaspora. Her Gospel Sunday performances have moved audiences to tears and praise.',
+    tracks:6, plays:1102, followers:78,
+    live:false, featured:true,
+    photo:'',photoEmoji:'🕊️',photoBg:'linear-gradient(135deg,#1a0d0a,#0d0d1a)',
+    slug:'amara-joy'
+  },
+  {
+    id:5, name:'David Okon', handle:'davidokon', tier:'onair',
+    genres:['Afrobeats','Latin'],
+    kit:'Latin',
+    bio:'Afrobeats producer with Caribbean roots. His rhythms connect the African continent to the islands in a wave of healing percussion.',
+    tracks:9, plays:1580, followers:103,
+    live:true, featured:false,
+    photo:'',photoEmoji:'🥁',photoBg:'linear-gradient(135deg,#1a0a0d,#0d1a0a)',
+    slug:'david-okon'
+  },
+  {
+    id:6, name:'Pastor James Cole', handle:'pastorjcole', tier:'onair',
+    genres:['Gospel'],
+    kit:'Hip-Hop',
+    bio:'Senior pastor and musician. Leads the Sunday morning session on Voices & Vibes with a live worship experience every week.',
+    tracks:3, plays:2100, followers:154,
+    live:true, featured:true,
+    photo:'',photoEmoji:'✝️',photoBg:'linear-gradient(135deg,#0d0a1a,#1a0d0a)',
+    slug:'pastor-james-cole'
+  },
+  {
+    id:7, name:'Lyric Wren', handle:'lyricwren', tier:'artist',
+    genres:['Soul','Jazz'],
+    kit:'Hip-Hop',
+    bio:'Spoken word artist meets jazz vocalist. Her therapy-inspired sets blend lyrical storytelling with gentle jazz melodies.',
+    tracks:2, plays:312, followers:28,
+    live:false, featured:false,
+    photo:'',photoEmoji:'🎭',photoBg:'linear-gradient(135deg,#0a0d1a,#1a0a10)',
+    slug:'lyric-wren'
+  },
+  {
+    id:8, name:'Rico Fuego', handle:'ricofuego', tier:'spotlight',
+    genres:['Latin','Afrobeats'],
+    kit:'Latin',
+    bio:'Latin rhythm specialist bringing cumbia, salsa, and Afrobeats fusion to the healing music community.',
+    tracks:7, plays:934, followers:67,
+    live:false, featured:false,
+    photo:'',photoEmoji:'🎺',photoBg:'linear-gradient(135deg,#1a0d0d,#0d1a0d)',
+    slug:'rico-fuego'
+  },
+  {
+    id:9, name:'Sage Monroe', handle:'sagemonroe', tier:'artist',
+    genres:['Soul','R&B'],
+    kit:'Hip-Hop',
+    bio:'Adult education music teacher and R&B artist. Her music helps adults reconnect with creativity they thought was lost.',
+    tracks:3, plays:428, followers:35,
+    live:false, featured:false,
+    photo:'',photoEmoji:'📚',photoBg:'linear-gradient(135deg,#0d0a0a,#1a1a0d)',
+    slug:'sage-monroe'
+  },
+  {
+    id:10, name:'Brother Elias', handle:'brotherelias', tier:'spotlight',
+    genres:['Gospel','Soul'],
+    kit:'Afrobeats',
+    bio:'Church musician and choir director. Brings the warmth of community praise to the digital healing space.',
+    tracks:4, plays:765, followers:55,
+    live:false, featured:false,
+    photo:'',photoEmoji:'🎼',photoBg:'linear-gradient(135deg,#0a0d0a,#0d0a1a)',
+    slug:'brother-elias'
+  },
+  {
+    id:11, name:'Luna Beats', handle:'lunabeats', tier:'artist',
+    genres:['Hip-Hop','Trap'],
+    kit:'Trap',
+    bio:'Underground producer making beats for healing. Trap-influenced but always therapeutic in intention.',
+    tracks:5, plays:689, followers:48,
+    live:false, featured:false,
+    photo:'',photoEmoji:'🌙',photoBg:'linear-gradient(135deg,#0a0a1a,#1a0a0a)',
+    slug:'luna-beats'
+  },
+  {
+    id:12, name:'Carmen Luz', handle:'carmenluz', tier:'onair',
+    genres:['Latin','Gospel'],
+    kit:'Latin',
+    bio:'Latin gospel singer bringing Caribbean worship rhythms to the healing stage. Sunday mornings feel like home.',
+    tracks:6, plays:1320, followers:92,
+    live:true, featured:true,
+    photo:'',photoEmoji:'🌺',photoBg:'linear-gradient(135deg,#1a0a0d,#0d1a1a)',
+    slug:'carmen-luz'
+  }
+];
+
+const TIER_LABELS={free:'Free',artist:'Artist',spotlight:'Spotlight',onair:'On Air'};
+const TIER_CLASS={free:'free',artist:'artist',spotlight:'spotlight',onair:'onair'};
+const CARD_CLASS={spotlight:'spotlight-card',onair:'onair-card'};
+
+let activeFilter='all';
+let searchTerm='';
+
+function buildCard(a){
+  const tierBadge=`<div class="tier-badge ${TIER_CLASS[a.tier]}">${TIER_LABELS[a.tier]}</div>`;
+  const liveBadge=a.live?`<div class="live-indicator"><span class="li-dot"></span><span class="li-txt">LIVE</span></div>`:'';
+  const photo=a.photo
+    ?`<img class="artist-img" src="${a.photo}" alt="${a.name}">`
+    :`<div class="photo-placeholder" style="background:${a.photoBg}">${a.photoEmoji}</div>`;
+  const genres=a.genres.map(g=>{
+    const cls=g==='Gospel'?'purple':g==='Latin'?'gold':g==='Soul'||g==='R&B'?'coral':'teal';
+    return `<span class="gpill ${cls}">${g}</span>`;
+  }).join('');
+  const cardClass=(CARD_CLASS[a.tier]||'')+(a.featured?' featured-card':'');
+
+  return `
+  <div class="artist-card ${cardClass}" data-genres="${a.genres.join(',').toLowerCase()}" data-tier="${a.tier}" data-name="${a.name.toLowerCase()}" onclick="openArtist('${a.slug}')">
+    <div class="artist-photo">
+      ${photo}
+      <div class="photo-gradient"></div>
+      ${tierBadge}
+      ${liveBadge}
+      <div class="play-overlay"><div class="play-circle">▶</div></div>
+    </div>
+    <div class="artist-info">
+      <div class="artist-name">${a.name}</div>
+      <div class="artist-handle">voicesandvibesradio.com/artists/${a.slug}</div>
+      <p class="artist-bio">${a.bio}</p>
+      <div class="genre-pills">${genres}</div>
+    </div>
+    <div class="artist-stats">
+      <div class="ast"><div class="ast-num">${a.tracks}</div><div class="ast-lbl">Tracks</div></div>
+      <div class="ast"><div class="ast-num">${a.plays.toLocaleString()}</div><div class="ast-lbl">Plays</div></div>
+      <div class="ast"><div class="ast-num">${a.followers}</div><div class="ast-lbl">Fans</div></div>
+    </div>
+    <div class="artist-footer">
+      <span class="af-kit">${a.kit} Kit</span>
+      <a class="af-listen" href="vv-artist-player-v8.html">Listen ▶</a>
+    </div>
+  </div>`;
+}
+
+function renderGrid(){
+  const grid=document.getElementById('artistGrid');
+  const filtered=ARTISTS.filter(a=>{
+    const matchFilter=
+      activeFilter==='all'||
+      (activeFilter==='onair'&&a.tier==='onair')||
+      (activeFilter==='gospel'&&a.genres.map(g=>g.toLowerCase()).includes('gospel'))||
+      (activeFilter==='jazz'&&a.genres.map(g=>g.toLowerCase()).includes('jazz'))||
+      (activeFilter==='hiphop'&&(a.genres.map(g=>g.toLowerCase()).includes('hip-hop')||a.genres.map(g=>g.toLowerCase()).includes('hip-hop')))||
+      (activeFilter==='latin'&&a.genres.map(g=>g.toLowerCase()).includes('latin'))||
+      (activeFilter==='soul'&&(a.genres.map(g=>g.toLowerCase()).includes('soul')||a.genres.map(g=>g.toLowerCase()).includes('r&b')));
+    const matchSearch=!searchTerm||a.name.toLowerCase().includes(searchTerm)||a.bio.toLowerCase().includes(searchTerm)||a.genres.join(',').toLowerCase().includes(searchTerm);
+    return matchFilter&&matchSearch;
+  });
+  grid.innerHTML=filtered.map(buildCard).join('');
+}
+
+function filterArtists(filter,btn){
+  activeFilter=filter;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
+function searchArtists(val){
+  searchTerm=val.toLowerCase().trim();
+  renderGrid();
+}
+
+function openArtist(slug){
+  // In real app navigates to /artists/slug
+  // For now show a toast
+  showToast('Opening '+slug+' profile...');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast')||createToast();
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)'},2000);
+}
+function createToast(){
+  const t=document.createElement('div');
+  t.id='toast';
+  Object.assign(t.style,{position:'fixed',bottom:'2rem',left:'50%',transform:'translateX(-50%) translateY(10px)',
+    background:'rgba(17,17,17,0.95)',border:'1px solid rgba(0,155,155,0.3)',
+    color:'#fff',padding:'8px 16px',fontFamily:'Montserrat,sans-serif',fontSize:'11px',
+    fontWeight:'700',letterSpacing:'0.1em',textTransform:'uppercase',
+    opacity:'0',transition:'all 0.25s',zIndex:'500',pointerEvents:'none'});
+  document.body.appendChild(t);return t;
+}
+
+// ══ TEMPLATE DATA ══
+const TEMPLATES = [
+  {id:'stage-edge', name:'Stage Edge', desc:'Full screen art · Side panel · Immersive', tags:['All Plans'],
+   preview:`<div style="display:flex;height:100%;gap:2px"><div style="flex:2;background:linear-gradient(135deg,#0d1a1a,#1a0d0d);position:relative;display:flex;align-items:flex-end;padding:6px"><div style="width:100%"><div style="height:3px;background:linear-gradient(to right,#009B9B,#E8624A);margin-bottom:3px"></div><div style="font-size:6px;color:#009B9B;letter-spacing:0.1em;text-transform:uppercase">Stage Edge</div><div style="font-family:'Dancing Script',cursive;font-size:10px;color:#E8624A">Artist Name</div></div><div style="position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:#009B9B;display:flex;align-items:center;justify-content:center;font-size:8px;color:#000">&#9654;</div></div><div style="flex:1;background:#131e1e;border-left:1px solid rgba(0,155,155,0.2);padding:4px;display:flex;flex-direction:column;gap:3px"><div style="height:4px;background:rgba(0,155,155,0.2);border-radius:1px"></div><div style="height:4px;background:rgba(0,155,155,0.15);border-radius:1px;width:70%"></div><div style="height:4px;background:rgba(232,98,74,0.15);border-radius:1px;width:50%;margin-top:4px"></div></div></div>`},
+  {id:'midnight-stage', name:'Midnight Stage', desc:'Dark cinematic · Tracklist · R&B / Jazz', tags:['All Plans'],
+   preview:`<div style="background:#0a0a0a;height:100%;padding:5px"><div style="border-bottom:2px solid #009B9B;padding-bottom:4px;margin-bottom:4px;display:flex;align-items:center;gap:4px"><div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#009B9B,#E8624A);flex-shrink:0"></div><div><div style="font-size:8px;font-weight:700;color:#fff">Artist Name</div><div style="font-size:6px;color:#5a9090">Neo Soul · Jazz</div></div></div><div style="display:flex;flex-direction:column;gap:2px"><div style="background:#1e2a2a;border-left:2px solid #009B9B;padding:3px 4px;display:flex;align-items:center;gap:3px"><div style="font-size:7px;color:#009B9B">&#9654;</div><div><div style="font-size:7px;color:#fff">Rooted in Hope</div><div style="font-size:6px;color:#5a9090">3:42</div></div></div><div style="background:#131e1e;border-left:1px solid rgba(0,155,155,0.2);padding:3px 4px;display:flex;align-items:center;gap:3px"><div style="font-size:7px;color:#5a9090">2</div><div><div style="font-size:7px;color:#fff">Still Water</div></div></div></div></div>`},
+  {id:'healing-minimal', name:'Healing Minimal', desc:'Clean centered · Track list · Calm', tags:['All Plans'],
+   preview:`<div style="display:flex;flex-direction:column;height:100%;padding:6px;gap:3px"><div style="text-align:center;padding:4px 0"><div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#009B9B,#E8624A);margin:0 auto 3px"></div><div style="font-family:'Dancing Script',cursive;font-size:9px;color:#E8624A">Artist Name</div><div style="font-size:6px;color:#5a9090">Healing Jazz</div></div><div style="display:flex;flex-direction:column;gap:2px"><div style="background:#1e2a2a;border:1px solid rgba(0,155,155,0.2);padding:3px 4px;display:flex;align-items:center;gap:3px"><div style="flex:1"><div style="height:3px;background:rgba(0,155,155,0.3);margin-bottom:2px"></div></div><div style="font-size:7px;color:#009B9B">&#9654;</div></div></div></div>`},
+  {id:'sunlit-soul', name:'Sunlit Soul', desc:'Warm ivory & gold · Roman numerals · Gospel', tags:['All Plans'],
+   preview:`<div style="background:#faf6f0;height:100%;padding:6px"><div style="text-align:center;border-bottom:1px solid rgba(193,123,58,0.25);padding-bottom:4px;margin-bottom:4px"><div style="font-family:'Playfair Display',serif;font-size:9px;color:#3a2010;font-weight:700">Artist Name</div><div style="font-size:6px;color:#8a6040">Gospel · Spoken Word</div></div><div style="display:flex;flex-direction:column;gap:2px"><div style="display:flex;align-items:baseline;gap:4px;border-bottom:1px dashed rgba(193,123,58,0.2);padding-bottom:2px"><div style="font-size:7px;color:#c17b3a;font-family:Georgia,serif;font-style:italic">I.</div><div style="font-size:7px;color:#3a2010">Rooted in Hope</div><div style="margin-left:auto;font-size:6px;color:#8a6040">3:42</div></div><div style="font-style:italic;font-size:7px;color:#8a6040;padding:3px 0">&ldquo;Healing through every note&rdquo;</div></div></div>`},
+  {id:'gospel-gold', name:'Gospel Gold', desc:'Gold accent · Faith-centered · Sunday', tags:['Spotlight+'],
+   preview:`<div style="background:linear-gradient(180deg,#0a0a0a,#1a1200);height:100%;padding:6px;display:flex;flex-direction:column;gap:3px"><div style="border:1px solid rgba(212,168,48,0.4);padding:4px;text-align:center"><div style="font-family:'Dancing Script',cursive;font-size:9px;color:#D4A830">Artist Name</div><div style="font-size:6px;color:rgba(212,168,48,0.6);letter-spacing:0.08em;text-transform:uppercase">Gospel</div></div><div style="margin-top:auto;background:rgba(212,168,48,0.1);border:1px solid rgba(212,168,48,0.3);padding:4px;text-align:center"><div style="font-size:7px;color:#D4A830;font-weight:700;letter-spacing:0.1em">&#128218; GOSPEL SUNDAY</div></div></div>`},
+  {id:'neon-frequency', name:'Neon Frequency', desc:'Electric monospace · Afrobeats / Latin', tags:['Artist+'],
+   preview:`<div style="background:#050d14;height:100%;padding:5px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,#009B9B,#E8624A,#009B9B)"></div><div style="font-size:7px;font-family:monospace;color:#009B9B;letter-spacing:0.1em;margin-bottom:5px">VV://ARTIST.LIVE</div><div style="border:1px solid rgba(232,98,74,0.4);padding:4px;margin-bottom:3px"><div style="font-size:10px;font-weight:900;color:#E8624A">ARTIST NAME</div><div style="font-size:6px;color:#5a9090;letter-spacing:0.15em">AFROBEATS · LATIN</div></div></div>`},
+  {id:'sacred-roots', name:'Sacred Roots', desc:'Earthy amber · Ornamental · Gospel / World', tags:['Spotlight+'],
+   preview:`<div style="background:#0d0a06;height:100%;padding:5px"><div style="border:1px solid rgba(212,168,48,0.3);padding:4px;margin-bottom:4px;text-align:center"><div style="font-size:9px;font-weight:700;color:#D4A830">ARTIST NAME</div><div style="font-size:6px;color:rgba(212,168,48,0.5);letter-spacing:0.15em">GOSPEL · WORLD</div></div><div style="text-align:center;font-size:7px;color:rgba(212,168,48,0.4)">— healing through sound —</div></div>`},
+  {id:'editorial-light', name:'Editorial Light', desc:'White + teal banner · Bandcamp-style', tags:['All Plans'],
+   preview:`<div style="background:#fff;height:100%;display:flex;flex-direction:column"><div style="background:#009B9B;padding:5px 6px"><div style="font-size:8px;font-weight:900;color:#fff">ARTIST NAME</div></div><div style="display:flex;flex:1"><div style="width:50px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:20px">&#127926;</div><div style="flex:1;padding:5px"><div style="font-size:7px;color:#333;border-bottom:1px solid #eee;padding-bottom:2px">Rooted in Hope</div><div style="font-size:7px;color:#555;border-bottom:1px solid #eee;padding-bottom:2px">Still Water</div></div></div></div>`},
+  {id:'cream-journal', name:'Cream Journal', desc:'Ivory & gold · Serif numerals · Spoken word', tags:['All Plans'],
+   preview:`<div style="background:#fdf8f0;height:100%;padding:6px"><div style="text-align:center;margin-bottom:5px"><div style="font-size:8px;color:#8a6040;letter-spacing:0.2em">Artist Name</div><div style="height:1px;background:linear-gradient(to right,transparent,#c17b3a,transparent)"></div></div><div style="font-style:italic;font-size:8px;color:#8a6040;text-align:center;margin-bottom:5px">&ldquo;Where healing meets harmony&rdquo;</div></div>`},
+  {id:'bold-magazine', name:'Bold Magazine', desc:'Split hero · High contrast · Editorial', tags:['On Air Only'],
+   preview:`<div style="height:100%;display:flex"><div style="width:55%;background:#0a0a0a;padding:5px;display:flex;flex-direction:column;justify-content:flex-end"><div style="font-size:11px;font-weight:900;color:#fff">ARTIST</div><div style="font-size:7px;color:#009B9B">SPOTLIGHT</div></div><div style="flex:1;background:#009B9B;display:flex;align-items:center;justify-content:center;font-size:24px">&#127927;</div></div>`},
+  {id:'crimson-split', name:'Crimson Split', desc:'Deep crimson · Serif editorial · Sophisticated', tags:['Spotlight+'],
+   preview:`<div style="height:100%;display:flex"><div style="width:45%;background:#8B1A1A;padding:5px;display:flex;flex-direction:column;justify-content:center"><div style="font-family:'Playfair Display',serif;font-size:10px;color:#fff;font-weight:700">Artist Name</div><div style="height:1px;background:rgba(255,200,200,0.3);margin:3px 0"></div><div style="font-size:6px;color:rgba(255,200,200,0.6);font-style:italic">Healing Artist</div></div><div style="flex:1;background:#f0ebe5;padding:5px"><div style="font-size:6px;color:#8B1A1A;letter-spacing:0.1em;font-weight:700;margin-bottom:3px">TRACKS</div><div style="border-left:2px solid #8B1A1A;padding-left:4px"><div style="font-size:7px;color:#1a0a0a">Rooted in Hope</div></div></div></div>`},
+  {id:'studio-profile', name:'Studio Profile', desc:'Shows beats & kit · Producer focused', tags:['Artist+'],
+   preview:`<div style="height:100%;padding:5px;display:flex;flex-direction:column;gap:2px"><div style="display:flex;gap:1px"><div style="flex:1;background:#009B9B;font-size:5px;color:#000;text-align:center;padding:1px;font-weight:700">AFRO</div><div style="flex:1;background:#1e2a2a;font-size:5px;color:#5a9090;text-align:center;padding:1px">TRAP</div><div style="flex:1;background:#1e2a2a;font-size:5px;color:#5a9090;text-align:center;padding:1px">HH</div><div style="flex:1;background:#1e2a2a;font-size:5px;color:#5a9090;text-align:center;padding:1px">LAT</div></div><div style="display:grid;grid-template-columns:repeat(16,1fr);gap:1px"><div style="height:4px;background:#009B9B"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#E8624A"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#009B9B"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#009B9B"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#E8624A"></div><div style="height:4px;background:#009B9B"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#1e2a2a"></div><div style="height:4px;background:#1e2a2a"></div></div></div>`},
+  {id:'community', name:'Community', desc:'Purple accent · Stats forward · Spotlight badge', tags:['Spotlight+'],
+   preview:`<div style="height:100%;padding:5px;display:flex;flex-direction:column;gap:2px"><div style="text-align:center;border-bottom:1px solid rgba(136,85,204,0.2);padding-bottom:3px"><div style="font-family:'Dancing Script',cursive;font-size:9px;color:#8855CC">Artist Name</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px"><div style="background:rgba(136,85,204,0.1);border:1px solid rgba(136,85,204,0.2);padding:3px;text-align:center"><div style="font-size:8px;color:#8855CC;font-weight:700">5</div><div style="font-size:5px;color:#5a9090">Tracks</div></div><div style="background:rgba(136,85,204,0.1);border:1px solid rgba(136,85,204,0.2);padding:3px;text-align:center"><div style="font-size:8px;color:#8855CC;font-weight:700">62</div><div style="font-size:5px;color:#5a9090">Fans</div></div><div style="background:rgba(136,85,204,0.1);border:1px solid rgba(136,85,204,0.2);padding:3px;text-align:center"><div style="font-size:8px;color:#8855CC;font-weight:700">3</div><div style="font-size:5px;color:#5a9090">Shows</div></div></div></div>`},
+  {id:'bold-bio', name:'Bold Bio', desc:'Large photo · Coral accent · On Air energy', tags:['On Air Only'],
+   preview:`<div style="height:100%;display:flex;flex-direction:column"><div style="flex:1;background:linear-gradient(135deg,#1a0d0d,#0d1a1a);position:relative;display:flex;align-items:center;justify-content:center"><div style="font-size:28px">&#127908;</div><div style="position:absolute;top:4px;left:4px;background:#E8624A;padding:2px 5px;font-size:6px;font-weight:700;color:#000">ON AIR</div></div><div style="background:#0f1515;border-top:2px solid #E8624A;padding:5px"><div style="font-family:'Dancing Script',cursive;font-size:10px;color:#E8624A">Artist Name</div></div></div>`},
+  {id:'clean-minimal', name:'Clean Minimal', desc:'Pure white · Teal stripe · Modern', tags:['All Plans'],
+   preview:`<div style="background:#fff;height:100%;padding:0"><div style="height:3px;background:#009B9B"></div><div style="padding:8px 6px"><div style="display:flex;align-items:center;gap:5px;margin-bottom:5px"><div style="width:20px;height:20px;border-radius:50%;background:#009B9B;flex-shrink:0"></div><div style="font-size:8px;font-weight:700;color:#000">Artist Name</div></div><div style="display:flex;flex-direction:column;gap:1px"><div style="display:flex;align-items:center;gap:4px;padding:2px 0;border-bottom:1px solid #f0f0f0"><div style="font-size:7px;color:#009B9B">&#9654;</div><div style="font-size:7px;color:#000">Rooted in Hope</div><div style="flex:1;height:2px;background:#f0f0f0;margin:0 4px;overflow:hidden"><div style="width:40%;height:100%;background:#009B9B"></div></div></div></div></div></div>`}
+];
+
+// ══ BUILD TEMPLATE BROWSER ══
+function buildTemplateBrowser(){
+  const grid = document.getElementById('templateBrowser');
+  grid.innerHTML = TEMPLATES.map(t => {
+    const tagHtml = t.tags.map(tag => {
+      const cls = tag.includes('Spotlight')||tag.includes('On Air')?'purple':tag==='On Air Only'?'coral':'teal';
+      return `<span class="ttag ${cls}">${tag}</span>`;
+    }).join('');
+    return `<div class="template-card" id="tc-${t.id}" onclick="openTemplate('${t.id}')">
+      <div class="tmpl-preview">${t.preview}</div>
+      <div class="tmpl-info">
+        <div class="tmpl-name">${t.name}</div>
+        <div class="tmpl-desc">${t.desc}</div>
+        <div class="tmpl-tags">${tagHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ SETUP WIZARD STATE ══
+let selections = {template:'',plan:'',type:'',genre:'',focus:'',audience:''};
+
+function openTemplate(id){
+  const t = TEMPLATES.find(x=>x.id===id);
+  if(!t) return;
+  selections.template = t.name;
+  // Highlight selected card
+  document.querySelectorAll('.template-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('tc-'+id).classList.add('selected');
+  // Populate panel header
+  document.getElementById('spTmplPreview').innerHTML = t.preview;
+  document.getElementById('spTmplName').textContent = t.name;
+  document.getElementById('spTmplDesc').textContent = t.desc;
+  document.getElementById('spTmplTags').innerHTML = t.tags.map(tag=>`<span class="ttag teal">${tag}</span>`).join('');
+  document.getElementById('ssTmpl').textContent = t.name;
+  document.getElementById('pmTmpl').textContent = 'Template: '+t.name;
+  // Show panel at tab 1
+  document.getElementById('setupPanel').classList.remove('hidden');
+  spTab(1);
+  // Scroll into view
+  setTimeout(()=>document.getElementById('setupPanel').scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+function closeSetup(){
+  document.getElementById('setupPanel').classList.add('hidden');
+  document.querySelectorAll('.template-card').forEach(c=>c.classList.remove('selected'));
+}
+
+function spTab(n){
+  for(let i=1;i<=3;i++){
+    document.getElementById('spBody'+i).classList.toggle('hidden', i!==n);
+    document.getElementById('sptab'+i).classList.toggle('active', i===n);
+  }
+}
+
+function spSelectPlan(plan, card){
+  document.querySelectorAll('.sp-plan-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  selections.plan = plan;
+  const names={creator:'Creator (Free)',artist:'Artist 9/mo',spotlight:'Spotlight 9/mo',onair:'On Air 9/mo'};
+  document.getElementById('ssPlan').textContent = names[plan]||plan;
+  document.getElementById('pmPlan').textContent = 'Plan: '+(names[plan]||plan);
+  document.getElementById('pmBadge').textContent = plan.charAt(0).toUpperCase()+plan.slice(1);
+}
+
+function selectOpt(el, group){
+  el.closest('.outline-group').querySelectorAll('.og-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selections[group] = el.textContent.trim();
+  const map={type:'ssType',genre:'ssGenre',focus:'ssFocus',audience:'ssAudience'};
+  if(map[group]) document.getElementById(map[group]).textContent = selections[group];
+  if(group==='genre') document.getElementById('pmGenre').textContent = selections.genre+(selections.focus?' · '+selections.focus:'');
+  if(group==='focus') document.getElementById('pmGenre').textContent = (selections.genre||'Genre')+' · '+selections.focus;
+}
+
+// INIT
+let selections = {plan:'',type:'',genre:'',focus:'',audience:'',template:''};
+
+function goStep(n){
+  document.querySelectorAll('.setup-step').forEach(s=>s.classList.add('hidden'));
+  document.getElementById('setupStep'+n).classList.remove('hidden');
+  document.querySelectorAll('.step-item').forEach((s,i)=>{
+    s.classList.remove('active','done');
+    if(i+1===n) s.classList.add('active');
+    else if(i+1<n) s.classList.add('done');
+  });
+  document.getElementById('plans').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function selectPlan(plan, card){
+  selections.plan=plan;
+  document.querySelectorAll('.plan-card').forEach(c=>c.style.outline='');
+  card.style.outline='2px solid #009B9B';
+  const names={creator:'Creator (Free)',artist:'Artist $19/mo',spotlight:'Spotlight $39/mo',onair:'On Air $59/mo'};
+  document.getElementById('sumPlan').textContent=names[plan]||plan;
+  setTimeout(()=>goStep(2),220);
+}
+
+function selectOpt(el, group){
+  el.closest('.outline-group').querySelectorAll('.og-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selections[group]=el.textContent.trim();
+  const map={type:'sumType',genre:'sumGenre',focus:'sumFocus',audience:'sumAudience'};
+  if(map[group]) document.getElementById(map[group]).textContent=selections[group];
+}
+
+function selectTemplate(card, name){
+  document.querySelectorAll('.template-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  selections.template=name.replace(/-/g,' ').replace(/\w/g,c=>c.toUpperCase());
+  document.getElementById('sumTemplate').textContent=selections.template;
+}
+
+// INIT
+renderGrid();
+buildTemplateBrowser();
+</script>
+</body>
+</html>
